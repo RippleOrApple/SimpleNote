@@ -1,0 +1,46 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../shared/widgets/app_shell.dart';
+import '../application/theme_controller.dart';
+import '../domain/theme_scheme.dart';
+
+class SettingsPage extends ConsumerWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(themeControllerProvider);
+
+    return AppShell(
+      title: 'Settings',
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text('Theme', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 12),
+          ListTile(
+            title: Text(theme.name),
+            subtitle: const Text('Background, button, and text colors'),
+            leading: CircleAvatar(backgroundColor: theme.primaryColor),
+          ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: () => ref
+                .read(themeControllerProvider.notifier)
+                .applyTheme(AppThemeScheme.minimalLight),
+            child: const Text('Restore default theme'),
+          ),
+          const Divider(height: 32),
+          Text('Sync', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 12),
+          const ListTile(
+            leading: Icon(Icons.wifi_tethering_outlined),
+            title: Text('LAN sync'),
+            subtitle: Text('Server and client files are scaffolded.'),
+          ),
+        ],
+      ),
+    );
+  }
+}
