@@ -77,6 +77,40 @@ void main() {
     expect(find.text('quote'), findsOneWidget);
   });
 
+  testWidgets('compact notes editor can go back and confirms delete',
+      (tester) async {
+    await _pumpApp(tester, surfaceSize: const Size(390, 844));
+
+    await tester.tap(find.text('New note').first);
+    await tester.pump(const Duration(milliseconds: 300));
+
+    await tester.enterText(find.byKey(const Key('note-title-field')), 'Temp');
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.byKey(const Key('note-back-button')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('note-back-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Temp'), findsOneWidget);
+
+    await tester.tap(find.text('Temp'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Delete note'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete note?'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(find.text('Temp'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Delete note'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Note deleted'), findsOneWidget);
+  });
+
   testWidgets('todos page creates edits completes filters and prioritizes',
       (tester) async {
     await _pumpApp(tester, surfaceSize: const Size(1024, 768));
@@ -111,6 +145,42 @@ void main() {
     await tester.tap(find.text('Done'));
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('Plan'), findsWidgets);
+  });
+
+  testWidgets('compact todos editor can go back and confirms delete',
+      (tester) async {
+    await _pumpApp(tester, surfaceSize: const Size(390, 844));
+
+    await tester.tap(find.text('Todos'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('New todo').first);
+    await tester.pump(const Duration(milliseconds: 300));
+
+    await tester.enterText(find.byKey(const Key('todo-title-field')), 'Errand');
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.byKey(const Key('todo-back-button')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('todo-back-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Errand'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Edit todo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Delete todo'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete todo?'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(find.text('Errand'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Delete todo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Todo deleted'), findsOneWidget);
   });
 
   testWidgets('settings page applies presets and saves a custom theme',

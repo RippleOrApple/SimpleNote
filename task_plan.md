@@ -1,8 +1,8 @@
-# Task Plan: SimpleNote Phase 6 LAN Sync MVP
+# Task Plan: SimpleNote Phase 7 Experience Polish
 
 ## Goal
 
-Build manual same-Wi-Fi sync with database snapshots, JSON HTTP endpoints, client exchange, merge rules, controller state, Settings controls, and tests.
+Improve day-to-day usability with compact editor back actions, delete confirmations, success feedback, cleaner visible text, and tests.
 
 ## Current Phase
 
@@ -13,35 +13,29 @@ Complete
 ### Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
-- [x] Inspect existing sync domain, controller, repository, server, client, Settings UI, and database repositories
-- [x] Document findings in `findings.md`
+- [x] Inspect notes/todos presentation and controller patterns
+- [x] Inspect existing widget tests
 - **Status:** complete
 
 ### Phase 2: Planning & Structure
 
-- [x] Choose snapshot JSON format
-- [x] Choose merge strategy for notes and todos
-- [x] Choose HTTP endpoint contract
-- [x] Choose controller state shape
-- [x] Choose test strategy
+- [x] Choose compact editor back action approach
+- [x] Choose delete confirmation flow
+- [x] Choose test coverage
 - **Status:** complete
 
 ### Phase 3: Implementation
 
-- [x] Add JSON serialization for sync models and synced entities
-- [x] Add repository/DAO methods for all-record export and merge import
-- [x] Implement Drift-backed sync repository
-- [x] Implement local sync server endpoints
-- [x] Implement sync API client methods
-- [x] Rework sync controller for server lifecycle and peer sync
-- [x] Add manual LAN sync controls to Settings
+- [x] Add clear selection actions to notes and todos controllers
+- [x] Add compact back buttons to note and todo editors
+- [x] Add note delete confirmation and success snackbar
+- [x] Add todo delete confirmation and success snackbar
+- [x] Clean todo subtitle separator text
 - **Status:** complete
 
 ### Phase 4: Testing & Verification
 
-- [x] Add sync repository tests
-- [x] Add server/client tests
-- [x] Add controller or widget coverage for Settings sync controls
+- [x] Add/update widget tests for polish behavior
 - [x] Run `flutter analyze`
 - [x] Run `flutter test`
 - [x] Verify acceptance criteria against `GOAL.md`
@@ -54,33 +48,18 @@ Complete
 - [x] Submit PR with `scripts/update_pr.ps1`
 - **Status:** complete
 
-## Key Questions
-
-1. Should sync use automatic device discovery?
-   - No. P6 is manual address entry only.
-2. Should tags and themes use full conflict accounting?
-   - Keep notes/todos counts in `SyncResult`; still merge tags/themes by latest timestamps or active flags for usable snapshots.
-3. Should the sync server own repository creation?
-   - Inject `SyncRepository` and `DeviceInfo` so tests can use in-memory databases.
-
 ## Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Use JSON over `dart:io` HTTP | No dependency and works for Windows/Android LAN MVP |
-| Use pull-then-push peer sync | Both devices receive the newest snapshot in one manual action |
-| Merge by effective changed time | Matches existing `MergePolicy` and handles deletion conflicts |
-| Keep Settings controls simple | P6 is functional sync, polish belongs to P7 |
+| Add controller `clearSelection` methods | Keeps compact back navigation in state instead of route hacks |
+| Use Material confirmation dialogs | Native, dependency-free, and easy to test |
+| Use SnackBar for success feedback | Lightweight and familiar |
+| Keep undo out of scope | P7 is polish, not full history/restore |
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |-------|---------|------------|
-| Analyzer flagged unnecessary nested `const` in sync repository test | 1 | Removed inner `const` keywords |
-| Widget test scroll target matched multiple route-transition widgets | 1 | Added a stable `settings-list` key and used `dragUntilVisible` |
-
-## Notes
-
-- Preserve P5 theme customization and route transition changes.
-- Keep sync failure non-destructive.
-- PR submission remains the last step.
+| Compact back action did not really clear selected item because selected getters returned the first item when no id was selected | 1 | Updated selected getters to return null when no selected id exists |
+| Todo compact delete test could not find the edit tooltip before the selected getter fix | 1 | Fixed selected state behavior, then reran widget tests |

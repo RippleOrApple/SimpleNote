@@ -87,6 +87,7 @@ class _TodosWorkspace extends ConsumerWidget {
                   priority: value,
                 ),
                 onDelete: () => controller.deleteTodo(state.selectedTodo!.id),
+                onBack: isWide ? null : controller.clearSelection,
               );
 
         if (isWide) {
@@ -195,7 +196,7 @@ class _TodosList extends StatelessWidget {
     if (todo.dueAt != null) {
       parts.add('Due: ${_formatDate(todo.dueAt!)}');
     }
-    return parts.join(' · ');
+    return parts.join(' | ');
   }
 }
 
@@ -209,6 +210,7 @@ class _TodoEditor extends StatefulWidget {
     required this.onClearDueAt,
     required this.onPriorityChanged,
     required this.onDelete,
+    this.onBack,
   });
 
   final Todo todo;
@@ -218,7 +220,8 @@ class _TodoEditor extends StatefulWidget {
   final ValueChanged<int> onDueAtChanged;
   final VoidCallback onClearDueAt;
   final ValueChanged<TodoPriority> onPriorityChanged;
-  final VoidCallback onDelete;
+  final Future<void> Function() onDelete;
+  final VoidCallback? onBack;
 
   @override
   State<_TodoEditor> createState() => _TodoEditorState();
@@ -263,6 +266,15 @@ class _TodoEditorState extends State<_TodoEditor> {
       children: [
         Row(
           children: [
+            if (widget.onBack != null) ...[
+              IconButton(
+                key: const Key('todo-back-button'),
+                tooltip: 'Back to todos',
+                onPressed: widget.onBack,
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(width: 8),
+            ],
             Expanded(
               child: TextField(
                 key: const Key('todo-title-field'),
@@ -278,7 +290,7 @@ class _TodoEditorState extends State<_TodoEditor> {
             IconButton(
               tooltip: 'Delete todo',
               icon: const Icon(Icons.delete_outline),
-              onPressed: widget.onDelete,
+              onPressed: _confirmDelete,
             ),
           ],
         ),
@@ -357,6 +369,36 @@ class _TodoEditorState extends State<_TodoEditor> {
     if (selectedDate != null) {
       widget.onDueAtChanged(selectedDate.millisecondsSinceEpoch);
     }
+  }
+
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete todo?'),
+        content: const Text('This todo will be removed from this device.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+    await widget.onDelete();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Todo deleted')),
+    );
   }
 }
 
