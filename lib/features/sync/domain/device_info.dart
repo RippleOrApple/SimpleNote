@@ -17,4 +17,13 @@ class DeviceInfo {
         'platform': platform,
         'appVersion': appVersion,
       };
+
+  factory DeviceInfo.fromJson(Map<String, Object?> json) {
+    return DeviceInfo(
+      deviceId: json['deviceId']! as String,
+      deviceName: json['deviceName']! as String,
+      platform: json['platform']! as String,
+      appVersion: json['appVersion']! as String,
+    );
+  }
 }

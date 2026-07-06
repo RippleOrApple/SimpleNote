@@ -16,6 +16,11 @@ class ThemeSchemesDao extends DatabaseAccessor<AppDatabase>
         .get();
   }
 
+  Future<ThemeSchemeRow?> findById(String id) {
+    return (select(themeSchemes)..where((theme) => theme.id.equals(id)))
+        .getSingleOrNull();
+  }
+
   Future<void> upsertTheme(ThemeSchemesCompanion theme) {
     return into(themeSchemes).insertOnConflictUpdate(theme);
   }

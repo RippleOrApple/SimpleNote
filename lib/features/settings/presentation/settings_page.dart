@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/app_shell.dart';
+import '../../sync/application/sync_controller.dart';
+import '../../sync/domain/sync_result.dart';
 import '../application/theme_controller.dart';
 import '../domain/theme_scheme.dart';
 
@@ -14,6 +16,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _themeNameController = TextEditingController();
+  final _peerAddressController = TextEditingController();
 
   static const _backgroundSwatches = [
     Color(0xFFF8F8F6),
@@ -50,6 +53,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   void dispose() {
     _themeNameController.dispose();
+    _peerAddressController.dispose();
     super.dispose();
   }
 
@@ -70,6 +74,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   Widget _buildContent(ThemeState state) {
     final controller = ref.read(themeControllerProvider.notifier);
+    final syncState = ref.watch(syncControllerProvider);
+    final syncController = ref.read(syncControllerProvider.notifier);
     final activeTheme = state.activeTheme;
 
     return Align(
@@ -77,6 +83,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 840),
         child: ListView(
+          key: const Key('settings-list'),
           padding: const EdgeInsets.all(16),
           children: [
             Text('Theme', style: Theme.of(context).textTheme.titleLarge),
@@ -209,15 +216,126 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             const Divider(height: 36),
             Text('Sync', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
-            const ListTile(
-              leading: Icon(Icons.wifi_tethering_outlined),
-              title: Text('LAN sync'),
-              subtitle: Text('Server and client files are scaffolded.'),
+            _SyncPanel(
+              state: syncState,
+              peerAddressController: _peerAddressController,
+              onPeerAddressChanged: syncController.updatePeerAddress,
+              onStartServer: syncController.startServer,
+              onStopServer: syncController.stopServer,
+              onSync: () => syncController.syncWithPeer(),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+class _SyncPanel extends StatelessWidget {
+  const _SyncPanel({
+    required this.state,
+    required this.peerAddressController,
+    required this.onPeerAddressChanged,
+    required this.onStartServer,
+    required this.onStopServer,
+    required this.onSync,
+  });
+
+  final SyncState state;
+  final TextEditingController peerAddressController;
+  final ValueChanged<String> onPeerAddressChanged;
+  final VoidCallback onStartServer;
+  final VoidCallback onStopServer;
+  final VoidCallback onSync;
+
+  @override
+  Widget build(BuildContext context) {
+    if (peerAddressController.text != state.peerAddress) {
+      peerAddressController.text = state.peerAddress;
+    }
+    final syncing = state.status == SyncStatus.syncing ||
+        state.status == SyncStatus.startingServer;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.wifi_tethering_outlined),
+          title: const Text('LAN sync'),
+          subtitle: Text(
+            state.serverUri == null
+                ? 'Start a local server, then enter a peer address on another device.'
+                : 'Server: ${state.serverUri}',
+          ),
+        ),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            FilledButton.icon(
+              key: const Key('sync-start-server-button'),
+              onPressed:
+                  syncing || state.isServerRunning ? null : onStartServer,
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('Start server'),
+            ),
+            OutlinedButton.icon(
+              key: const Key('sync-stop-server-button'),
+              onPressed: state.isServerRunning ? onStopServer : null,
+              icon: const Icon(Icons.stop),
+              label: const Text('Stop server'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                key: const Key('sync-peer-address-field'),
+                controller: peerAddressController,
+                decoration: const InputDecoration(
+                  labelText: 'Peer address',
+                  hintText: 'http://192.168.1.10:8787',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: onPeerAddressChanged,
+              ),
+            ),
+            const SizedBox(width: 8),
+            FilledButton.icon(
+              key: const Key('sync-now-button'),
+              onPressed: syncing ? null : onSync,
+              icon: const Icon(Icons.sync),
+              label: const Text('Sync'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (state.status == SyncStatus.syncing ||
+            state.status == SyncStatus.startingServer)
+          const LinearProgressIndicator(),
+        if (state.errorMessage != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              state.errorMessage!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+        if (state.lastResult != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(_formatSyncResult(state.lastResult!)),
+          ),
+      ],
+    );
+  }
+
+  String _formatSyncResult(SyncResult result) {
+    return 'Synced: notes +${result.notesCreated}/${result.notesUpdated}, '
+        'todos +${result.todosCreated}/${result.todosUpdated}.';
   }
 }
 
