@@ -2,50 +2,54 @@
 
 ## Requirements
 
-- Complete Phase 1 from `GOAL.md`: application shell and page navigation.
-- Users must be able to open Notes, Todos, and Settings.
-- Navigation must not throw errors.
-- Page titles, empty states, and primary actions should be clear and consistent.
-- Layout should work on Android-sized screens and remain reasonable on Windows-sized screens.
-- Relevant widget tests must be added or updated.
+- Complete Phase 2 from `GOAL.md`: local database integration using Drift and SQLite.
+- Add Drift/SQLite dependencies.
+- Define schema for `notes`, `todos`, `tags`, `note_tags`, `theme_schemes`, `sync_logs`, and `app_settings`.
+- Add DAO classes and database-backed repository implementations.
+- Initialize the database from the Flutter app through provider wiring.
+- Add a simple schema version/migration strategy.
+- Add or update tests.
+- Preserve Phase 1 navigation and shell behavior.
 - `flutter analyze` and `flutter test` must pass.
 
 ## Research Findings
 
-- Current project is a Flutter app using `MaterialApp`, Riverpod, feature folders, and route definitions in `lib/core/routing/app_routes.dart`.
-- Current `AppShell` uses a bottom `NavigationBar` only, which is suitable for Android but less ideal for Windows-sized layouts.
-- Current pages exist for Notes, Todos, and Settings, but their page content is still skeletal and inconsistent.
-- Current tests include:
-  - `test/domain/merge_policy_test.dart`
-  - `test/widget_test.dart`
-- Phase 0 created an Android emulator named `SimpleNote_Pixel` under `D:\Tool\Android Studio\avd`.
+- `lib/database/app_database.dart` is currently a placeholder with `open()` and `close()` no-ops.
+- `lib/database/tables/database_tables.dart` already lists required table names.
+- Feature repositories currently define interfaces only:
+  - `NotesRepository`
+  - `TodosRepository`
+  - `TagsRepository`
+  - `ThemeRepository`
+- Notes and todos domain models already include sync-friendly fields: `id`, `createdAt`, `updatedAt`, `deletedAt`, `deviceId`, and `version`.
+- Current UI controllers still keep in-memory state; Phase 2 can preserve that UI while adding database-backed repository implementations for later phases.
+- Existing tests are small and fast, so database tests should stay focused and use an in-memory executor.
 
 ## Technical Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Use responsive navigation in `AppShell` | Satisfies Android and Windows layout acceptance criteria without duplicating pages |
-| Keep route names centralized in `AppRoutes` | Matches existing architecture and `GOAL.md` constraints |
-| Use simple Material components only | Avoids adding UI dependencies during Phase 1 |
-| Use widget tests for startup and route navigation | Directly validates the user-facing acceptance criteria |
-| Add a small shared `EmptyState` widget | Standardizes page empty states and primary actions without adding dependencies |
+| Define tables as separate files under `lib/database/tables/` | Keeps schema aligned with the architecture document and avoids a huge `app_database.dart` |
+| Define DAOs as Drift part files under `lib/database/daos/` | Lets generated mixins access the database while keeping DAO code organized |
+| Add concrete `Drift*Repository` classes next to repository interfaces | Preserves feature ownership and makes later controller wiring straightforward |
+| Use in-memory Drift databases in tests | Avoids platform-specific filesystem setup while proving repository insert/read/soft-delete behavior |
+| Keep Phase 2 UI controllers unchanged | Prevents async UI rewiring from expanding scope; Phase 3/4 can connect controllers to repositories |
 
 ## Issues Encountered
 
 | Issue | Resolution |
 |-------|------------|
-| `app_shell.dart` briefly contained leftover old code after patching | Inspected the file and removed the duplicate trailing block before running tests |
-| Dart formatter was run against Markdown files | Logged as a workflow error and switched to formatting only `lib` and `test` |
-| Widget test surface reset failed outside test body | Use `addTearDown` from inside the helper that sets the test surface size |
+| Drift generator required literal table names | Replaced table-name constants in table classes with direct string literals |
+| Database file test initially created an extra in-memory database through shared setup | Changed tests to create only the database each test needs |
 
 ## Resources
 
 - `GOAL.md`
 - `docs/DEVELOPMENT_PHASES.md`
 - `docs/ARCHITECTURE.md`
-- `docs/PHASE_0_SETUP_REPORT.md`
-- `lib/shared/widgets/app_shell.dart`
-- `lib/core/routing/app_routes.dart`
+- `lib/database/app_database.dart`
+- `lib/database/tables/`
+- `lib/database/daos/`
 
 ## Visual/Browser Findings
 

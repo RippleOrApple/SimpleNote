@@ -7,23 +7,23 @@
 - **Status:** complete
 - **Started:** 2026-07-06
 - Actions taken:
-  - Read `GOAL.md`.
   - Read `planning-with-files` skill instructions.
-  - Read the planning file templates.
-  - Inspected the current Phase 1 goal and relevant existing project files.
-  - Created initial durable planning files.
+  - Read the Phase 2 `GOAL.md`.
+  - Replaced Phase 1 planning files with Phase 2 planning files.
+  - Inspected database placeholder files, feature repository interfaces, domain models, and tests.
 - Files created/modified:
-  - `task_plan.md` created.
-  - `findings.md` created.
-  - `progress.md` created.
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
 
 ### Phase 2: Planning & Structure
 
 - **Status:** complete
 - Actions taken:
-  - Decided to make `AppShell` responsive with bottom navigation on compact layouts and side navigation on wide layouts.
-  - Decided to keep implementation focused on shell, navigation, empty states, page consistency, and tests.
-  - Decided not to add storage, sync, or full editor behavior in Phase 1.
+  - Chose separate Drift table files under `lib/database/tables/`.
+  - Chose Drift DAO part files under `lib/database/daos/`.
+  - Chose concrete database-backed repository implementations next to existing feature repository interfaces.
+  - Chose in-memory Drift database tests for repository behavior.
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -33,36 +33,49 @@
 
 - **Status:** complete
 - Actions taken:
-  - Updated `AppShell` to use a compact bottom `NavigationBar` and a wide-layout `NavigationRail`.
-  - Added a reusable `EmptyState` widget.
-  - Updated Notes and Todos empty states with clear titles, messages, and primary actions.
-  - Updated Settings layout with constrained width and clearer section actions.
-  - Removed a duplicate trailing block accidentally left in `app_shell.dart` during patching.
+  - Added Drift, SQLite, path, path_provider, drift_dev, and build_runner dependencies.
+  - Replaced database placeholder with a Drift `AppDatabase`.
+  - Added database provider wiring.
+  - Added table definitions for notes, todos, tags, note_tags, theme_schemes, sync_logs, and app_settings.
+  - Added DAO classes for the phase 2 tables.
+  - Added database-backed repository implementations for notes, todos, tags, and themes.
+  - Ran Drift code generation.
+  - Added repository/database tests using an in-memory database.
+  - Added a database file creation test using a temporary SQLite file.
 - Files created/modified:
-  - `lib/shared/widgets/app_shell.dart`
-  - `lib/shared/widgets/empty_state.dart`
-  - `lib/features/notes/presentation/notes_page.dart`
-  - `lib/features/todos/presentation/todos_page.dart`
-  - `lib/features/settings/presentation/settings_page.dart`
+  - `pubspec.yaml`
+  - `pubspec.lock`
+  - `lib/database/app_database.dart`
+  - `lib/database/app_database.g.dart`
+  - `lib/database/tables/*`
+  - `lib/database/daos/*`
+  - `lib/features/notes/data/notes_repository.dart`
+  - `lib/features/todos/data/todos_repository.dart`
+  - `lib/features/tags/data/tags_repository.dart`
+  - `lib/features/settings/data/theme_repository.dart`
+  - `test/database/repositories_test.dart`
 
 ### Phase 4: Testing & Verification
 
 - **Status:** complete
 - Actions taken:
-  - Updated widget tests for startup, compact navigation, and wide navigation.
-  - Ran Dart formatting on `lib` and `test`.
-  - Ran `flutter test`; fixed the first failure caused by surface reset placement.
-  - Re-ran `flutter test` successfully.
-  - Ran `flutter analyze` successfully.
+  - Ran Drift code generation successfully.
+  - Ran database repository tests successfully.
+  - Ran full `flutter analyze` successfully.
+  - Ran full `flutter test` successfully.
+  - Verified all `GOAL.md` acceptance criteria.
 - Files created/modified:
-  - `test/widget_test.dart`
+  - `GOAL.md`
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
 
 ### Phase 5: Delivery
 
 - **Status:** complete
 - Actions taken:
-  - Checked off all applicable `GOAL.md` acceptance criteria.
-  - Updated planning files with implementation, test results, and errors encountered.
+  - Checked all `GOAL.md` acceptance criteria.
+  - Updated planning files with implementation details, test results, and residual notes.
 - Files created/modified:
   - `GOAL.md`
   - `task_plan.md`
@@ -74,26 +87,24 @@
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Pending | `flutter analyze` | No issues | Pending | Pending |
+| Pending | `flutter test` | All tests pass | Pending | Pending |
+| Database tests | `flutter test test/database/repositories_test.dart` | All tests pass | All tests passed | Pass |
 | Static analysis | `flutter analyze` | No issues | No issues | Pass |
-| Widget/domain tests, attempt 1 | `flutter test` | All tests pass | Failed: surface reset ran outside test body | Fail |
-| Widget/domain tests, attempt 2 | `flutter test` | All tests pass | All tests passed | Pass |
-| Final static analysis | `flutter analyze` | No issues | No issues | Pass |
+| Full test suite | `flutter test` | All tests pass | All tests passed | Pass |
 
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
-| 2026-07-06 | Duplicate trailing code in `app_shell.dart` after patching | 1 | Inspected file and removed duplicate block before running verification |
-| 2026-07-06 | Dart formatter attempted to parse Markdown files | 1 | Logged the mistake and re-running formatter only on `lib test` |
-| 2026-07-06 | `flutter test` failed because `setSurfaceSize(null)` ran in global `tearDown` | 1 | Moved surface reset into `addTearDown` inside `_pumpApp` helper |
-| 2026-07-06 | `git push` failed: connection was reset | 1 | Retrying push |
+| 2026-07-06 | Drift generator warned that `tableName` must directly return string literals | 1 | Replaced table name constant references with direct string literals and will rerun code generation |
+| 2026-07-06 | Drift warned about multiple database instances in one test | 1 | Removed shared setup and created only the required database per test |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |----------|--------|
 | Where am I? | Complete |
-| Where am I going? | Ready for review or next goal |
-| What's the goal? | Build a clear app shell and page navigation for Notes, Todos, and Settings |
+| Where am I going? | Ready for review or Phase 3 notes MVP |
+| What's the goal? | Connect SimpleNote to local SQLite persistence using Drift |
 | What have I learned? | See `findings.md` |
-| What have I done? | Completed Phase 1 shell/navigation implementation, tests, and goal checklist |
+| What have I done? | Completed Drift persistence layer, repositories, generated code, and tests |
