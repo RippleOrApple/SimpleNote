@@ -62,11 +62,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final themeState = ref.watch(themeControllerProvider);
 
     return AppShell(
-      title: 'Settings',
+      title: '设置',
       child: themeState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) =>
-            Center(child: Text('Could not load theme settings: $error')),
+        error: (error, _) => Center(child: Text('设置加载失败：$error')),
         data: _buildContent,
       ),
     );
@@ -86,11 +85,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           key: const Key('settings-list'),
           padding: const EdgeInsets.all(16),
           children: [
-            Text('Theme', style: Theme.of(context).textTheme.titleLarge),
+            Text('主题', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             _ThemePreview(theme: activeTheme),
             const SizedBox(height: 20),
-            Text('Presets', style: Theme.of(context).textTheme.titleMedium),
+            Text('预设主题', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -105,11 +104,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ],
             ),
             const Divider(height: 36),
-            Text('Customize', style: Theme.of(context).textTheme.titleMedium),
+            Text('自定义', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             _ColorSwatchRow(
               keyPrefix: 'background',
-              label: 'Background',
+              label: '背景',
               colors: _backgroundSwatches,
               selectedColor: activeTheme.backgroundColor,
               onSelected: (color) =>
@@ -117,7 +116,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             _ColorSwatchRow(
               keyPrefix: 'primary',
-              label: 'Action button',
+              label: '主按钮',
               colors: _primarySwatches,
               selectedColor: activeTheme.primaryColor,
               onSelected: (color) =>
@@ -125,14 +124,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             _ColorSwatchRow(
               keyPrefix: 'text',
-              label: 'Text',
+              label: '文字',
               colors: _textSwatches,
               selectedColor: activeTheme.textColor,
               onSelected: (color) => controller.updateDraft(textColor: color),
             ),
             _ColorSwatchRow(
               keyPrefix: 'surface',
-              label: 'Surface',
+              label: '面板',
               colors: _surfaceSwatches,
               selectedColor: activeTheme.surfaceColor,
               onSelected: (color) =>
@@ -144,12 +143,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ButtonSegment(
                   value: Brightness.light,
                   icon: Icon(Icons.light_mode_outlined),
-                  label: Text('Light'),
+                  label: Text('浅色'),
                 ),
                 ButtonSegment(
                   value: Brightness.dark,
                   icon: Icon(Icons.dark_mode_outlined),
-                  label: Text('Dark'),
+                  label: Text('深色'),
                 ),
               ],
               selected: {activeTheme.brightness},
@@ -164,7 +163,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     key: const Key('custom-theme-name-field'),
                     controller: _themeNameController,
                     decoration: const InputDecoration(
-                      labelText: 'Theme name',
+                      labelText: '主题名称',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -179,7 +178,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     _themeNameController.clear();
                   },
                   icon: const Icon(Icons.save_outlined),
-                  label: const Text('Save'),
+                  label: const Text('保存'),
                 ),
               ],
             ),
@@ -189,12 +188,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               child: FilledButton.tonalIcon(
                 onPressed: controller.restoreDefaultTheme,
                 icon: const Icon(Icons.restart_alt),
-                label: const Text('Restore default theme'),
+                label: const Text('恢复默认主题'),
               ),
             ),
             const Divider(height: 36),
-            Text('Saved Themes',
-                style: Theme.of(context).textTheme.titleMedium),
+            Text('已保存主题', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             for (final savedTheme in state.savedThemes)
               ListTile(
@@ -202,19 +200,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 leading: CircleAvatar(backgroundColor: savedTheme.primaryColor),
                 title: Text(savedTheme.name),
                 subtitle: Text(
-                  savedTheme.brightness == Brightness.dark ? 'Dark' : 'Light',
+                  savedTheme.brightness == Brightness.dark ? '深色' : '浅色',
                 ),
                 selected: activeTheme.id == savedTheme.id,
                 trailing: activeTheme.id == savedTheme.id
                     ? const Icon(Icons.check_circle)
                     : IconButton(
-                        tooltip: 'Apply ${savedTheme.name}',
+                        tooltip: '应用 ${savedTheme.name}',
                         onPressed: () => controller.applyTheme(savedTheme),
                         icon: const Icon(Icons.check_circle_outline),
                       ),
               ),
             const Divider(height: 36),
-            Text('Sync', style: Theme.of(context).textTheme.titleLarge),
+            Text('同步', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             _SyncPanel(
               state: syncState,
@@ -262,11 +260,11 @@ class _SyncPanel extends StatelessWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.wifi_tethering_outlined),
-          title: const Text('LAN sync'),
+          title: const Text('局域网同步'),
           subtitle: Text(
             state.serverUri == null
-                ? 'Start a local server, then enter a peer address on another device.'
-                : 'Server: ${state.serverUri}',
+                ? '先开启本机同步服务，再在另一台设备输入地址。'
+                : '本机服务：${state.serverUri}',
           ),
         ),
         Wrap(
@@ -278,13 +276,13 @@ class _SyncPanel extends StatelessWidget {
               onPressed:
                   syncing || state.isServerRunning ? null : onStartServer,
               icon: const Icon(Icons.play_arrow),
-              label: const Text('Start server'),
+              label: const Text('开启服务'),
             ),
             OutlinedButton.icon(
               key: const Key('sync-stop-server-button'),
               onPressed: state.isServerRunning ? onStopServer : null,
               icon: const Icon(Icons.stop),
-              label: const Text('Stop server'),
+              label: const Text('停止服务'),
             ),
           ],
         ),
@@ -296,7 +294,7 @@ class _SyncPanel extends StatelessWidget {
                 key: const Key('sync-peer-address-field'),
                 controller: peerAddressController,
                 decoration: const InputDecoration(
-                  labelText: 'Peer address',
+                  labelText: '对端地址',
                   hintText: 'http://192.168.1.10:8787',
                   border: OutlineInputBorder(),
                 ),
@@ -308,7 +306,7 @@ class _SyncPanel extends StatelessWidget {
               key: const Key('sync-now-button'),
               onPressed: syncing ? null : onSync,
               icon: const Icon(Icons.sync),
-              label: const Text('Sync'),
+              label: const Text('同步'),
             ),
           ],
         ),
@@ -334,8 +332,8 @@ class _SyncPanel extends StatelessWidget {
   }
 
   String _formatSyncResult(SyncResult result) {
-    return 'Synced: notes +${result.notesCreated}/${result.notesUpdated}, '
-        'todos +${result.todosCreated}/${result.todosUpdated}.';
+    return '已同步：笔记新增 ${result.notesCreated}、更新 ${result.notesUpdated}；'
+        '待办新增 ${result.todosCreated}、更新 ${result.todosUpdated}。';
   }
 }
 
@@ -371,7 +369,7 @@ class _ThemePreview extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Background, buttons, text, and surfaces',
+                    '背景、按钮、文字和面板颜色',
                     style: TextStyle(color: theme.textColor),
                   ),
                 ],

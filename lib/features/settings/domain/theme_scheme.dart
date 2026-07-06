@@ -71,7 +71,7 @@ class AppThemeScheme {
 
   static const minimalLight = AppThemeScheme(
     id: 'minimal-light',
-    name: 'Minimal Light',
+    name: '极简浅色',
     backgroundColor: Color(0xFFF8F8F6),
     primaryColor: Color(0xFF4F46E5),
     textColor: Color(0xFF202124),
@@ -82,7 +82,7 @@ class AppThemeScheme {
 
   static const nightBlack = AppThemeScheme(
     id: 'night-black',
-    name: 'Night Black',
+    name: '夜间黑',
     backgroundColor: Color(0xFF111318),
     primaryColor: Color(0xFF8AB4F8),
     textColor: Color(0xFFE8EAED),
@@ -92,7 +92,7 @@ class AppThemeScheme {
 
   static const eyeComfortGreen = AppThemeScheme(
     id: 'eye-comfort-green',
-    name: 'Eye Comfort Green',
+    name: '护眼绿',
     backgroundColor: Color(0xFFF3F8EF),
     primaryColor: Color(0xFF2F6F4E),
     textColor: Color(0xFF203128),
@@ -102,7 +102,7 @@ class AppThemeScheme {
 
   static const softPurple = AppThemeScheme(
     id: 'soft-purple',
-    name: 'Soft Purple',
+    name: '柔和紫',
     backgroundColor: Color(0xFFF8F5FF),
     primaryColor: Color(0xFF7C3AED),
     textColor: Color(0xFF2B213A),
@@ -112,7 +112,7 @@ class AppThemeScheme {
 
   static const coolGrayBlue = AppThemeScheme(
     id: 'cool-gray-blue',
-    name: 'Cool Gray Blue',
+    name: '冷调灰蓝',
     backgroundColor: Color(0xFFF4F7FA),
     primaryColor: Color(0xFF2563EB),
     textColor: Color(0xFF1F2937),

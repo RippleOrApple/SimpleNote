@@ -14,17 +14,16 @@ class TodosPage extends ConsumerWidget {
     final todosState = ref.watch(todosControllerProvider);
 
     return AppShell(
-      title: 'Todos',
+      title: '待办',
       floatingActionButton: FloatingActionButton(
-        tooltip: 'New todo',
+        tooltip: '新建待办',
         onPressed: () =>
-            ref.read(todosControllerProvider.notifier).createTodo('New todo'),
+            ref.read(todosControllerProvider.notifier).createTodo('新待办'),
         child: const Icon(Icons.add),
       ),
       child: todosState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) =>
-            Center(child: Text('Could not load todos: $error')),
+        error: (error, _) => Center(child: Text('待办加载失败：$error')),
         data: (state) => _TodosWorkspace(state: state),
       ),
     );
@@ -45,7 +44,7 @@ class _TodosWorkspace extends ConsumerWidget {
         final isWide = constraints.maxWidth >= 840;
         final list = _TodosList(
           state: state,
-          onCreateTodo: () => controller.createTodo('New todo'),
+          onCreateTodo: () => controller.createTodo('新待办'),
           onSelectTodo: controller.selectTodo,
           onToggleTodo: controller.toggleTodo,
           onFilterChanged: controller.setFilter,
@@ -53,12 +52,10 @@ class _TodosWorkspace extends ConsumerWidget {
         final editor = state.selectedTodo == null
             ? EmptyState(
                 icon: Icons.add_task_outlined,
-                title: 'No todo selected',
-                message: state.todos.isEmpty
-                    ? 'Add a todo to plan your day.'
-                    : 'Select a todo from the list.',
-                actionLabel: 'New todo',
-                onActionPressed: () => controller.createTodo('New todo'),
+                title: '未选择待办',
+                message: state.todos.isEmpty ? '添加一个待办，安排下一步。' : '从列表中选择一个待办。',
+                actionLabel: '新建待办',
+                onActionPressed: () => controller.createTodo('新待办'),
               )
             : _TodoEditor(
                 todo: state.selectedTodo!,
@@ -128,9 +125,9 @@ class _TodosList extends StatelessWidget {
     if (state.todos.isEmpty) {
       return EmptyState(
         icon: Icons.add_task_outlined,
-        title: 'No todos yet',
-        message: 'Add a task to make the next step obvious.',
-        actionLabel: 'New todo',
+        title: '还没有待办',
+        message: '添加一个任务，让下一步更清楚。',
+        actionLabel: '新建待办',
         onActionPressed: onCreateTodo,
       );
     }
@@ -141,11 +138,11 @@ class _TodosList extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: SegmentedButton<TodoFilter>(
             segments: const [
-              ButtonSegment(value: TodoFilter.all, label: Text('All')),
-              ButtonSegment(value: TodoFilter.active, label: Text('Active')),
+              ButtonSegment(value: TodoFilter.all, label: Text('全部')),
+              ButtonSegment(value: TodoFilter.active, label: Text('进行中')),
               ButtonSegment(
                 value: TodoFilter.completed,
-                label: Text('Done'),
+                label: Text('已完成'),
               ),
             ],
             selected: {state.filter},
@@ -154,7 +151,7 @@ class _TodosList extends StatelessWidget {
         ),
         Expanded(
           child: state.visibleTodos.isEmpty
-              ? const Center(child: Text('No todos in this filter.'))
+              ? const Center(child: Text('当前筛选下没有待办。'))
               : ListView.builder(
                   padding: const EdgeInsets.all(16),
                   itemCount: state.visibleTodos.length,
@@ -178,7 +175,7 @@ class _TodosList extends StatelessWidget {
                         subtitle: Text(_todoSubtitle(todo)),
                         onChanged: (_) => onToggleTodo(todo.id),
                         secondary: IconButton(
-                          tooltip: 'Edit todo',
+                          tooltip: '编辑待办',
                           icon: const Icon(Icons.edit_outlined),
                           onPressed: () => onSelectTodo(todo.id),
                         ),
@@ -192,9 +189,9 @@ class _TodosList extends StatelessWidget {
   }
 
   String _todoSubtitle(Todo todo) {
-    final parts = <String>['Priority: ${todo.priority.name}'];
+    final parts = <String>['优先级：${_priorityLabel(todo.priority)}'];
     if (todo.dueAt != null) {
-      parts.add('Due: ${_formatDate(todo.dueAt!)}');
+      parts.add('截止：${_formatDate(todo.dueAt!)}');
     }
     return parts.join(' | ');
   }
@@ -269,7 +266,7 @@ class _TodoEditorState extends State<_TodoEditor> {
             if (widget.onBack != null) ...[
               IconButton(
                 key: const Key('todo-back-button'),
-                tooltip: 'Back to todos',
+                tooltip: '返回待办列表',
                 onPressed: widget.onBack,
                 icon: const Icon(Icons.arrow_back),
               ),
@@ -280,7 +277,7 @@ class _TodoEditorState extends State<_TodoEditor> {
                 key: const Key('todo-title-field'),
                 controller: _titleController,
                 decoration: const InputDecoration(
-                  labelText: 'Title',
+                  labelText: '标题',
                   border: OutlineInputBorder(),
                 ),
                 onChanged: widget.onTitleChanged,
@@ -288,7 +285,7 @@ class _TodoEditorState extends State<_TodoEditor> {
             ),
             const SizedBox(width: 8),
             IconButton(
-              tooltip: 'Delete todo',
+              tooltip: '删除待办',
               icon: const Icon(Icons.delete_outline),
               onPressed: _confirmDelete,
             ),
@@ -297,7 +294,7 @@ class _TodoEditorState extends State<_TodoEditor> {
         const SizedBox(height: 12),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Completed'),
+          title: const Text('已完成'),
           value: widget.todo.completed,
           onChanged: widget.onCompletedChanged,
         ),
@@ -308,27 +305,27 @@ class _TodoEditorState extends State<_TodoEditor> {
           minLines: 4,
           maxLines: null,
           decoration: const InputDecoration(
-            labelText: 'Description',
+            labelText: '描述',
             alignLabelWithHint: true,
             border: OutlineInputBorder(),
           ),
           onChanged: widget.onDescriptionChanged,
         ),
         const SizedBox(height: 16),
-        Text('Priority', style: Theme.of(context).textTheme.titleMedium),
+        Text('优先级', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         SegmentedButton<TodoPriority>(
           segments: const [
-            ButtonSegment(value: TodoPriority.low, label: Text('Low')),
-            ButtonSegment(value: TodoPriority.medium, label: Text('Medium')),
-            ButtonSegment(value: TodoPriority.high, label: Text('High')),
+            ButtonSegment(value: TodoPriority.low, label: Text('低')),
+            ButtonSegment(value: TodoPriority.medium, label: Text('中')),
+            ButtonSegment(value: TodoPriority.high, label: Text('高')),
           ],
           selected: {widget.todo.priority},
           onSelectionChanged: (values) =>
               widget.onPriorityChanged(values.first),
         ),
         const SizedBox(height: 16),
-        Text('Due date', style: Theme.of(context).textTheme.titleMedium),
+        Text('截止日期', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -339,14 +336,14 @@ class _TodoEditorState extends State<_TodoEditor> {
                 icon: const Icon(Icons.event_outlined),
                 label: Text(
                   widget.todo.dueAt == null
-                      ? 'No due date'
+                      ? '无截止日期'
                       : _formatDate(widget.todo.dueAt!),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             IconButton(
-              tooltip: 'Clear due date',
+              tooltip: '清除截止日期',
               onPressed: widget.todo.dueAt == null ? null : widget.onClearDueAt,
               icon: const Icon(Icons.close),
             ),
@@ -375,16 +372,16 @@ class _TodoEditorState extends State<_TodoEditor> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete todo?'),
-        content: const Text('This todo will be removed from this device.'),
+        title: const Text('删除这个待办？'),
+        content: const Text('这个待办会从当前设备移除。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: const Text('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
+            child: const Text('删除'),
           ),
         ],
       ),
@@ -397,7 +394,7 @@ class _TodoEditorState extends State<_TodoEditor> {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Todo deleted')),
+      const SnackBar(content: Text('待办已删除')),
     );
   }
 }
@@ -407,4 +404,12 @@ String _formatDate(int millis) {
   final month = date.month.toString().padLeft(2, '0');
   final day = date.day.toString().padLeft(2, '0');
   return '${date.year}-$month-$day';
+}
+
+String _priorityLabel(TodoPriority priority) {
+  return switch (priority) {
+    TodoPriority.low => '低',
+    TodoPriority.medium => '中',
+    TodoPriority.high => '高',
+  };
 }

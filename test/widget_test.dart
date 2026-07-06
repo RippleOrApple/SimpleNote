@@ -11,9 +11,9 @@ void main() {
   testWidgets('SimpleNote starts on the notes page', (tester) async {
     await _pumpApp(tester);
 
-    expect(find.text('Notes'), findsWidgets);
-    expect(find.text('No notes yet'), findsOneWidget);
-    expect(find.text('New note'), findsWidgets);
+    expect(find.text('笔记'), findsWidgets);
+    expect(find.text('还没有笔记'), findsOneWidget);
+    expect(find.text('新建笔记'), findsWidgets);
   });
 
   testWidgets('bottom navigation opens todos and settings on compact screens',
@@ -23,17 +23,17 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(find.byType(NavigationRail), findsNothing);
 
-    await tester.tap(find.text('Todos'));
+    await tester.tap(find.text('待办'));
     await tester.pumpAndSettle();
 
-    expect(find.text('No todos yet'), findsOneWidget);
-    expect(find.text('New todo'), findsWidgets);
+    expect(find.text('还没有待办'), findsOneWidget);
+    expect(find.text('新建待办'), findsWidgets);
 
-    await tester.tap(find.text('Settings'));
+    await tester.tap(find.text('设置'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Theme'), findsOneWidget);
-    expect(find.text('Presets'), findsOneWidget);
+    expect(find.text('主题'), findsOneWidget);
+    expect(find.text('预设主题'), findsOneWidget);
   });
 
   testWidgets('wide screens use side navigation', (tester) async {
@@ -41,14 +41,14 @@ void main() {
 
     expect(find.byType(NavigationRail), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
-    expect(find.text('No notes yet'), findsOneWidget);
+    expect(find.text('还没有笔记'), findsOneWidget);
   });
 
   testWidgets('notes page creates edits tags and previews markdown',
       (tester) async {
     await _pumpApp(tester, surfaceSize: const Size(1024, 768));
 
-    await tester.tap(find.text('New note').first);
+    await tester.tap(find.text('新建笔记').first);
     await tester.pump(const Duration(milliseconds: 100));
 
     await tester.enterText(find.byKey(const Key('note-title-field')), 'Demo');
@@ -60,12 +60,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     await tester.enterText(find.byKey(const Key('new-tag-field')), 'work');
-    await tester.tap(find.text('Add tag'));
+    await tester.tap(find.text('添加标签'));
     await tester.pump(const Duration(milliseconds: 100));
 
     await tester.tap(find.text('work').last);
     await tester.pump(const Duration(milliseconds: 100));
-    await tester.tap(find.text('Preview'));
+    await tester.tap(find.text('预览'));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.byKey(const Key('markdown-preview')), findsOneWidget);
@@ -81,7 +81,7 @@ void main() {
       (tester) async {
     await _pumpApp(tester, surfaceSize: const Size(390, 844));
 
-    await tester.tap(find.text('New note').first);
+    await tester.tap(find.text('新建笔记').first);
     await tester.pump(const Duration(milliseconds: 300));
 
     await tester.enterText(find.byKey(const Key('note-title-field')), 'Temp');
@@ -95,20 +95,20 @@ void main() {
 
     await tester.tap(find.text('Temp'));
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Delete note'));
+    await tester.tap(find.byTooltip('删除笔记'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Delete note?'), findsOneWidget);
-    await tester.tap(find.text('Cancel'));
+    expect(find.text('删除这篇笔记？'), findsOneWidget);
+    await tester.tap(find.text('取消'));
     await tester.pumpAndSettle();
     expect(find.text('Temp'), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Delete note'));
+    await tester.tap(find.byTooltip('删除笔记'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Delete'));
+    await tester.tap(find.text('删除'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Note deleted'), findsOneWidget);
+    expect(find.text('笔记已删除'), findsOneWidget);
   });
 
   testWidgets('todos page creates edits completes filters and prioritizes',
@@ -119,8 +119,8 @@ void main() {
         .pushReplacementNamed('/todos');
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('No todos yet'), findsOneWidget);
-    await tester.tap(find.text('New todo').first);
+    expect(find.text('还没有待办'), findsOneWidget);
+    await tester.tap(find.text('新建待办').first);
     await tester.pump(const Duration(milliseconds: 300));
 
     await tester.enterText(find.byKey(const Key('todo-title-field')), 'Plan');
@@ -130,19 +130,19 @@ void main() {
       'Write tasks',
     );
     await tester.pump(const Duration(milliseconds: 100));
-    await tester.tap(find.text('High'));
+    await tester.tap(find.text('高'));
     await tester.pump(const Duration(milliseconds: 100));
-    await tester.tap(find.text('Completed'));
+    await tester.tap(find.byType(SwitchListTile));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Plan'), findsWidgets);
-    expect(find.textContaining('Priority: high'), findsOneWidget);
+    expect(find.textContaining('优先级：高'), findsOneWidget);
 
-    await tester.tap(find.text('Active'));
+    await tester.tap(find.text('进行中'));
     await tester.pump(const Duration(milliseconds: 100));
-    expect(find.text('No todos in this filter.'), findsOneWidget);
+    expect(find.text('当前筛选下没有待办。'), findsOneWidget);
 
-    await tester.tap(find.text('Done'));
+    await tester.tap(find.text('已完成'));
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('Plan'), findsWidgets);
   });
@@ -151,9 +151,9 @@ void main() {
       (tester) async {
     await _pumpApp(tester, surfaceSize: const Size(390, 844));
 
-    await tester.tap(find.text('Todos'));
+    await tester.tap(find.text('待办'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('New todo').first);
+    await tester.tap(find.text('新建待办').first);
     await tester.pump(const Duration(milliseconds: 300));
 
     await tester.enterText(find.byKey(const Key('todo-title-field')), 'Errand');
@@ -165,22 +165,22 @@ void main() {
 
     expect(find.text('Errand'), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Edit todo'));
+    await tester.tap(find.byTooltip('编辑待办'));
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Delete todo'));
+    await tester.tap(find.byTooltip('删除待办'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Delete todo?'), findsOneWidget);
-    await tester.tap(find.text('Cancel'));
+    expect(find.text('删除这个待办？'), findsOneWidget);
+    await tester.tap(find.text('取消'));
     await tester.pumpAndSettle();
     expect(find.text('Errand'), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Delete todo'));
+    await tester.tap(find.byTooltip('删除待办'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Delete'));
+    await tester.tap(find.text('删除'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Todo deleted'), findsOneWidget);
+    expect(find.text('待办已删除'), findsOneWidget);
   });
 
   testWidgets('settings page applies presets and saves a custom theme',
@@ -191,7 +191,7 @@ void main() {
         .pushReplacementNamed('/settings');
     await tester.pumpAndSettle();
 
-    expect(find.text('Presets'), findsOneWidget);
+    expect(find.text('预设主题'), findsOneWidget);
     expect(find.text(AppThemeScheme.nightBlack.name), findsWidgets);
 
     await tester.tap(find.text(AppThemeScheme.nightBlack.name).first);
@@ -221,7 +221,7 @@ void main() {
       const Offset(0, -320),
     );
     await tester.pumpAndSettle();
-    expect(find.text('LAN sync'), findsOneWidget);
+    expect(find.text('局域网同步'), findsOneWidget);
     expect(find.byKey(const Key('sync-start-server-button')), findsOneWidget);
     expect(find.byKey(const Key('sync-peer-address-field')), findsOneWidget);
     expect(find.byKey(const Key('sync-now-button')), findsOneWidget);

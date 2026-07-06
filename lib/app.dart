@@ -14,7 +14,7 @@ class SimpleNoteApp extends ConsumerWidget {
     final themeScheme = ref.watch(themeControllerProvider);
 
     return MaterialApp(
-      title: 'SimpleNote',
+      title: '简记',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.fromScheme(
         themeScheme.valueOrNull?.activeTheme ?? AppThemeScheme.minimalLight,

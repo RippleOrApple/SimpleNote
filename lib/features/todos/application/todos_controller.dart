@@ -104,7 +104,7 @@ class TodosController extends AsyncNotifier<TodosState> {
     final now = Clock.nowMillis();
     final todo = Todo(
       id: IdGenerator.create(),
-      title: title.trim().isEmpty ? 'New todo' : title.trim(),
+      title: title.trim().isEmpty ? '新待办' : title.trim(),
       createdAt: now,
       updatedAt: now,
       deviceId: deviceId,
