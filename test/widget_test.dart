@@ -75,6 +75,42 @@ void main() {
     expect(_richTextContaining('code'), findsWidgets);
     expect(find.text('quote'), findsOneWidget);
   });
+
+  testWidgets('todos page creates edits completes filters and prioritizes',
+      (tester) async {
+    await _pumpApp(tester, surfaceSize: const Size(1024, 768));
+
+    Navigator.of(tester.element(find.byType(Scaffold).first))
+        .pushReplacementNamed('/todos');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('No todos yet'), findsOneWidget);
+    await tester.tap(find.text('New todo').first);
+    await tester.pump(const Duration(milliseconds: 300));
+
+    await tester.enterText(find.byKey(const Key('todo-title-field')), 'Plan');
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.enterText(
+      find.byKey(const Key('todo-description-field')),
+      'Write tasks',
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.tap(find.text('High'));
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.tap(find.text('Completed'));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Plan'), findsWidgets);
+    expect(find.textContaining('Priority: high'), findsOneWidget);
+
+    await tester.tap(find.text('Active'));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('No todos in this filter.'), findsOneWidget);
+
+    await tester.tap(find.text('Done'));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('Plan'), findsWidgets);
+  });
 }
 
 Finder _richTextContaining(String text) {
