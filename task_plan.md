@@ -1,8 +1,8 @@
-# Task Plan: SimpleNote Phase 4 Todos MVP
+# Task Plan: SimpleNote Phase 5 Theme Customization
 
 ## Goal
 
-Build a database-backed Todos MVP with create, edit, complete/uncomplete, delete, due date, priority, filtering, and persistence.
+Build database-backed theme customization with presets, editable colors, saved themes, activation, reset, and startup restore.
 
 ## Current Phase
 
@@ -13,31 +13,32 @@ Complete
 ### Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
-- [x] Identify P4 scope, non-goals, constraints, and acceptance criteria
-- [x] Inspect current todos controller, todos UI, repository, DAO, and tests
+- [x] Inspect existing theme model, repository, controller, Settings UI, and database DAO
 - [x] Document findings in `findings.md`
 - **Status:** complete
 
 ### Phase 2: Planning & Structure
 
-- [x] Choose controller state shape
-- [x] Choose todos repository additions
-- [x] Choose editor UI structure
+- [x] Choose theme controller state shape
+- [x] Choose low-dependency color editing approach
+- [x] Choose preset and saved theme activation flow
 - [x] Choose test strategy
 - **Status:** complete
 
 ### Phase 3: Implementation
 
-- [x] Add todo repository methods needed by UI
-- [x] Rework todos controller to load and persist todos
-- [x] Build todo list filtering
-- [x] Build todo editor with title/description editing
-- [x] Add completion, due date, priority, and delete controls
+- [x] Expand theme model with presets and copy helpers
+- [x] Connect theme controller to `ThemeRepository`
+- [x] Load active theme on startup
+- [x] Build Settings theme preset and saved-theme controls
+- [x] Build simple color swatches and brightness toggle
+- [x] Save custom themes and restore default theme
 - **Status:** complete
 
 ### Phase 4: Testing & Verification
 
-- [x] Add or update todo tests
+- [x] Add or update theme controller tests
+- [x] Add or update widget tests for settings theme behavior
 - [x] Run `flutter analyze`
 - [x] Run `flutter test`
 - [x] Verify acceptance criteria against `GOAL.md`
@@ -52,31 +53,32 @@ Complete
 
 ## Key Questions
 
-1. Should todos controller become database-backed now?
-   - Yes. P4 explicitly requires persisted todos and reload behavior.
-2. Should todos editor be a separate route?
-   - No. Use an in-page list/detail editor, mirroring Notes MVP.
-3. Should date selection use a calendar package?
-   - No. Use Flutter Material `showDatePicker` and a clear-date action.
+1. Should P5 add a full color picker dependency?
+   - No. Use curated swatches and simple controls for the MVP.
+2. Should theme state remain synchronous?
+   - No. It must load persisted active theme, so use async state with a safe Minimal Light fallback in `MaterialApp`.
+3. Should saved custom themes be separate from presets?
+   - Use the same database-backed list, seeding presets first and allowing custom themes to appear alongside them.
 
 ## Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Use `AsyncNotifier<TodosState>` for todos | Mirrors Notes MVP and supports async database persistence |
-| Keep editor inside `TodosPage` | Provides a usable MVP without adding route complexity |
-| Use built-in Material date picker | Meets due-date requirement without adding dependencies |
-| Test controller with in-memory Drift database | Verifies persistence without platform filesystem setup |
+| Use `AsyncNotifier<ThemeState>` | Matches async persistence and startup restore needs |
+| Seed presets through the repository/controller | Ensures Settings always has useful selectable themes |
+| Use Material swatches instead of a package | Keeps P5 small and testable |
+| Keep reset as activating Minimal Light | Matches user expectation and avoids deleting custom themes |
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |-------|---------|------------|
-| Todos widget test tapped `New todo` before the async Todos page finished loading | 1 | Wait longer after navigation and tap the `New todo` FAB by tooltip |
-| Todos widget test navigation by rail label was unstable | 2 | Navigate directly to `/todos` in the feature-focused widget test |
+| `ThemeController` failed after provider invalidation because `_repository` was `late final` | 1 | Changed `_repository` to `late` so Riverpod rebuilds can refresh the dependency |
+| Settings widget test expected `LAN sync` in the first viewport after Settings grew longer | 1 | Updated the test to assert the visible P5 theme controls instead |
+| Settings widget test used `scrollUntilVisible` with a finder matching multiple widgets | 1 | Removed the unnecessary scroll and asserted the saved custom theme text |
 
 ## Notes
 
-- If interrupted before completion, create `P4_STATUS.md` with completed and remaining items.
-- Keep notes, theme, sync, and advanced reminders out of scope.
+- Preserve the local lightweight route transition improvement.
+- Keep LAN sync out of scope.
 - Update `progress.md` after implementation and testing steps.

@@ -2,75 +2,89 @@
 
 ## Objective
 
-Complete Phase 4: build the Todos MVP for SimpleNote.
+Complete Phase 5: build theme customization for SimpleNote.
 
-Users should be able to create, edit, complete, delete, prioritize, date, filter, and persist todos through the local database created in Phase 2.
+Users should be able to personalize the app by changing background color, primary button color, text color, and surface/card color. Themes should be saved locally, selectable later, and restored automatically when the app starts.
 
 ## Scope
 
 - What should change:
-  - Build a usable todos list.
-  - Support quick todo creation.
-  - Support editing todo title and description.
-  - Support completing and uncompleting todos.
-  - Support deleting todos.
-  - Support due dates.
-  - Support priority values: low, medium, high.
-  - Support filtering by all, active, and completed.
-  - Persist todos through the local database.
-  - Preserve existing app shell navigation, notes MVP, and database structure.
-  - If work is interrupted, leave `P4_STATUS.md` with completed and remaining items.
+  - Load the active theme from the local Drift database when the app starts.
+  - Save theme schemes through the existing theme repository.
+  - Allow users to edit:
+    - Background color.
+    - Primary/action button color.
+    - Text color.
+    - Surface/card color.
+    - Light/dark brightness.
+  - Show an immediate live preview when a theme is applied.
+  - Save custom theme schemes.
+  - Switch between saved theme schemes.
+  - Restore the default theme.
+  - Provide useful preset themes:
+    - Minimal Light.
+    - Night Black.
+    - Eye Comfort Green.
+    - Soft Purple.
+    - Cool Gray Blue.
+  - Preserve the existing Notes MVP, Todos MVP, database, and navigation behavior.
 
 - What files, features, or workflows are in scope:
-  - `lib/features/todos/domain/todo.dart`
-  - `lib/features/todos/application/todos_controller.dart`
-  - `lib/features/todos/data/todos_repository.dart`
-  - `lib/features/todos/presentation/todos_page.dart`
-  - `lib/database/daos/todos_dao.dart`
-  - Todo-focused tests.
-  - `P4_STATUS.md` only if the task cannot be completed in this run.
+  - `lib/core/theme/app_theme.dart`
+  - `lib/features/settings/domain/theme_scheme.dart`
+  - `lib/features/settings/application/theme_controller.dart`
+  - `lib/features/settings/data/theme_repository.dart`
+  - `lib/features/settings/presentation/settings_page.dart`
+  - `lib/database/daos/theme_schemes_dao.dart`
+  - Theme-focused tests.
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
 
 ## Non-goals
 
 - What should not change:
   - Do not implement LAN sync in this phase.
-  - Do not implement cloud sync, accounts, or authentication.
-  - Do not redesign the notes MVP.
-  - Do not build complex calendar views.
-  - Do not add system notifications or recurring tasks.
+  - Do not implement cloud accounts or authentication.
+  - Do not redesign the Notes MVP.
+  - Do not redesign the Todos MVP.
+  - Do not introduce heavy design-system or color-picker dependencies unless necessary.
+  - Do not build image backgrounds or font customization in this phase.
 
 - What should be left for later:
-  - Phase 5: theme customization.
   - Phase 6: LAN sync MVP.
-  - Advanced reminders.
-  - Calendar integration.
-  - Todo-note linking.
+  - Advanced appearance controls such as fonts, spacing, and background images.
+  - Import/export of theme packs.
+  - Per-note or per-todo themes.
 
 ## Acceptance Criteria
 
-- [x] A todo can be created from the Todos page.
-- [x] A todo title can be edited.
-- [x] A todo description can be edited.
-- [x] A todo can be marked completed.
-- [x] A todo can be marked active again.
-- [x] A todo can be deleted.
-- [x] Todos are persisted in the local database.
-- [x] A persisted todo is loaded when the app/controller reloads.
-- [x] A todo can have no due date.
-- [x] A todo can have a due date.
-- [x] A todo can be set to low priority.
-- [x] A todo can be set to medium priority.
-- [x] A todo can be set to high priority.
-- [x] Todos can be filtered to show all.
-- [x] Todos can be filtered to show active only.
-- [x] Todos can be filtered to show completed only.
-- [x] Todo `updatedAt` changes when title, description, completion, due date, or priority changes.
+- [x] The app loads the active theme from local storage on startup.
+- [x] If no theme is saved, the app uses Minimal Light.
+- [x] Preset themes are available in Settings.
+- [x] A user can switch to Minimal Light.
+- [x] A user can switch to Night Black.
+- [x] A user can switch to Eye Comfort Green.
+- [x] A user can switch to Soft Purple.
+- [x] A user can switch to Cool Gray Blue.
+- [x] A user can edit the background color.
+- [x] A user can edit the primary/action button color.
+- [x] A user can edit the text color.
+- [x] A user can edit the surface/card color.
+- [x] A user can toggle light/dark brightness.
+- [x] Theme changes visibly apply to the app immediately.
+- [x] A custom theme can be saved.
+- [x] A saved custom theme appears in the saved themes list.
+- [x] A saved custom theme can be activated later.
+- [x] Restoring the default theme activates Minimal Light.
+- [x] Theme changes persist after the controller/app reloads.
 - [x] Existing Notes, Todos, and Settings navigation still works.
 - [x] Notes MVP behavior remains covered by tests.
-- [x] Relevant todo tests are added or updated.
+- [x] Todos MVP behavior remains covered by tests.
+- [x] Relevant theme tests are added or updated.
 - [x] `flutter analyze` passes.
 - [x] `flutter test` passes.
-- [x] The final result is ready for Phase 5 without expanding into sync or theme work.
+- [x] The final result is ready for Phase 6 without expanding into sync work.
 
 ## Constraints
 
@@ -78,17 +92,16 @@ Users should be able to create, edit, complete, delete, prioritize, date, filter
   - Keep Flutter as the cross-platform framework.
   - Keep Riverpod as the state management direction.
   - Keep the current feature-based directory structure.
-  - Keep database code under `lib/database/`.
-  - Keep feature repositories under each feature's `data/` directory.
-  - Keep Phase 1 shell/navigation behavior intact.
-  - Keep Phase 2 database structure compatible unless a small additive change is required.
-  - Keep Phase 3 notes MVP behavior intact.
+  - Keep theme persistence under the existing Drift database and theme repository.
+  - Keep Settings as the home for customization controls.
+  - Keep the UI simple, direct, and suitable for Windows and Android.
+  - Keep the recently improved lightweight route transition behavior intact.
 
 - Technical limits:
+  - Avoid adding a large color-picker dependency for this MVP.
+  - Use simple swatches or compact controls that are easy to test.
   - Windows desktop runtime may still require Visual Studio C++ workload.
   - Android verification should use the `SimpleNote_Pixel` emulator when runtime validation is needed.
-  - Avoid adding heavy calendar or reminder dependencies.
-  - Keep the todos MVP simple and usable.
 
 - Compatibility requirements:
   - The app should continue to target Windows and Android.
@@ -98,11 +111,12 @@ Users should be able to create, edit, complete, delete, prioritize, date, filter
 ## Notes
 
 - Extra context:
-  - This goal corresponds to `docs/DEVELOPMENT_PHASES.md`, section `阶段 4：待办模块 MVP`.
+  - This goal corresponds to `docs/DEVELOPMENT_PHASES.md`, Phase 5 theme customization.
   - Phase 1 completed the app shell and navigation.
   - Phase 2 completed the Drift database and database-backed repositories.
   - Phase 3 completed the Notes MVP.
-  - The current todos UI is still a simple in-memory list, so this phase should connect todos to real persistence.
+  - Phase 4 completed the Todos MVP.
+  - A small local navigation transition improvement currently exists and should be preserved.
 
 - Links or examples:
   - `docs/DEVELOPMENT_PHASES.md`
