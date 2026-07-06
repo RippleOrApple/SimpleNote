@@ -38,6 +38,38 @@ class Todo implements Syncable {
   @override
   bool get isDeleted => deletedAt != null;
 
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'completed': completed,
+        'dueAt': dueAt,
+        'priority': priority.name,
+        'createdAt': createdAt,
+        'updatedAt': updatedAt,
+        'deletedAt': deletedAt,
+        'deviceId': deviceId,
+        'version': version,
+      };
+
+  factory Todo.fromJson(Map<String, Object?> json) {
+    return Todo(
+      id: json['id']! as String,
+      title: json['title']! as String,
+      description: json['description'] as String? ?? '',
+      completed: json['completed'] as bool? ?? false,
+      dueAt: json['dueAt'] as int?,
+      priority: TodoPriority.values.byName(
+        json['priority'] as String? ?? TodoPriority.medium.name,
+      ),
+      createdAt: json['createdAt']! as int,
+      updatedAt: json['updatedAt']! as int,
+      deletedAt: json['deletedAt'] as int?,
+      deviceId: json['deviceId']! as String,
+      version: json['version'] as int? ?? 1,
+    );
+  }
+
   Todo copyWith({
     String? title,
     String? description,

@@ -14,6 +14,15 @@ class TodosDao extends DatabaseAccessor<AppDatabase> with _$TodosDaoMixin {
         .get();
   }
 
+  Future<List<TodoRow>> allTodos() {
+    return select(todos).get();
+  }
+
+  Future<TodoRow?> findById(String id) {
+    return (select(todos)..where((todo) => todo.id.equals(id)))
+        .getSingleOrNull();
+  }
+
   Future<void> upsertTodo(TodosCompanion todo) {
     return into(todos).insertOnConflictUpdate(todo);
   }

@@ -18,4 +18,28 @@ class SyncResult {
   final int todosUpdated;
   final int todosDeleted;
   final String? errorMessage;
+
+  Map<String, Object?> toJson() => {
+        'success': success,
+        'notesCreated': notesCreated,
+        'notesUpdated': notesUpdated,
+        'notesDeleted': notesDeleted,
+        'todosCreated': todosCreated,
+        'todosUpdated': todosUpdated,
+        'todosDeleted': todosDeleted,
+        'errorMessage': errorMessage,
+      };
+
+  factory SyncResult.fromJson(Map<String, Object?> json) {
+    return SyncResult(
+      success: json['success']! as bool,
+      notesCreated: json['notesCreated'] as int? ?? 0,
+      notesUpdated: json['notesUpdated'] as int? ?? 0,
+      notesDeleted: json['notesDeleted'] as int? ?? 0,
+      todosCreated: json['todosCreated'] as int? ?? 0,
+      todosUpdated: json['todosUpdated'] as int? ?? 0,
+      todosDeleted: json['todosDeleted'] as int? ?? 0,
+      errorMessage: json['errorMessage'] as String?,
+    );
+  }
 }

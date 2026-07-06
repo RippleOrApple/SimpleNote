@@ -43,6 +43,32 @@ class AppThemeScheme {
     );
   }
 
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'name': name,
+        'backgroundColor': backgroundColor.toARGB32(),
+        'primaryColor': primaryColor.toARGB32(),
+        'textColor': textColor.toARGB32(),
+        'surfaceColor': surfaceColor.toARGB32(),
+        'brightness': brightness.name,
+        'isActive': isActive,
+      };
+
+  factory AppThemeScheme.fromJson(Map<String, Object?> json) {
+    return AppThemeScheme(
+      id: json['id']! as String,
+      name: json['name']! as String,
+      backgroundColor: Color(json['backgroundColor']! as int),
+      primaryColor: Color(json['primaryColor']! as int),
+      textColor: Color(json['textColor']! as int),
+      surfaceColor: Color(json['surfaceColor']! as int),
+      brightness: json['brightness'] == Brightness.dark.name
+          ? Brightness.dark
+          : Brightness.light,
+      isActive: json['isActive'] as bool? ?? false,
+    );
+  }
+
   static const minimalLight = AppThemeScheme(
     id: 'minimal-light',
     name: 'Minimal Light',

@@ -2,53 +2,52 @@
 
 ## Requirements
 
-- Complete Phase 5 from `GOAL.md`: theme customization.
-- Load active theme from local storage at startup.
-- Provide preset themes and saved custom themes.
-- Allow editing background, primary/action, text, surface/card colors, and brightness.
-- Save and activate custom themes through the existing Drift-backed theme repository.
-- Preserve Notes MVP, Todos MVP, and navigation behavior.
-- Add/update tests.
+- Complete Phase 6 from `GOAL.md`: LAN sync MVP.
+- Export notes, todos, tags, and theme schemes as a JSON snapshot with device info.
+- Merge remote snapshots into the local database without destructive failure behavior.
+- Provide `/health`, `/device`, `/snapshot`, and `/sync` endpoints.
+- Provide client methods and controller flow for manual peer sync.
+- Expose controls in Settings.
+- Add/update relevant tests.
 - `flutter analyze` and `flutter test` must pass.
 
 ## Research Findings
 
-- `AppThemeScheme` currently only defines `minimalLight`.
-- `AppTheme.fromScheme` already applies background, primary, text, surface, and brightness inputs.
-- `ThemeRepository` already supports active theme lookup, saved theme lookup, save, and activate.
-- `ThemeSchemesDao.activateTheme` deactivates all themes and activates the requested id in one transaction.
-- `ThemeController` is currently synchronous and in-memory only.
-- `SettingsPage` only shows the current theme and restore-default action.
-- `MaterialApp` currently watches `themeControllerProvider` directly, so it must handle async startup cleanly.
-- A local route transition improvement is currently uncommitted and should be preserved.
+- `SyncController` currently only flips enum states and does not use a repository/server/client.
+- `SyncRepository` is only an abstract shell.
+- `LocalSyncServer` only supports `/health`.
+- `SyncApiClient` only supports a health check.
+- `SyncSnapshot`, `DeviceInfo`, and `SyncResult` do not yet have `fromJson` constructors.
+- Notes/todos repositories only expose active rows; sync needs all rows including soft-deleted rows.
+- MergePolicy already has `chooseLatest` for `Syncable` entities and handles `deletedAt ?? updatedAt`.
+- Settings currently has a static LAN sync list item.
 
 ## Technical Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Use `AsyncNotifier<ThemeState>` | Supports database loading and saved-theme lists |
-| Keep Minimal Light as the startup fallback while loading | Avoids a blank app during database startup |
-| Seed presets before reading saved themes | Makes presets available on first launch |
-| Use fixed color swatches | Satisfies MVP customization without heavy dependencies |
-| Save custom themes with generated ids | Prevents overwriting presets while keeping the UI simple |
+| Add `toJson`/`fromJson` on sync/domain models | Keeps HTTP server/client simple |
+| Export all rows for sync, including deleted rows | Required for delete propagation |
+| Merge notes/todos by `MergePolicy.chooseLatest` | Satisfies newest-change and delete/update conflict rules |
+| Use injected repository in `LocalSyncServer` | Keeps tests fast and deterministic |
+| Use `SyncState` instead of an enum | UI needs server address, peer address, result, and errors |
 
 ## Issues Encountered
 
 | Issue | Resolution |
 |-------|------------|
-| `ThemeController` can rebuild after invalidation in tests, so a `late final` repository field is too strict | Use `late ThemeRepository` and assign during `build()` |
-| Settings page grew beyond the old first-viewport assumptions | Updated widget tests to assert visible P5 controls and custom theme behavior |
+| None yet | - |
 
 ## Resources
 
 - `GOAL.md`
 - `docs/DEVELOPMENT_PHASES.md`
-- `lib/core/theme/app_theme.dart`
-- `lib/features/settings/domain/theme_scheme.dart`
-- `lib/features/settings/application/theme_controller.dart`
-- `lib/features/settings/data/theme_repository.dart`
+- `lib/features/sync/domain/*`
+- `lib/features/sync/data/sync_repository.dart`
+- `lib/features/sync/infrastructure/local_sync_server.dart`
+- `lib/features/sync/infrastructure/sync_api_client.dart`
 - `lib/features/settings/presentation/settings_page.dart`
-- `lib/database/daos/theme_schemes_dao.dart`
+- `lib/database/daos/*`
 
 ## Visual/Browser Findings
 

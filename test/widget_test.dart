@@ -144,6 +144,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Interview Demo'), findsWidgets);
+
+    await tester.dragUntilVisible(
+      find.byKey(const Key('sync-start-server-button')),
+      find.byKey(const Key('settings-list')),
+      const Offset(0, -320),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('LAN sync'), findsOneWidget);
+    expect(find.byKey(const Key('sync-start-server-button')), findsOneWidget);
+    expect(find.byKey(const Key('sync-peer-address-field')), findsOneWidget);
+    expect(find.byKey(const Key('sync-now-button')), findsOneWidget);
   });
 }
 
