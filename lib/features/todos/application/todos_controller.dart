@@ -30,12 +30,15 @@ class TodosState {
   }
 
   Todo? get selectedTodo {
+    if (selectedTodoId == null) {
+      return null;
+    }
     for (final todo in todos) {
       if (todo.id == selectedTodoId) {
         return todo;
       }
     }
-    return visibleTodos.isEmpty ? null : visibleTodos.first;
+    return null;
   }
 
   TodosState copyWith({
@@ -171,6 +174,14 @@ class TodosController extends AsyncNotifier<TodosState> {
       return;
     }
     state = AsyncData(current.copyWith(selectedTodoId: id));
+  }
+
+  void clearSelection() {
+    final current = state.valueOrNull;
+    if (current == null) {
+      return;
+    }
+    state = AsyncData(current.copyWith(clearSelectedTodoId: true));
   }
 
   Future<void> setFilter(TodoFilter filter) async {
