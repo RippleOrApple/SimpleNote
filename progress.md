@@ -7,9 +7,9 @@
 - **Status:** complete
 - **Started:** 2026-07-06
 - Actions taken:
-  - Wrote P4 `GOAL.md`.
-  - Read P4 section from `docs/DEVELOPMENT_PHASES.md`.
-  - Inspected current todos controller, page, repository, branch status, and phase docs.
+  - Wrote P5 `GOAL.md`.
+  - Read P5 requirements and existing theme-related files.
+  - Inspected theme model, repository, controller, Settings UI, DAO, tests, and app theme wiring.
 - Files created/modified:
   - `GOAL.md`
   - `task_plan.md`
@@ -20,11 +20,10 @@
 
 - **Status:** complete
 - Actions taken:
-  - Chose database-backed `AsyncNotifier<TodosState>`.
-  - Chose in-page list/detail editor.
-  - Chose controller-level filtering.
-  - Chose built-in Material date picker for due date.
-  - Chose in-memory database tests for controller persistence.
+  - Chose `AsyncNotifier<ThemeState>` for persisted theme loading.
+  - Chose fixed Material color swatches instead of a heavy color picker dependency.
+  - Chose repository/controller preset seeding.
+  - Chose controller and widget tests for P5.
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -34,72 +33,64 @@
 
 - **Status:** complete
 - Actions taken:
-  - Reworked `TodosController` into a database-backed `AsyncNotifier<TodosState>`.
-  - Added todo filtering for all, active, and completed states.
-  - Updated `Todo.copyWith` to support clearing due dates.
-  - Rebuilt `TodosPage` as a responsive list/detail todo workspace.
-  - Added title, description, completion, priority, due date, clear due date, and delete controls.
-  - Added todo controller and widget tests.
+  - Added preset themes and `copyWith` to `AppThemeScheme`.
+  - Reworked `ThemeController` into a database-backed `AsyncNotifier<ThemeState>`.
+  - Seeded theme presets into the local database.
+  - Updated `SimpleNoteApp` to use the active persisted theme with a Minimal Light fallback while loading.
+  - Rebuilt Settings theme controls with presets, color swatches, brightness toggle, custom theme naming, save, reset, and saved-theme activation.
+  - Expanded app theme mapping so cards, navigation, input fields, and FABs reflect theme colors.
 - Files created/modified:
-  - `lib/features/todos/domain/todo.dart`
-  - `lib/features/todos/application/todos_controller.dart`
-  - `lib/features/todos/presentation/todos_page.dart`
-  - `test/todos/todos_controller_test.dart`
-  - `test/widget_test.dart`
+  - `lib/app.dart`
+  - `lib/core/theme/app_theme.dart`
+  - `lib/features/settings/domain/theme_scheme.dart`
+  - `lib/features/settings/application/theme_controller.dart`
+  - `lib/features/settings/presentation/settings_page.dart`
 
 ### Phase 4: Testing & Verification
 
 - **Status:** complete
 - Actions taken:
+  - Added `test/settings/theme_controller_test.dart`.
+  - Updated `test/widget_test.dart` for Settings theme customization.
+  - Ran focused theme controller test; fixed controller rebuild issue.
+  - Ran focused widget tests; updated Settings assertions for the expanded P5 UI.
   - Ran `flutter analyze`.
-  - Ran P4 controller tests.
-  - Ran widget tests; fixed async navigation timing issues.
   - Ran full `flutter test`.
-  - Verified all `GOAL.md` acceptance criteria.
-- Files created/modified:
-  - `GOAL.md`
-  - `task_plan.md`
-  - `findings.md`
-  - `progress.md`
 
 ### Phase 5: Delivery
 
 - **Status:** complete
 - Actions taken:
-  - Checked all `GOAL.md` acceptance criteria.
-  - Updated planning files with implementation and test results.
-- Files created/modified:
-  - `GOAL.md`
-  - `task_plan.md`
-  - `findings.md`
-  - `progress.md`
+  - Checked all P5 acceptance criteria in `GOAL.md`.
+  - Updated planning files with final status and test results.
 
 ## Test Results
 
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
-| Pending | `flutter analyze` | No issues | Pending | Pending |
-| Pending | `flutter test` | All tests pass | Pending | Pending |
-| Todos controller test | `flutter test test/todos/todos_controller_test.dart` | All tests pass | All tests passed | Pass |
-| Widget tests, attempt 1 | `flutter test test/widget_test.dart` | All tests pass | Failed: Todos page interaction timing | Fail |
-| Widget tests, attempt 2 | `flutter test test/widget_test.dart` | All tests pass | Failed: unstable rail navigation | Fail |
-| Widget tests, attempt 3 | `flutter test test/widget_test.dart` | All tests pass | All tests passed | Pass |
 | Static analysis | `flutter analyze` | No issues | No issues | Pass |
 | Full test suite | `flutter test` | All tests pass | All tests passed | Pass |
+| Format | `dart format ...` | Files formatted | Completed | Pass |
+| Static analysis, early check | `flutter analyze` | No issues | No issues | Pass |
+| Theme controller test, attempt 1 | `flutter test test/settings/theme_controller_test.dart` | All tests pass | Failed: late final repository reinitialized | Fail |
+| Theme controller test, attempt 2 | `flutter test test/settings/theme_controller_test.dart` | All tests pass | All tests passed | Pass |
+| Widget tests, attempt 1 | `flutter test test/widget_test.dart` | All tests pass | Failed: Settings test expectations outdated | Fail |
+| Widget tests, attempt 2 | `flutter test test/widget_test.dart` | All tests pass | All tests passed | Pass |
 
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
-| 2026-07-06 | Todos widget test could not find `New todo` immediately after route change | 1 | Wait for the async page load and tap the `New todo` FAB by tooltip |
-| 2026-07-06 | Todos widget test still could not find the Todos FAB after rail label navigation | 2 | Navigate directly to `/todos` for the feature-focused widget test |
+| 2026-07-06 | `ThemeController` provider invalidation reinitialized a `late final` repository | 1 | Changed the field to `late ThemeRepository` |
+| 2026-07-06 | Settings page test expected `LAN sync` in the first viewport after P5 controls were added | 1 | Asserted visible P5 theme controls instead |
+| 2026-07-06 | `scrollUntilVisible` received a finder with multiple `Interview Demo` matches | 1 | Removed the unnecessary scroll and asserted the text directly |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |----------|--------|
 | Where am I? | Complete |
-| Where am I going? | Ready for review or Phase 5 theme customization |
-| What's the goal? | Build the database-backed Todos MVP |
+| Where am I going? | Ready for review, PR update, or Phase 6 LAN sync |
+| What's the goal? | Make theme customization real and persistent |
 | What have I learned? | See `findings.md` |
-| What have I done? | Completed the database-backed Todos MVP and tests |
+| What have I done? | Implemented database-backed presets, customization, saving, reset, and tests |

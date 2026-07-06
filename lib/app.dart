@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/routing/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'features/settings/application/theme_controller.dart';
+import 'features/settings/domain/theme_scheme.dart';
 
 class SimpleNoteApp extends ConsumerWidget {
   const SimpleNoteApp({super.key});
@@ -15,9 +16,11 @@ class SimpleNoteApp extends ConsumerWidget {
     return MaterialApp(
       title: 'SimpleNote',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.fromScheme(themeScheme),
+      theme: AppTheme.fromScheme(
+        themeScheme.valueOrNull?.activeTheme ?? AppThemeScheme.minimalLight,
+      ),
       initialRoute: AppRoutes.home,
-      routes: AppRoutes.routes,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
     );
   }
 }
