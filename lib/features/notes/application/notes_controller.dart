@@ -30,12 +30,15 @@ class NotesState {
   final bool previewMode;
 
   Note? get selectedNote {
+    if (selectedNoteId == null) {
+      return null;
+    }
     for (final note in notes) {
       if (note.id == selectedNoteId) {
         return note;
       }
     }
-    return notes.isEmpty ? null : notes.first;
+    return null;
   }
 
   List<String> tagIdsFor(String noteId) => tagIdsByNoteId[noteId] ?? const [];
@@ -204,6 +207,14 @@ class NotesController extends AsyncNotifier<NotesState> {
       return;
     }
     state = AsyncData(current.copyWith(selectedNoteId: id));
+  }
+
+  void clearSelection() {
+    final current = state.valueOrNull;
+    if (current == null) {
+      return;
+    }
+    state = AsyncData(current.copyWith(clearSelectedNoteId: true));
   }
 
   void setPreviewMode(bool value) {

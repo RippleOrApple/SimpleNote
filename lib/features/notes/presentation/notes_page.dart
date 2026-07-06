@@ -74,6 +74,7 @@ class _NotesWorkspace extends ConsumerWidget {
                   content: value,
                 ),
                 onDelete: () => controller.deleteNote(state.selectedNote!.id),
+                onBack: isWide ? null : controller.clearSelection,
                 onPreviewModeChanged: controller.setPreviewMode,
                 onCreateTag: controller.createTag,
                 onToggleTag: controller.toggleTagForSelectedNote,
@@ -238,6 +239,7 @@ class _NoteEditor extends StatefulWidget {
     required this.onPreviewModeChanged,
     required this.onCreateTag,
     required this.onToggleTag,
+    this.onBack,
   });
 
   final Note note;
@@ -246,10 +248,11 @@ class _NoteEditor extends StatefulWidget {
   final bool previewMode;
   final ValueChanged<String> onTitleChanged;
   final ValueChanged<String> onContentChanged;
-  final VoidCallback onDelete;
+  final Future<void> Function() onDelete;
   final ValueChanged<bool> onPreviewModeChanged;
   final ValueChanged<String> onCreateTag;
   final ValueChanged<String> onToggleTag;
+  final VoidCallback? onBack;
 
   @override
   State<_NoteEditor> createState() => _NoteEditorState();
@@ -296,6 +299,15 @@ class _NoteEditorState extends State<_NoteEditor> {
       children: [
         Row(
           children: [
+            if (widget.onBack != null) ...[
+              IconButton(
+                key: const Key('note-back-button'),
+                tooltip: 'Back to notes',
+                onPressed: widget.onBack,
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(width: 8),
+            ],
             Expanded(
               child: TextField(
                 key: const Key('note-title-field'),
@@ -310,7 +322,7 @@ class _NoteEditorState extends State<_NoteEditor> {
             const SizedBox(width: 8),
             IconButton(
               tooltip: 'Delete note',
-              onPressed: widget.onDelete,
+              onPressed: _confirmDelete,
               icon: const Icon(Icons.delete_outline),
             ),
           ],
@@ -406,5 +418,35 @@ class _NoteEditorState extends State<_NoteEditor> {
   void _createTag(String value) {
     widget.onCreateTag(value);
     _tagController.clear();
+  }
+
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete note?'),
+        content: const Text('This note will be removed from this device.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+    await widget.onDelete();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Note deleted')),
+    );
   }
 }

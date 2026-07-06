@@ -2,53 +2,32 @@
 
 ## Requirements
 
-- Complete Phase 6 from `GOAL.md`: LAN sync MVP.
-- Export notes, todos, tags, and theme schemes as a JSON snapshot with device info.
-- Merge remote snapshots into the local database without destructive failure behavior.
-- Provide `/health`, `/device`, `/snapshot`, and `/sync` endpoints.
-- Provide client methods and controller flow for manual peer sync.
-- Expose controls in Settings.
-- Add/update relevant tests.
-- `flutter analyze` and `flutter test` must pass.
+- Complete Phase 7 from `GOAL.md`: experience polish and basic error handling.
+- Add mobile-friendly editor back actions.
+- Protect note/todo deletion with confirmation.
+- Show lightweight feedback after deletion.
+- Clean visible copy/separators.
+- Preserve prior phase behavior and tests.
 
 ## Research Findings
 
-- `SyncController` currently only flips enum states and does not use a repository/server/client.
-- `SyncRepository` is only an abstract shell.
-- `LocalSyncServer` only supports `/health`.
-- `SyncApiClient` only supports a health check.
-- `SyncSnapshot`, `DeviceInfo`, and `SyncResult` do not yet have `fromJson` constructors.
-- Notes/todos repositories only expose active rows; sync needs all rows including soft-deleted rows.
-- MergePolicy already has `chooseLatest` for `Syncable` entities and handles `deletedAt ?? updatedAt`.
-- Settings currently has a static LAN sync list item.
+- Compact notes/todos layouts currently replace the list with the editor after selecting an item.
+- There is no explicit back-to-list action in compact editors.
+- Notes and todos currently delete immediately from editor icon buttons.
+- `TodosPage._todoSubtitle` contains an odd visible separator character.
+- Existing widget tests already cover notes, todos, settings, theme, and LAN sync flows.
 
 ## Technical Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Add `toJson`/`fromJson` on sync/domain models | Keeps HTTP server/client simple |
-| Export all rows for sync, including deleted rows | Required for delete propagation |
-| Merge notes/todos by `MergePolicy.chooseLatest` | Satisfies newest-change and delete/update conflict rules |
-| Use injected repository in `LocalSyncServer` | Keeps tests fast and deterministic |
-| Use `SyncState` instead of an enum | UI needs server address, peer address, result, and errors |
+| Add `clearSelection` to controllers | Simple state-level way to return compact editors to lists |
+| Show confirmation dialogs from editor widgets | Keeps destructive-action UX close to the action |
+| Show SnackBars after confirmed deletes | Gives clear feedback without adding undo scope |
+| Use ASCII separator in todo subtitles | Avoids encoding/display oddities |
 
 ## Issues Encountered
 
 | Issue | Resolution |
 |-------|------------|
 | None yet | - |
-
-## Resources
-
-- `GOAL.md`
-- `docs/DEVELOPMENT_PHASES.md`
-- `lib/features/sync/domain/*`
-- `lib/features/sync/data/sync_repository.dart`
-- `lib/features/sync/infrastructure/local_sync_server.dart`
-- `lib/features/sync/infrastructure/sync_api_client.dart`
-- `lib/features/settings/presentation/settings_page.dart`
-- `lib/database/daos/*`
-
-## Visual/Browser Findings
-
-- No browser or image findings for this implementation step.
