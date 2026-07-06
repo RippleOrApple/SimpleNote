@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/app_shell.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../application/notes_controller.dart';
 
 class NotesPage extends ConsumerWidget {
@@ -11,16 +12,24 @@ class NotesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notes = ref.watch(notesControllerProvider);
+    final notesController = ref.read(notesControllerProvider.notifier);
 
     return AppShell(
       title: 'Notes',
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            ref.read(notesControllerProvider.notifier).createNote(),
+        tooltip: 'New note',
+        onPressed: notesController.createNote,
         child: const Icon(Icons.add),
       ),
       child: notes.isEmpty
-          ? const Center(child: Text('Create your first Markdown note.'))
+          ? EmptyState(
+              icon: Icons.note_add_outlined,
+              title: 'No notes yet',
+              message:
+                  'Create your first Markdown note and keep your ideas close.',
+              actionLabel: 'New note',
+              onActionPressed: notesController.createNote,
+            )
           : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: notes.length,

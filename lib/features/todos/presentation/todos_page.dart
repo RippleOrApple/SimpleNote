@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/app_shell.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../application/todos_controller.dart';
 
 class TodosPage extends ConsumerWidget {
@@ -10,16 +11,23 @@ class TodosPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todos = ref.watch(todosControllerProvider);
+    final todosController = ref.read(todosControllerProvider.notifier);
 
     return AppShell(
       title: 'Todos',
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            ref.read(todosControllerProvider.notifier).createTodo('New todo'),
+        tooltip: 'New todo',
+        onPressed: () => todosController.createTodo('New todo'),
         child: const Icon(Icons.add),
       ),
       child: todos.isEmpty
-          ? const Center(child: Text('Add a todo to plan your day.'))
+          ? EmptyState(
+              icon: Icons.add_task_outlined,
+              title: 'No todos yet',
+              message: 'Add a task to make the next step obvious.',
+              actionLabel: 'New todo',
+              onActionPressed: () => todosController.createTodo('New todo'),
+            )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: todos.length,

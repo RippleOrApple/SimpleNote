@@ -7,6 +7,8 @@
 - 已使用本机 Flutter SDK 生成 Windows / Android 平台目录。
 - 已完成依赖安装。
 - 已修复 Flutter 模板默认测试与当前应用入口不匹配的问题。
+- 已创建 Android 模拟器 `SimpleNote_Pixel`。
+- 已构建 Android debug APK 并安装到模拟器。
 - 已运行代码格式化。
 - 已运行静态检查。
 - 已运行测试。
@@ -40,6 +42,39 @@ windows/
 lib/
 test/
 docs/
+D:\Tool\Android Studio\avd/
+```
+
+## Android 模拟器
+
+AVD 存放目录：
+
+```text
+D:\Tool\Android Studio\avd
+```
+
+模拟器名称：
+
+```text
+SimpleNote_Pixel
+```
+
+系统镜像：
+
+```text
+Android 16 / API 36 / Google APIs / x86_64
+```
+
+启动命令：
+
+```powershell
+flutter emulators --launch SimpleNote_Pixel
+```
+
+或：
+
+```powershell
+D:\DevEnv\Android\emulator\emulator.exe -avd SimpleNote_Pixel
 ```
 
 ## 验证结果
@@ -63,6 +98,18 @@ All tests passed
 - 同步合并策略测试。
 - 应用启动到 Notes 页面测试。
 
+### Android 构建与安装
+
+```text
+flutter build apk --debug
+Built build\app\outputs\flutter-apk\app-debug.apk
+```
+
+```text
+adb install -r build\app\outputs\flutter-apk\app-debug.apk
+Success
+```
+
 ## 当前环境限制
 
 ### Windows 桌面运行
@@ -78,13 +125,11 @@ Desktop development with C++ workload
 
 ### Android 运行
 
-Flutter 已识别 Android 工具链，但当前没有在线 Android 真机或模拟器。
+Android 模拟器已创建并验证。当前 Flutter 可识别以下 Android 设备：
 
-可选处理：
-
-- 连接 Android 真机并开启 USB 调试。
-- 在 Android Studio 中创建模拟器。
-- 使用命令创建 Flutter 模拟器。
+```text
+sdk gphone64 x86 64 (mobile) / emulator-5554 / Android 16 (API 36)
+```
 
 ## 下一步
 
