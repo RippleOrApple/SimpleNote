@@ -16,17 +16,16 @@ class NotesPage extends ConsumerWidget {
     final notesState = ref.watch(notesControllerProvider);
 
     return AppShell(
-      title: 'Notes',
+      title: '笔记',
       floatingActionButton: FloatingActionButton(
-        tooltip: 'New note',
+        tooltip: '新建笔记',
         onPressed: () =>
             ref.read(notesControllerProvider.notifier).createNote(),
         child: const Icon(Icons.add),
       ),
       child: notesState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) =>
-            Center(child: Text('Could not load notes: $error')),
+        error: (error, _) => Center(child: Text('笔记加载失败：$error')),
         data: (state) => _NotesWorkspace(state: state),
       ),
     );
@@ -55,11 +54,9 @@ class _NotesWorkspace extends ConsumerWidget {
         final editor = state.selectedNote == null
             ? EmptyState(
                 icon: Icons.edit_note,
-                title: 'No note selected',
-                message: state.notes.isEmpty
-                    ? 'Create a note to start writing.'
-                    : 'Select a note from the list.',
-                actionLabel: 'New note',
+                title: '未选择笔记',
+                message: state.notes.isEmpty ? '新建一篇笔记，开始记录想法。' : '从列表中选择一篇笔记。',
+                actionLabel: '新建笔记',
                 onActionPressed: controller.createNote,
               )
             : _NoteEditor(
@@ -147,9 +144,9 @@ class _NotesListState extends State<_NotesList> {
         widget.state.selectedTagId == null) {
       return EmptyState(
         icon: Icons.note_add_outlined,
-        title: 'No notes yet',
-        message: 'Create your first Markdown note and keep your ideas close.',
-        actionLabel: 'New note',
+        title: '还没有笔记',
+        message: '新建第一篇 Markdown 笔记，把想法留在手边。',
+        actionLabel: '新建笔记',
         onActionPressed: widget.onCreateNote,
       );
     }
@@ -162,7 +159,7 @@ class _NotesListState extends State<_NotesList> {
             controller: _searchController,
             decoration: const InputDecoration(
               prefixIcon: Icon(Icons.search),
-              labelText: 'Search notes',
+              labelText: '搜索笔记',
               border: OutlineInputBorder(),
             ),
             onChanged: widget.onSearchChanged,
@@ -178,7 +175,7 @@ class _NotesListState extends State<_NotesList> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: FilterChip(
-                    label: const Text('All'),
+                    label: const Text('全部'),
                     selected: widget.state.selectedTagId == null,
                     onSelected: (_) => widget.onSelectTag(null),
                   ),
@@ -197,7 +194,7 @@ class _NotesListState extends State<_NotesList> {
           ),
         Expanded(
           child: widget.state.notes.isEmpty
-              ? const Center(child: Text('No matching notes.'))
+              ? const Center(child: Text('没有匹配的笔记。'))
               : ListView.separated(
                   padding: const EdgeInsets.all(16),
                   itemCount: widget.state.notes.length,
@@ -212,7 +209,7 @@ class _NotesListState extends State<_NotesList> {
                       child: ListTile(
                         title: Text(note.title),
                         subtitle: Text(
-                          note.content.isEmpty ? 'Empty note' : note.content,
+                          note.content.isEmpty ? '空笔记' : note.content,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -302,7 +299,7 @@ class _NoteEditorState extends State<_NoteEditor> {
             if (widget.onBack != null) ...[
               IconButton(
                 key: const Key('note-back-button'),
-                tooltip: 'Back to notes',
+                tooltip: '返回笔记列表',
                 onPressed: widget.onBack,
                 icon: const Icon(Icons.arrow_back),
               ),
@@ -313,7 +310,7 @@ class _NoteEditorState extends State<_NoteEditor> {
                 key: const Key('note-title-field'),
                 controller: _titleController,
                 decoration: const InputDecoration(
-                  labelText: 'Title',
+                  labelText: '标题',
                   border: OutlineInputBorder(),
                 ),
                 onChanged: widget.onTitleChanged,
@@ -321,7 +318,7 @@ class _NoteEditorState extends State<_NoteEditor> {
             ),
             const SizedBox(width: 8),
             IconButton(
-              tooltip: 'Delete note',
+              tooltip: '删除笔记',
               onPressed: _confirmDelete,
               icon: const Icon(Icons.delete_outline),
             ),
@@ -333,12 +330,12 @@ class _NoteEditorState extends State<_NoteEditor> {
             ButtonSegment(
               value: false,
               icon: Icon(Icons.edit_outlined),
-              label: Text('Edit'),
+              label: Text('编辑'),
             ),
             ButtonSegment(
               value: true,
               icon: Icon(Icons.visibility_outlined),
-              label: Text('Preview'),
+              label: Text('预览'),
             ),
           ],
           selected: {widget.previewMode},
@@ -357,7 +354,7 @@ class _NoteEditorState extends State<_NoteEditor> {
             ),
             child: MarkdownBody(
               data: widget.note.content.isEmpty
-                  ? '_Nothing to preview yet._'
+                  ? '_暂无可预览内容。_'
                   : widget.note.content,
             ),
           )
@@ -368,14 +365,14 @@ class _NoteEditorState extends State<_NoteEditor> {
             minLines: 12,
             maxLines: null,
             decoration: const InputDecoration(
-              labelText: 'Markdown',
+              labelText: 'Markdown 内容',
               alignLabelWithHint: true,
               border: OutlineInputBorder(),
             ),
             onChanged: widget.onContentChanged,
           ),
         const SizedBox(height: 16),
-        Text('Tags', style: Theme.of(context).textTheme.titleMedium),
+        Text('标签', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -397,7 +394,7 @@ class _NoteEditorState extends State<_NoteEditor> {
                 key: const Key('new-tag-field'),
                 controller: _tagController,
                 decoration: const InputDecoration(
-                  labelText: 'New tag',
+                  labelText: '新标签',
                   border: OutlineInputBorder(),
                 ),
                 onSubmitted: _createTag,
@@ -407,7 +404,7 @@ class _NoteEditorState extends State<_NoteEditor> {
             FilledButton.icon(
               onPressed: () => _createTag(_tagController.text),
               icon: const Icon(Icons.add),
-              label: const Text('Add tag'),
+              label: const Text('添加标签'),
             ),
           ],
         ),
@@ -424,16 +421,16 @@ class _NoteEditorState extends State<_NoteEditor> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete note?'),
-        content: const Text('This note will be removed from this device.'),
+        title: const Text('删除这篇笔记？'),
+        content: const Text('这篇笔记会从当前设备移除。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: const Text('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
+            child: const Text('删除'),
           ),
         ],
       ),
@@ -446,7 +443,7 @@ class _NoteEditorState extends State<_NoteEditor> {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Note deleted')),
+      const SnackBar(content: Text('笔记已删除')),
     );
   }
 }

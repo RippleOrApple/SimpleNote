@@ -128,7 +128,7 @@ class SyncController extends StateNotifier<SyncState> {
     if (rawAddress.isEmpty) {
       state = state.copyWith(
         status: SyncStatus.error,
-        errorMessage: 'Peer address is required.',
+        errorMessage: '请输入对端地址。',
       );
       return;
     }
@@ -144,7 +144,7 @@ class SyncController extends StateNotifier<SyncState> {
       final peerUri = _normalizeUri(rawAddress);
       final healthy = await _client.healthCheck(peerUri);
       if (!healthy) {
-        throw StateError('Peer did not pass health check.');
+        throw StateError('对端健康检查失败。');
       }
 
       final remoteSnapshot = await _client.snapshot(peerUri);
@@ -153,7 +153,7 @@ class SyncController extends StateNotifier<SyncState> {
       final pushResult = await _client.sendSnapshot(peerUri, localSnapshot);
 
       if (!pushResult.success) {
-        throw StateError(pushResult.errorMessage ?? 'Peer rejected snapshot.');
+        throw StateError(pushResult.errorMessage ?? '对端拒绝了同步快照。');
       }
 
       state = state.copyWith(
@@ -182,7 +182,7 @@ class SyncController extends StateNotifier<SyncState> {
             : 'http://$value';
     final uri = Uri.parse(withScheme);
     if (!uri.hasScheme || uri.host.isEmpty) {
-      throw FormatException('Invalid peer address: $value');
+      throw FormatException('对端地址无效：$value');
     }
     return uri;
   }
