@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:simple_note/app.dart';
 import 'package:simple_note/database/app_database.dart';
+import 'package:simple_note/features/settings/domain/theme_scheme.dart';
 
 void main() {
   testWidgets('SimpleNote starts on the notes page', (tester) async {
@@ -32,7 +33,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Theme'), findsOneWidget);
-    expect(find.text('LAN sync'), findsOneWidget);
+    expect(find.text('Presets'), findsOneWidget);
   });
 
   testWidgets('wide screens use side navigation', (tester) async {
@@ -110,6 +111,39 @@ void main() {
     await tester.tap(find.text('Done'));
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('Plan'), findsWidgets);
+  });
+
+  testWidgets('settings page applies presets and saves a custom theme',
+      (tester) async {
+    await _pumpApp(tester, surfaceSize: const Size(1024, 768));
+
+    Navigator.of(tester.element(find.byType(Scaffold).first))
+        .pushReplacementNamed('/settings');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Presets'), findsOneWidget);
+    expect(find.text(AppThemeScheme.nightBlack.name), findsWidgets);
+
+    await tester.tap(find.text(AppThemeScheme.nightBlack.name).first);
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppThemeScheme.nightBlack.name), findsWidgets);
+
+    await tester.tap(
+      find.byKey(
+        Key('primary-swatch-${AppThemeScheme.eyeComfortGreen.primaryColor.toARGB32()}'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('custom-theme-name-field')),
+      'Interview Demo',
+    );
+    await tester.tap(find.byKey(const Key('save-custom-theme-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Interview Demo'), findsWidgets);
   });
 }
 
