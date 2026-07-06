@@ -7,11 +7,12 @@
 - **Status:** complete
 - **Started:** 2026-07-06
 - Actions taken:
+  - Wrote P3 `GOAL.md`.
   - Read `planning-with-files` skill instructions.
-  - Read the Phase 2 `GOAL.md`.
-  - Replaced Phase 1 planning files with Phase 2 planning files.
-  - Inspected database placeholder files, feature repository interfaces, domain models, and tests.
+  - Read P3 `GOAL.md`.
+  - Inspected current notes controller, notes page, tag repositories, DAOs, and phase docs.
 - Files created/modified:
+  - `GOAL.md`
   - `task_plan.md`
   - `findings.md`
   - `progress.md`
@@ -20,10 +21,10 @@
 
 - **Status:** complete
 - Actions taken:
-  - Chose separate Drift table files under `lib/database/tables/`.
-  - Chose Drift DAO part files under `lib/database/daos/`.
-  - Chose concrete database-backed repository implementations next to existing feature repository interfaces.
-  - Chose in-memory Drift database tests for repository behavior.
+  - Chose database-backed `AsyncNotifier<NotesState>`.
+  - Chose in-page list/detail editor.
+  - Chose repository additions for note-tag links.
+  - Chose in-memory database tests for persistence and controller behavior.
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -33,36 +34,35 @@
 
 - **Status:** complete
 - Actions taken:
-  - Added Drift, SQLite, path, path_provider, drift_dev, and build_runner dependencies.
-  - Replaced database placeholder with a Drift `AppDatabase`.
-  - Added database provider wiring.
-  - Added table definitions for notes, todos, tags, note_tags, theme_schemes, sync_logs, and app_settings.
-  - Added DAO classes for the phase 2 tables.
-  - Added database-backed repository implementations for notes, todos, tags, and themes.
-  - Ran Drift code generation.
-  - Added repository/database tests using an in-memory database.
-  - Added a database file creation test using a temporary SQLite file.
+  - Added note-tag DAO methods for all links, tag filtering, and replacing links for a note.
+  - Added tag lookup by name.
+  - Extended notes repository with note-tag mapping and assignment methods.
+  - Reworked `NotesController` into a database-backed `AsyncNotifier<NotesState>`.
+  - Built notes search, tag filtering, note selection, note creation, editing, deletion, tag creation, tag assignment, and preview mode state.
+  - Rebuilt `NotesPage` as a responsive list/detail notes workspace with Markdown edit and preview modes.
+  - Added controller and widget tests for notes MVP behavior.
+  - Ran Drift code generation after DAO changes.
 - Files created/modified:
-  - `pubspec.yaml`
-  - `pubspec.lock`
-  - `lib/database/app_database.dart`
+  - `lib/database/daos/note_tags_dao.dart`
+  - `lib/database/daos/notes_dao.dart`
+  - `lib/database/daos/tags_dao.dart`
   - `lib/database/app_database.g.dart`
-  - `lib/database/tables/*`
-  - `lib/database/daos/*`
+  - `lib/features/notes/application/notes_controller.dart`
   - `lib/features/notes/data/notes_repository.dart`
-  - `lib/features/todos/data/todos_repository.dart`
+  - `lib/features/notes/presentation/notes_page.dart`
   - `lib/features/tags/data/tags_repository.dart`
-  - `lib/features/settings/data/theme_repository.dart`
-  - `test/database/repositories_test.dart`
+  - `test/notes/notes_controller_test.dart`
+  - `test/widget_test.dart`
 
 ### Phase 4: Testing & Verification
 
 - **Status:** complete
 - Actions taken:
-  - Ran Drift code generation successfully.
-  - Ran database repository tests successfully.
-  - Ran full `flutter analyze` successfully.
-  - Ran full `flutter test` successfully.
+  - Ran `dart run build_runner build`.
+  - Ran `flutter analyze`.
+  - Ran P3 controller tests.
+  - Ran widget tests.
+  - Ran full `flutter test`.
   - Verified all `GOAL.md` acceptance criteria.
 - Files created/modified:
   - `GOAL.md`
@@ -75,7 +75,7 @@
 - **Status:** complete
 - Actions taken:
   - Checked all `GOAL.md` acceptance criteria.
-  - Updated planning files with implementation details, test results, and residual notes.
+  - Updated planning files with final implementation and test results.
 - Files created/modified:
   - `GOAL.md`
   - `task_plan.md`
@@ -88,23 +88,25 @@
 |------|-------|----------|--------|--------|
 | Pending | `flutter analyze` | No issues | Pending | Pending |
 | Pending | `flutter test` | All tests pass | Pending | Pending |
-| Database tests | `flutter test test/database/repositories_test.dart` | All tests pass | All tests passed | Pass |
-| Static analysis | `flutter analyze` | No issues | No issues | Pass |
+| Notes controller test | `flutter test test/notes/notes_controller_test.dart` | All tests pass | All tests passed | Pass |
+| Widget tests, attempt 1 | `flutter test test/widget_test.dart` | All tests pass | Failed: inline Markdown text assertion | Fail |
+| Widget tests, attempt 2 | `flutter test test/widget_test.dart` | All tests pass | All tests passed | Pass |
 | Full test suite | `flutter test` | All tests pass | All tests passed | Pass |
+| Static analysis | `flutter analyze` | No issues | No issues | Pass |
 
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
-| 2026-07-06 | Drift generator warned that `tableName` must directly return string literals | 1 | Replaced table name constant references with direct string literals and will rerun code generation |
-| 2026-07-06 | Drift warned about multiple database instances in one test | 1 | Removed shared setup and created only the required database per test |
+| 2026-07-06 | Widget tests timed out in `pumpAndSettle` while Notes loading spinner animated | 1 | Inject in-memory database and replace `pumpAndSettle` in app helper with fixed pumps |
+| 2026-07-06 | Widget test could not find bold Markdown content with `find.text` | 1 | Switched inline Markdown assertions to inspect `RichText.toPlainText()` |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |----------|--------|
 | Where am I? | Complete |
-| Where am I going? | Ready for review or Phase 3 notes MVP |
-| What's the goal? | Connect SimpleNote to local SQLite persistence using Drift |
+| Where am I going? | Ready for review or Phase 4 todos MVP |
+| What's the goal? | Build the database-backed Notes MVP |
 | What have I learned? | See `findings.md` |
-| What have I done? | Completed Drift persistence layer, repositories, generated code, and tests |
+| What have I done? | Completed the database-backed Notes MVP and tests |

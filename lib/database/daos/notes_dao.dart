@@ -26,6 +26,11 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
         .get();
   }
 
+  Future<NoteRow?> findById(String id) {
+    return (select(notes)..where((note) => note.id.equals(id)))
+        .getSingleOrNull();
+  }
+
   Future<void> upsertNote(NotesCompanion note) {
     return into(notes).insertOnConflictUpdate(note);
   }
