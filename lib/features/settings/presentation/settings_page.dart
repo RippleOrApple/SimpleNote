@@ -14,32 +14,42 @@ class SettingsPage extends ConsumerWidget {
 
     return AppShell(
       title: 'Settings',
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text('Theme', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 12),
-          ListTile(
-            title: Text(theme.name),
-            subtitle: const Text('Background, button, and text colors'),
-            leading: CircleAvatar(backgroundColor: theme.primaryColor),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 720),
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text('Theme', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              ListTile(
+                leading: CircleAvatar(backgroundColor: theme.primaryColor),
+                title: Text(theme.name),
+                subtitle: const Text('Background, button, and text colors'),
+              ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: FilledButton.icon(
+                  onPressed: () => ref
+                      .read(themeControllerProvider.notifier)
+                      .applyTheme(AppThemeScheme.minimalLight),
+                  icon: const Icon(Icons.restart_alt),
+                  label: const Text('Restore default theme'),
+                ),
+              ),
+              const Divider(height: 36),
+              Text('Sync', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              const ListTile(
+                leading: Icon(Icons.wifi_tethering_outlined),
+                title: Text('LAN sync'),
+                subtitle: Text('Server and client files are scaffolded.'),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          FilledButton(
-            onPressed: () => ref
-                .read(themeControllerProvider.notifier)
-                .applyTheme(AppThemeScheme.minimalLight),
-            child: const Text('Restore default theme'),
-          ),
-          const Divider(height: 32),
-          Text('Sync', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 12),
-          const ListTile(
-            leading: Icon(Icons.wifi_tethering_outlined),
-            title: Text('LAN sync'),
-            subtitle: Text('Server and client files are scaffolded.'),
-          ),
-        ],
+        ),
       ),
     );
   }
