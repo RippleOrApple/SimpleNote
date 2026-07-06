@@ -7,23 +7,24 @@
 - **Status:** complete
 - **Started:** 2026-07-06
 - Actions taken:
-  - Read `GOAL.md`.
-  - Read `planning-with-files` skill instructions.
-  - Read the planning file templates.
-  - Inspected the current Phase 1 goal and relevant existing project files.
-  - Created initial durable planning files.
+  - Wrote P4 `GOAL.md`.
+  - Read P4 section from `docs/DEVELOPMENT_PHASES.md`.
+  - Inspected current todos controller, page, repository, branch status, and phase docs.
 - Files created/modified:
-  - `task_plan.md` created.
-  - `findings.md` created.
-  - `progress.md` created.
+  - `GOAL.md`
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
 
 ### Phase 2: Planning & Structure
 
 - **Status:** complete
 - Actions taken:
-  - Decided to make `AppShell` responsive with bottom navigation on compact layouts and side navigation on wide layouts.
-  - Decided to keep implementation focused on shell, navigation, empty states, page consistency, and tests.
-  - Decided not to add storage, sync, or full editor behavior in Phase 1.
+  - Chose database-backed `AsyncNotifier<TodosState>`.
+  - Chose in-page list/detail editor.
+  - Chose controller-level filtering.
+  - Chose built-in Material date picker for due date.
+  - Chose in-memory database tests for controller persistence.
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -33,36 +34,40 @@
 
 - **Status:** complete
 - Actions taken:
-  - Updated `AppShell` to use a compact bottom `NavigationBar` and a wide-layout `NavigationRail`.
-  - Added a reusable `EmptyState` widget.
-  - Updated Notes and Todos empty states with clear titles, messages, and primary actions.
-  - Updated Settings layout with constrained width and clearer section actions.
-  - Removed a duplicate trailing block accidentally left in `app_shell.dart` during patching.
+  - Reworked `TodosController` into a database-backed `AsyncNotifier<TodosState>`.
+  - Added todo filtering for all, active, and completed states.
+  - Updated `Todo.copyWith` to support clearing due dates.
+  - Rebuilt `TodosPage` as a responsive list/detail todo workspace.
+  - Added title, description, completion, priority, due date, clear due date, and delete controls.
+  - Added todo controller and widget tests.
 - Files created/modified:
-  - `lib/shared/widgets/app_shell.dart`
-  - `lib/shared/widgets/empty_state.dart`
-  - `lib/features/notes/presentation/notes_page.dart`
+  - `lib/features/todos/domain/todo.dart`
+  - `lib/features/todos/application/todos_controller.dart`
   - `lib/features/todos/presentation/todos_page.dart`
-  - `lib/features/settings/presentation/settings_page.dart`
+  - `test/todos/todos_controller_test.dart`
+  - `test/widget_test.dart`
 
 ### Phase 4: Testing & Verification
 
 - **Status:** complete
 - Actions taken:
-  - Updated widget tests for startup, compact navigation, and wide navigation.
-  - Ran Dart formatting on `lib` and `test`.
-  - Ran `flutter test`; fixed the first failure caused by surface reset placement.
-  - Re-ran `flutter test` successfully.
-  - Ran `flutter analyze` successfully.
+  - Ran `flutter analyze`.
+  - Ran P4 controller tests.
+  - Ran widget tests; fixed async navigation timing issues.
+  - Ran full `flutter test`.
+  - Verified all `GOAL.md` acceptance criteria.
 - Files created/modified:
-  - `test/widget_test.dart`
+  - `GOAL.md`
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
 
 ### Phase 5: Delivery
 
 - **Status:** complete
 - Actions taken:
-  - Checked off all applicable `GOAL.md` acceptance criteria.
-  - Updated planning files with implementation, test results, and errors encountered.
+  - Checked all `GOAL.md` acceptance criteria.
+  - Updated planning files with implementation and test results.
 - Files created/modified:
   - `GOAL.md`
   - `task_plan.md`
@@ -74,26 +79,27 @@
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Pending | `flutter analyze` | No issues | Pending | Pending |
+| Pending | `flutter test` | All tests pass | Pending | Pending |
+| Todos controller test | `flutter test test/todos/todos_controller_test.dart` | All tests pass | All tests passed | Pass |
+| Widget tests, attempt 1 | `flutter test test/widget_test.dart` | All tests pass | Failed: Todos page interaction timing | Fail |
+| Widget tests, attempt 2 | `flutter test test/widget_test.dart` | All tests pass | Failed: unstable rail navigation | Fail |
+| Widget tests, attempt 3 | `flutter test test/widget_test.dart` | All tests pass | All tests passed | Pass |
 | Static analysis | `flutter analyze` | No issues | No issues | Pass |
-| Widget/domain tests, attempt 1 | `flutter test` | All tests pass | Failed: surface reset ran outside test body | Fail |
-| Widget/domain tests, attempt 2 | `flutter test` | All tests pass | All tests passed | Pass |
-| Final static analysis | `flutter analyze` | No issues | No issues | Pass |
+| Full test suite | `flutter test` | All tests pass | All tests passed | Pass |
 
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
-| 2026-07-06 | Duplicate trailing code in `app_shell.dart` after patching | 1 | Inspected file and removed duplicate block before running verification |
-| 2026-07-06 | Dart formatter attempted to parse Markdown files | 1 | Logged the mistake and re-running formatter only on `lib test` |
-| 2026-07-06 | `flutter test` failed because `setSurfaceSize(null)` ran in global `tearDown` | 1 | Moved surface reset into `addTearDown` inside `_pumpApp` helper |
-| 2026-07-06 | `git push` failed: connection was reset | 1 | Retrying push |
+| 2026-07-06 | Todos widget test could not find `New todo` immediately after route change | 1 | Wait for the async page load and tap the `New todo` FAB by tooltip |
+| 2026-07-06 | Todos widget test still could not find the Todos FAB after rail label navigation | 2 | Navigate directly to `/todos` for the feature-focused widget test |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |----------|--------|
 | Where am I? | Complete |
-| Where am I going? | Ready for review or next goal |
-| What's the goal? | Build a clear app shell and page navigation for Notes, Todos, and Settings |
+| Where am I going? | Ready for review or Phase 5 theme customization |
+| What's the goal? | Build the database-backed Todos MVP |
 | What have I learned? | See `findings.md` |
-| What have I done? | Completed Phase 1 shell/navigation implementation, tests, and goal checklist |
+| What have I done? | Completed the database-backed Todos MVP and tests |

@@ -2,63 +2,75 @@
 
 ## Objective
 
-Complete Phase 1: build a clear application shell and page navigation structure for SimpleNote.
+Complete Phase 4: build the Todos MVP for SimpleNote.
 
-Users should be able to move between Notes, Todos, and Settings without errors, and each page should have a simple, consistent layout that works as the foundation for later feature development.
+Users should be able to create, edit, complete, delete, prioritize, date, filter, and persist todos through the local database created in Phase 2.
 
 ## Scope
 
 - What should change:
-  - Improve the shared app shell.
-  - Improve navigation between Notes, Todos, and Settings.
-  - Make the three core pages visually consistent.
-  - Standardize page titles, empty states, and primary actions.
-  - Keep the UI simple and suitable for both Windows and Android.
+  - Build a usable todos list.
+  - Support quick todo creation.
+  - Support editing todo title and description.
+  - Support completing and uncompleting todos.
+  - Support deleting todos.
+  - Support due dates.
+  - Support priority values: low, medium, high.
+  - Support filtering by all, active, and completed.
+  - Persist todos through the local database.
+  - Preserve existing app shell navigation, notes MVP, and database structure.
+  - If work is interrupted, leave `P4_STATUS.md` with completed and remaining items.
 
 - What files, features, or workflows are in scope:
-  - `lib/app.dart`
-  - `lib/core/routing/app_routes.dart`
-  - `lib/shared/widgets/app_shell.dart`
-  - `lib/features/notes/presentation/notes_page.dart`
+  - `lib/features/todos/domain/todo.dart`
+  - `lib/features/todos/application/todos_controller.dart`
+  - `lib/features/todos/data/todos_repository.dart`
   - `lib/features/todos/presentation/todos_page.dart`
-  - `lib/features/settings/presentation/settings_page.dart`
-  - Basic navigation workflow:
-    - Notes page
-    - Todos page
-    - Settings page
+  - `lib/database/daos/todos_dao.dart`
+  - Todo-focused tests.
+  - `P4_STATUS.md` only if the task cannot be completed in this run.
 
 ## Non-goals
 
 - What should not change:
-  - Do not implement SQLite or Drift persistence yet.
-  - Do not implement full note editing yet.
-  - Do not implement full todo editing yet.
-  - Do not implement real LAN sync yet.
-  - Do not introduce account login, cloud sync, or user authentication.
+  - Do not implement LAN sync in this phase.
+  - Do not implement cloud sync, accounts, or authentication.
+  - Do not redesign the notes MVP.
+  - Do not build complex calendar views.
+  - Do not add system notifications or recurring tasks.
 
 - What should be left for later:
-  - Phase 2: local database integration.
-  - Phase 3: notes MVP.
-  - Phase 4: todos MVP.
   - Phase 5: theme customization.
   - Phase 6: LAN sync MVP.
+  - Advanced reminders.
+  - Calendar integration.
+  - Todo-note linking.
 
 ## Acceptance Criteria
 
-- [x] The app starts successfully.
-- [x] The Notes page can be opened.
-- [x] The Todos page can be opened.
-- [x] The Settings page can be opened.
-- [x] Navigation between the three pages does not throw errors.
-- [x] Page titles are clear and consistent.
-- [x] Empty states are clear and consistent.
-- [x] Primary actions are easy to identify.
-- [x] The layout is usable on Android-sized screens.
-- [x] The layout remains reasonable on Windows-sized screens.
-- [x] Relevant widget tests are added or updated.
+- [x] A todo can be created from the Todos page.
+- [x] A todo title can be edited.
+- [x] A todo description can be edited.
+- [x] A todo can be marked completed.
+- [x] A todo can be marked active again.
+- [x] A todo can be deleted.
+- [x] Todos are persisted in the local database.
+- [x] A persisted todo is loaded when the app/controller reloads.
+- [x] A todo can have no due date.
+- [x] A todo can have a due date.
+- [x] A todo can be set to low priority.
+- [x] A todo can be set to medium priority.
+- [x] A todo can be set to high priority.
+- [x] Todos can be filtered to show all.
+- [x] Todos can be filtered to show active only.
+- [x] Todos can be filtered to show completed only.
+- [x] Todo `updatedAt` changes when title, description, completion, due date, or priority changes.
+- [x] Existing Notes, Todos, and Settings navigation still works.
+- [x] Notes MVP behavior remains covered by tests.
+- [x] Relevant todo tests are added or updated.
 - [x] `flutter analyze` passes.
 - [x] `flutter test` passes.
-- [x] The final result matches the intended simple, low-clutter user experience.
+- [x] The final result is ready for Phase 5 without expanding into sync or theme work.
 
 ## Constraints
 
@@ -66,14 +78,17 @@ Users should be able to move between Notes, Todos, and Settings without errors, 
   - Keep Flutter as the cross-platform framework.
   - Keep Riverpod as the state management direction.
   - Keep the current feature-based directory structure.
-  - Keep shared UI shell logic in `lib/shared/widgets/app_shell.dart`.
-  - Keep route definitions centralized in `lib/core/routing/app_routes.dart`.
+  - Keep database code under `lib/database/`.
+  - Keep feature repositories under each feature's `data/` directory.
+  - Keep Phase 1 shell/navigation behavior intact.
+  - Keep Phase 2 database structure compatible unless a small additive change is required.
+  - Keep Phase 3 notes MVP behavior intact.
 
 - Technical limits:
   - Windows desktop runtime may still require Visual Studio C++ workload.
-  - Android verification should use the `SimpleNote_Pixel` emulator.
-  - Avoid adding heavy UI dependencies at this stage.
-  - Avoid implementing storage or sync logic before the UI shell is stable.
+  - Android verification should use the `SimpleNote_Pixel` emulator when runtime validation is needed.
+  - Avoid adding heavy calendar or reminder dependencies.
+  - Keep the todos MVP simple and usable.
 
 - Compatibility requirements:
   - The app should continue to target Windows and Android.
@@ -83,11 +98,15 @@ Users should be able to move between Notes, Todos, and Settings without errors, 
 ## Notes
 
 - Extra context:
-  - This goal corresponds to `docs/DEVELOPMENT_PHASES.md`, section `?? 1:??????????`.
-  - Phase 0 has already initialized the Flutter scaffold and Android emulator.
-  - The UI should stay minimal and practical, matching the product direction of a local-first notes and todos app.
+  - This goal corresponds to `docs/DEVELOPMENT_PHASES.md`, section `阶段 4：待办模块 MVP`.
+  - Phase 1 completed the app shell and navigation.
+  - Phase 2 completed the Drift database and database-backed repositories.
+  - Phase 3 completed the Notes MVP.
+  - The current todos UI is still a simple in-memory list, so this phase should connect todos to real persistence.
 
 - Links or examples:
   - `docs/DEVELOPMENT_PHASES.md`
-  - `docs/PHASE_0_SETUP_REPORT.md`
   - `docs/ARCHITECTURE.md`
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`

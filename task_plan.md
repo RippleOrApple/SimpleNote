@@ -1,8 +1,8 @@
-# Task Plan: SimpleNote Phase 1 App Shell
+# Task Plan: SimpleNote Phase 4 Todos MVP
 
 ## Goal
 
-Build a clear, low-clutter application shell so users can navigate between Notes, Todos, and Settings on Android and Windows-sized layouts without errors.
+Build a database-backed Todos MVP with create, edit, complete/uncomplete, delete, due date, priority, filtering, and persistence.
 
 ## Current Phase
 
@@ -13,28 +13,31 @@ Complete
 ### Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
-- [x] Identify scope, non-goals, constraints, and acceptance criteria
-- [x] Inspect current app shell, routes, pages, and tests
+- [x] Identify P4 scope, non-goals, constraints, and acceptance criteria
+- [x] Inspect current todos controller, todos UI, repository, DAO, and tests
 - [x] Document findings in `findings.md`
 - **Status:** complete
 
 ### Phase 2: Planning & Structure
 
-- [x] Decide responsive shell approach
-- [x] Decide page empty-state and action patterns
-- [x] Decide test coverage needed for navigation and shell behavior
+- [x] Choose controller state shape
+- [x] Choose todos repository additions
+- [x] Choose editor UI structure
+- [x] Choose test strategy
 - **Status:** complete
 
 ### Phase 3: Implementation
 
-- [x] Improve shared `AppShell`
-- [x] Improve Notes, Todos, and Settings page layouts
-- [x] Keep scope limited to navigation and shell UI
+- [x] Add todo repository methods needed by UI
+- [x] Rework todos controller to load and persist todos
+- [x] Build todo list filtering
+- [x] Build todo editor with title/description editing
+- [x] Add completion, due date, priority, and delete controls
 - **Status:** complete
 
 ### Phase 4: Testing & Verification
 
-- [x] Add or update widget tests
+- [x] Add or update todo tests
 - [x] Run `flutter analyze`
 - [x] Run `flutter test`
 - [x] Verify acceptance criteria against `GOAL.md`
@@ -49,32 +52,31 @@ Complete
 
 ## Key Questions
 
-1. How should navigation adapt across Android and Windows-sized layouts?
-   - Use a bottom `NavigationBar` on compact screens and a side `NavigationRail` on wider screens.
-2. How much functionality should Phase 1 implement?
-   - Only the app shell, navigation, consistent page structure, empty states, and obvious primary actions. Persistence, full editing, and sync stay out of scope.
-3. What tests are needed?
-   - Widget tests should verify app startup, navigation to all pages, and basic responsive shell behavior.
+1. Should todos controller become database-backed now?
+   - Yes. P4 explicitly requires persisted todos and reload behavior.
+2. Should todos editor be a separate route?
+   - No. Use an in-page list/detail editor, mirroring Notes MVP.
+3. Should date selection use a calendar package?
+   - No. Use Flutter Material `showDatePicker` and a clear-date action.
 
 ## Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Use `NavigationBar` for compact layouts and `NavigationRail` for wide layouts | Matches Android and desktop expectations while keeping one shared shell |
-| Keep page content as lightweight placeholders plus current in-memory demo actions | Phase 1 is about navigation and structure, not full feature implementation |
-| Add reusable empty-state presentation inside pages instead of a new dependency | Keeps UI consistent without adding heavy packages |
-| Continue using Material icons and existing Flutter/Riverpod dependencies | Preserves current stack and avoids scope creep |
+| Use `AsyncNotifier<TodosState>` for todos | Mirrors Notes MVP and supports async database persistence |
+| Keep editor inside `TodosPage` | Provides a usable MVP without adding route complexity |
+| Use built-in Material date picker | Meets due-date requirement without adding dependencies |
+| Test controller with in-memory Drift database | Verifies persistence without platform filesystem setup |
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |-------|---------|------------|
-| Dart formatter was run against Markdown files | 1 | Re-run formatter only on Dart source folders: `lib test` |
-| Widget tests failed because `setSurfaceSize(null)` ran outside a widget test | 1 | Move surface reset into per-test `addTearDown` inside a helper |
-| `git push` failed with connection reset | 1 | Retry push after transient network failure |
+| Todos widget test tapped `New todo` before the async Todos page finished loading | 1 | Wait longer after navigation and tap the `New todo` FAB by tooltip |
+| Todos widget test navigation by rail label was unstable | 2 | Navigate directly to `/todos` in the feature-focused widget test |
 
 ## Notes
 
-- Re-read this plan before major decisions.
-- Keep all changes within the Phase 1 scope from `GOAL.md`.
+- If interrupted before completion, create `P4_STATUS.md` with completed and remaining items.
+- Keep notes, theme, sync, and advanced reminders out of scope.
 - Update `progress.md` after implementation and testing steps.

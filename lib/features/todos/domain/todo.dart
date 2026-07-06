@@ -46,6 +46,7 @@ class Todo implements Syncable {
     TodoPriority? priority,
     int? updatedAt,
     int? deletedAt,
+    bool clearDueAt = false,
     int? version,
   }) {
     return Todo(
@@ -53,7 +54,7 @@ class Todo implements Syncable {
       title: title ?? this.title,
       description: description ?? this.description,
       completed: completed ?? this.completed,
-      dueAt: dueAt ?? this.dueAt,
+      dueAt: clearDueAt ? null : dueAt ?? this.dueAt,
       priority: priority ?? this.priority,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

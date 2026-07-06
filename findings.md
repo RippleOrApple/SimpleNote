@@ -2,50 +2,47 @@
 
 ## Requirements
 
-- Complete Phase 1 from `GOAL.md`: application shell and page navigation.
-- Users must be able to open Notes, Todos, and Settings.
-- Navigation must not throw errors.
-- Page titles, empty states, and primary actions should be clear and consistent.
-- Layout should work on Android-sized screens and remain reasonable on Windows-sized screens.
-- Relevant widget tests must be added or updated.
+- Complete Phase 4 from `GOAL.md`: Todos MVP.
+- Support todo create, edit title, edit description, complete/uncomplete, delete, due date, priority, and filtering.
+- Persist todos through the Phase 2 Drift database.
+- Preserve Phase 1 navigation, Phase 2 database, and Phase 3 notes behavior.
+- Add/update relevant tests.
 - `flutter analyze` and `flutter test` must pass.
+- If interrupted, leave `P4_STATUS.md` documenting completed and remaining work.
 
 ## Research Findings
 
-- Current project is a Flutter app using `MaterialApp`, Riverpod, feature folders, and route definitions in `lib/core/routing/app_routes.dart`.
-- Current `AppShell` uses a bottom `NavigationBar` only, which is suitable for Android but less ideal for Windows-sized layouts.
-- Current pages exist for Notes, Todos, and Settings, but their page content is still skeletal and inconsistent.
-- Current tests include:
-  - `test/domain/merge_policy_test.dart`
-  - `test/widget_test.dart`
-- Phase 0 created an Android emulator named `SimpleNote_Pixel` under `D:\Tool\Android Studio\avd`.
+- `TodosController` currently stores an in-memory `List<Todo>` and does not use `TodosRepository`.
+- `TodosPage` currently renders a simple checkbox list and does not provide editing, filtering, due date, or priority controls beyond display.
+- `TodosRepository` supports active todos, upsert, and soft delete but does not expose filtered queries.
+- `TodosDao` already sorts active todos and stores `completed`, `dueAt`, `priority`, `updatedAt`, and `deletedAt`.
+- Existing tests cover database repository basics, notes controller behavior, and shell navigation.
 
 ## Technical Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Use responsive navigation in `AppShell` | Satisfies Android and Windows layout acceptance criteria without duplicating pages |
-| Keep route names centralized in `AppRoutes` | Matches existing architecture and `GOAL.md` constraints |
-| Use simple Material components only | Avoids adding UI dependencies during Phase 1 |
-| Use widget tests for startup and route navigation | Directly validates the user-facing acceptance criteria |
-| Add a small shared `EmptyState` widget | Standardizes page empty states and primary actions without adding dependencies |
+| Use `AsyncNotifier<TodosState>` for todos | Matches Notes MVP architecture and handles database loading naturally |
+| Keep `TodosPage` as list/detail editor | Good MVP shape for mobile and desktop without new routes |
+| Add filter in controller state, not database query initially | Keeps repository small and allows fast in-memory filtering of active todo rows |
+| Use Material `showDatePicker` | Avoids new dependency while satisfying due date editing |
+| Keep todo filters in controller state | Satisfies filter UX without expanding DAO API in this phase |
 
 ## Issues Encountered
 
 | Issue | Resolution |
 |-------|------------|
-| `app_shell.dart` briefly contained leftover old code after patching | Inspected the file and removed the duplicate trailing block before running tests |
-| Dart formatter was run against Markdown files | Logged as a workflow error and switched to formatting only `lib` and `test` |
-| Widget test surface reset failed outside test body | Use `addTearDown` from inside the helper that sets the test surface size |
+| Todos widget test attempted to interact before async page render finished | Waited for page render and used stable route/test interactions |
+| Navigation by rail label was unstable in the todos feature test | Navigated directly to `/todos` for the feature-focused widget test |
 
 ## Resources
 
 - `GOAL.md`
 - `docs/DEVELOPMENT_PHASES.md`
-- `docs/ARCHITECTURE.md`
-- `docs/PHASE_0_SETUP_REPORT.md`
-- `lib/shared/widgets/app_shell.dart`
-- `lib/core/routing/app_routes.dart`
+- `lib/features/todos/application/todos_controller.dart`
+- `lib/features/todos/presentation/todos_page.dart`
+- `lib/features/todos/data/todos_repository.dart`
+- `lib/database/daos/todos_dao.dart`
 
 ## Visual/Browser Findings
 
