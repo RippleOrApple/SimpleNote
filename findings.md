@@ -2,54 +2,48 @@
 
 ## Requirements
 
-- Complete Phase 2 from `GOAL.md`: local database integration using Drift and SQLite.
-- Add Drift/SQLite dependencies.
-- Define schema for `notes`, `todos`, `tags`, `note_tags`, `theme_schemes`, `sync_logs`, and `app_settings`.
-- Add DAO classes and database-backed repository implementations.
-- Initialize the database from the Flutter app through provider wiring.
-- Add a simple schema version/migration strategy.
-- Add or update tests.
-- Preserve Phase 1 navigation and shell behavior.
+- Complete Phase 3 from `GOAL.md`: Notes MVP.
+- Support note create, edit, delete, search, Markdown edit/preview, tag creation, tag assignment, and tag filtering.
+- Persist notes and tags through the Phase 2 Drift database.
+- Preserve Phase 1 navigation and Phase 2 database structure.
+- Add/update relevant tests.
 - `flutter analyze` and `flutter test` must pass.
 
 ## Research Findings
 
-- `lib/database/app_database.dart` is currently a placeholder with `open()` and `close()` no-ops.
-- `lib/database/tables/database_tables.dart` already lists required table names.
-- Feature repositories currently define interfaces only:
-  - `NotesRepository`
-  - `TodosRepository`
-  - `TagsRepository`
-  - `ThemeRepository`
-- Notes and todos domain models already include sync-friendly fields: `id`, `createdAt`, `updatedAt`, `deletedAt`, `deviceId`, and `version`.
-- Current UI controllers still keep in-memory state; Phase 2 can preserve that UI while adding database-backed repository implementations for later phases.
-- Existing tests are small and fast, so database tests should stay focused and use an in-memory executor.
+- `NotesController` currently stores an in-memory `List<Note>` and does not use `NotesRepository`.
+- `NotesPage` currently renders a simple list and does not provide title/body editing, search, or tag controls.
+- `NotesRepository` supports active notes, search, upsert, and soft delete but does not yet expose note-tag relationships.
+- `TagsRepository` supports active tags, upsert, and soft delete but does not yet expose tag creation helpers or note assignment.
+- `NoteTagsDao` already supports link insert/remove and fetching links for one note.
+- Existing database tests use in-memory Drift and can be extended for note/tag relationships.
 
 ## Technical Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Define tables as separate files under `lib/database/tables/` | Keeps schema aligned with the architecture document and avoids a huge `app_database.dart` |
-| Define DAOs as Drift part files under `lib/database/daos/` | Lets generated mixins access the database while keeping DAO code organized |
-| Add concrete `Drift*Repository` classes next to repository interfaces | Preserves feature ownership and makes later controller wiring straightforward |
-| Use in-memory Drift databases in tests | Avoids platform-specific filesystem setup while proving repository insert/read/soft-delete behavior |
-| Keep Phase 2 UI controllers unchanged | Prevents async UI rewiring from expanding scope; Phase 3/4 can connect controllers to repositories |
+| Use `AsyncNotifier<NotesState>` for notes | Keeps loading/error states explicit and makes database persistence natural |
+| Keep `NotesPage` as list/detail editor | Good MVP shape for both mobile and desktop without new routes |
+| Add note-tag methods to repositories rather than using DAOs from UI | Preserves feature boundaries |
+| Use plain `TextField` for Markdown editing and `flutter_markdown` for preview | Meets MVP while avoiding heavy editor dependencies |
+| Keep tag filtering to one selected tag at a time | Simple MVP behavior that still supports multiple assigned tags per note |
 
 ## Issues Encountered
 
 | Issue | Resolution |
 |-------|------------|
-| Drift generator required literal table names | Replaced table-name constants in table classes with direct string literals |
-| Database file test initially created an extra in-memory database through shared setup | Changed tests to create only the database each test needs |
+| Widget tests timed out waiting for animated loading state | Switched test helper to in-memory database and fixed-duration pumps |
+| Markdown inline text was not found by `find.text` | Used RichText plain-text matching for inline Markdown assertions |
 
 ## Resources
 
 - `GOAL.md`
 - `docs/DEVELOPMENT_PHASES.md`
-- `docs/ARCHITECTURE.md`
-- `lib/database/app_database.dart`
-- `lib/database/tables/`
-- `lib/database/daos/`
+- `lib/features/notes/application/notes_controller.dart`
+- `lib/features/notes/presentation/notes_page.dart`
+- `lib/features/notes/data/notes_repository.dart`
+- `lib/features/tags/data/tags_repository.dart`
+- `lib/database/daos/note_tags_dao.dart`
 
 ## Visual/Browser Findings
 

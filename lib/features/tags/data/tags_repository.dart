@@ -10,6 +10,7 @@ final tagsRepositoryProvider = Provider<TagsRepository>((ref) {
 
 abstract class TagsRepository {
   Future<List<Tag>> watchActiveTags();
+  Future<Tag?> findByName(String name);
   Future<void> upsert(Tag tag);
   Future<void> softDelete(String id, int deletedAt);
 }
@@ -23,6 +24,12 @@ class DriftTagsRepository implements TagsRepository {
   Future<List<Tag>> watchActiveTags() async {
     final rows = await _database.tagsDao.activeTags();
     return rows.map(_fromRow).toList();
+  }
+
+  @override
+  Future<Tag?> findByName(String name) async {
+    final row = await _database.tagsDao.findByName(name);
+    return row == null ? null : _fromRow(row);
   }
 
   @override

@@ -11,7 +11,11 @@ final notesRepositoryProvider = Provider<NotesRepository>((ref) {
 abstract class NotesRepository {
   Future<List<Note>> watchActiveNotes();
   Future<List<Note>> search(String query);
+  Future<List<String>> noteIdsForTag(String tagId);
+  Future<Map<String, List<String>>> tagIdsByNoteId();
   Future<void> upsert(Note note);
+  Future<void> setNoteTags(
+      String noteId, Iterable<String> tagIds, int updatedAt);
   Future<void> softDelete(String id, int deletedAt);
 }
 
@@ -33,8 +37,48 @@ class DriftNotesRepository implements NotesRepository {
   }
 
   @override
+  Future<List<String>> noteIdsForTag(String tagId) {
+    return _database.noteTagsDao.noteIdsForTag(tagId);
+  }
+
+  @override
+  Future<Map<String, List<String>>> tagIdsByNoteId() async {
+    final links = await _database.noteTagsDao.allLinks();
+    final result = <String, List<String>>{};
+    for (final link in links) {
+      result.putIfAbsent(link.noteId, () => []).add(link.tagId);
+    }
+    return result;
+  }
+
+  @override
   Future<void> upsert(Note note) {
     return _database.notesDao.upsertNote(_toCompanion(note));
+  }
+
+  @override
+  Future<void> setNoteTags(
+    String noteId,
+    Iterable<String> tagIds,
+    int updatedAt,
+  ) async {
+    await _database.noteTagsDao.replaceLinksForNote(noteId, tagIds, updatedAt);
+    final note = await _database.notesDao.findById(noteId);
+    if (note != null) {
+      await _database.notesDao.upsertNote(
+        NotesCompanion(
+          id: Value(note.id),
+          title: Value(note.title),
+          content: Value(note.content),
+          createdAt: Value(note.createdAt),
+          updatedAt: Value(updatedAt),
+          deletedAt: Value(note.deletedAt),
+          pinned: Value(note.pinned),
+          deviceId: Value(note.deviceId),
+          version: Value(note.version + 1),
+        ),
+      );
+    }
   }
 
   @override
