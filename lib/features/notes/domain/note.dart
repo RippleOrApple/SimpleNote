@@ -32,6 +32,32 @@ class Note implements Syncable {
   @override
   bool get isDeleted => deletedAt != null;
 
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'title': title,
+        'content': content,
+        'createdAt': createdAt,
+        'updatedAt': updatedAt,
+        'deletedAt': deletedAt,
+        'pinned': pinned,
+        'deviceId': deviceId,
+        'version': version,
+      };
+
+  factory Note.fromJson(Map<String, Object?> json) {
+    return Note(
+      id: json['id']! as String,
+      title: json['title']! as String,
+      content: json['content']! as String,
+      createdAt: json['createdAt']! as int,
+      updatedAt: json['updatedAt']! as int,
+      deletedAt: json['deletedAt'] as int?,
+      pinned: json['pinned'] as bool? ?? false,
+      deviceId: json['deviceId']! as String,
+      version: json['version'] as int? ?? 1,
+    );
+  }
+
   Note copyWith({
     String? title,
     String? content,

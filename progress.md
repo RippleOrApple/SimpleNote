@@ -7,9 +7,8 @@
 - **Status:** complete
 - **Started:** 2026-07-06
 - Actions taken:
-  - Wrote P5 `GOAL.md`.
-  - Read P5 requirements and existing theme-related files.
-  - Inspected theme model, repository, controller, Settings UI, DAO, tests, and app theme wiring.
+  - Wrote P6 `GOAL.md`.
+  - Read existing sync domain, controller, repository, server, client, Settings UI, and database code.
 - Files created/modified:
   - `GOAL.md`
   - `task_plan.md`
@@ -20,10 +19,10 @@
 
 - **Status:** complete
 - Actions taken:
-  - Chose `AsyncNotifier<ThemeState>` for persisted theme loading.
-  - Chose fixed Material color swatches instead of a heavy color picker dependency.
-  - Chose repository/controller preset seeding.
-  - Chose controller and widget tests for P5.
+  - Chose JSON-over-HTTP manual sync.
+  - Chose pull-then-push peer sync.
+  - Chose all-row export and latest-effective-change merge.
+  - Chose sync repository, HTTP server/client, controller, and Settings UI test coverage.
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -33,27 +32,35 @@
 
 - **Status:** complete
 - Actions taken:
-  - Added preset themes and `copyWith` to `AppThemeScheme`.
-  - Reworked `ThemeController` into a database-backed `AsyncNotifier<ThemeState>`.
-  - Seeded theme presets into the local database.
-  - Updated `SimpleNoteApp` to use the active persisted theme with a Minimal Light fallback while loading.
-  - Rebuilt Settings theme controls with presets, color swatches, brightness toggle, custom theme naming, save, reset, and saved-theme activation.
-  - Expanded app theme mapping so cards, navigation, input fields, and FABs reflect theme colors.
+  - Added JSON serialization for notes, todos, tags, theme schemes, device info, snapshots, and sync results.
+  - Added all-row DAO reads and lookup helpers needed by sync.
+  - Implemented `DriftSyncRepository` for snapshot export and merge.
+  - Implemented `/health`, `/device`, `/snapshot`, and `/sync` in `LocalSyncServer`.
+  - Implemented `SyncApiClient` health/device/snapshot/send calls.
+  - Reworked `SyncController` with server lifecycle, peer address state, sync flow, results, and errors.
+  - Added manual LAN sync controls to Settings.
 - Files created/modified:
-  - `lib/app.dart`
-  - `lib/core/theme/app_theme.dart`
-  - `lib/features/settings/domain/theme_scheme.dart`
-  - `lib/features/settings/application/theme_controller.dart`
+  - `lib/features/sync/domain/device_info.dart`
+  - `lib/features/sync/domain/sync_snapshot.dart`
+  - `lib/features/sync/domain/sync_result.dart`
+  - `lib/features/sync/data/sync_repository.dart`
+  - `lib/features/sync/application/sync_controller.dart`
+  - `lib/features/sync/infrastructure/local_sync_server.dart`
+  - `lib/features/sync/infrastructure/sync_api_client.dart`
   - `lib/features/settings/presentation/settings_page.dart`
+  - `lib/database/daos/notes_dao.dart`
+  - `lib/database/daos/todos_dao.dart`
+  - `lib/database/daos/tags_dao.dart`
+  - `lib/database/daos/theme_schemes_dao.dart`
 
 ### Phase 4: Testing & Verification
 
 - **Status:** complete
 - Actions taken:
-  - Added `test/settings/theme_controller_test.dart`.
-  - Updated `test/widget_test.dart` for Settings theme customization.
-  - Ran focused theme controller test; fixed controller rebuild issue.
-  - Ran focused widget tests; updated Settings assertions for the expanded P5 UI.
+  - Added sync repository merge/export tests.
+  - Added local server/client endpoint tests.
+  - Added sync controller lifecycle/error test.
+  - Extended Settings widget test to assert LAN sync controls.
   - Ran `flutter analyze`.
   - Ran full `flutter test`.
 
@@ -61,36 +68,32 @@
 
 - **Status:** complete
 - Actions taken:
-  - Checked all P5 acceptance criteria in `GOAL.md`.
+  - Checked all P6 acceptance criteria in `GOAL.md`.
   - Updated planning files with final status and test results.
+  - PR submission handled with `scripts/update_pr.ps1`.
 
 ## Test Results
 
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
+| Sync focused tests | `flutter test test/sync` | All tests pass | All tests passed | Pass |
+| Widget focused tests | `flutter test test/widget_test.dart` | All tests pass | All tests passed | Pass |
 | Static analysis | `flutter analyze` | No issues | No issues | Pass |
-| Full test suite | `flutter test` | All tests pass | All tests passed | Pass |
-| Format | `dart format ...` | Files formatted | Completed | Pass |
-| Static analysis, early check | `flutter analyze` | No issues | No issues | Pass |
-| Theme controller test, attempt 1 | `flutter test test/settings/theme_controller_test.dart` | All tests pass | Failed: late final repository reinitialized | Fail |
-| Theme controller test, attempt 2 | `flutter test test/settings/theme_controller_test.dart` | All tests pass | All tests passed | Pass |
-| Widget tests, attempt 1 | `flutter test test/widget_test.dart` | All tests pass | Failed: Settings test expectations outdated | Fail |
-| Widget tests, attempt 2 | `flutter test test/widget_test.dart` | All tests pass | All tests passed | Pass |
+| Full test suite | `flutter test` | All tests pass | All 17 tests passed | Pass |
 
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
-| 2026-07-06 | `ThemeController` provider invalidation reinitialized a `late final` repository | 1 | Changed the field to `late ThemeRepository` |
-| 2026-07-06 | Settings page test expected `LAN sync` in the first viewport after P5 controls were added | 1 | Asserted visible P5 theme controls instead |
-| 2026-07-06 | `scrollUntilVisible` received a finder with multiple `Interview Demo` matches | 1 | Removed the unnecessary scroll and asserted the text directly |
+| 2026-07-06 | Analyzer reported unnecessary nested `const` keywords | 1 | Removed the redundant `const` keywords |
+| 2026-07-06 | Settings widget test scroll finder matched multiple widgets | 1 | Added `settings-list` key and used `dragUntilVisible` |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |----------|--------|
 | Where am I? | Complete |
-| Where am I going? | Ready for review, PR update, or Phase 6 LAN sync |
-| What's the goal? | Make theme customization real and persistent |
+| Where am I going? | Ready for review or Phase 7 experience polish |
+| What's the goal? | Make manual same-Wi-Fi sync work safely |
 | What have I learned? | See `findings.md` |
-| What have I done? | Implemented database-backed presets, customization, saving, reset, and tests |
+| What have I done? | Implemented snapshot sync, HTTP server/client, controller, Settings controls, and tests |

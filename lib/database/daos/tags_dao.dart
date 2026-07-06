@@ -11,6 +11,14 @@ class TagsDao extends DatabaseAccessor<AppDatabase> with _$TagsDaoMixin {
         .get();
   }
 
+  Future<List<TagRow>> allTags() {
+    return select(tags).get();
+  }
+
+  Future<TagRow?> findById(String id) {
+    return (select(tags)..where((tag) => tag.id.equals(id))).getSingleOrNull();
+  }
+
   Future<TagRow?> findByName(String name) {
     return (select(tags)
           ..where((tag) => tag.deletedAt.isNull() & tag.name.equals(name)))

@@ -14,6 +14,10 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
         .get();
   }
 
+  Future<List<NoteRow>> allNotes() {
+    return select(notes).get();
+  }
+
   Future<List<NoteRow>> searchActive(String query) {
     final pattern = '%$query%';
     return (select(notes)
