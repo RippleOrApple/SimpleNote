@@ -1,8 +1,8 @@
-# Task Plan: SimpleNote Phase 1 App Shell
+# Task Plan: SimpleNote Phase 2 Local Database
 
 ## Goal
 
-Build a clear, low-clutter application shell so users can navigate between Notes, Todos, and Settings on Android and Windows-sized layouts without errors.
+Connect SimpleNote to local SQLite persistence with Drift so core data can be stored and queried through database-backed repositories.
 
 ## Current Phase
 
@@ -13,28 +13,32 @@ Complete
 ### Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
-- [x] Identify scope, non-goals, constraints, and acceptance criteria
-- [x] Inspect current app shell, routes, pages, and tests
+- [x] Identify Phase 2 scope, non-goals, constraints, and acceptance criteria
+- [x] Inspect current database placeholders, repository interfaces, models, and tests
 - [x] Document findings in `findings.md`
 - **Status:** complete
 
 ### Phase 2: Planning & Structure
 
-- [x] Decide responsive shell approach
-- [x] Decide page empty-state and action patterns
-- [x] Decide test coverage needed for navigation and shell behavior
+- [x] Choose Drift schema layout
+- [x] Choose repository implementation pattern
+- [x] Choose test strategy for local database behavior
 - **Status:** complete
 
 ### Phase 3: Implementation
 
-- [x] Improve shared `AppShell`
-- [x] Improve Notes, Todos, and Settings page layouts
-- [x] Keep scope limited to navigation and shell UI
+- [x] Add Drift / SQLite dependencies
+- [x] Define database tables
+- [x] Add DAOs
+- [x] Add database provider and initialization
+- [x] Implement database-backed repositories
+- [x] Generate Drift code
 - **Status:** complete
 
 ### Phase 4: Testing & Verification
 
-- [x] Add or update widget tests
+- [x] Add or update database/repository tests
+- [x] Run code generation if needed
 - [x] Run `flutter analyze`
 - [x] Run `flutter test`
 - [x] Verify acceptance criteria against `GOAL.md`
@@ -49,32 +53,29 @@ Complete
 
 ## Key Questions
 
-1. How should navigation adapt across Android and Windows-sized layouts?
-   - Use a bottom `NavigationBar` on compact screens and a side `NavigationRail` on wider screens.
-2. How much functionality should Phase 1 implement?
-   - Only the app shell, navigation, consistent page structure, empty states, and obvious primary actions. Persistence, full editing, and sync stay out of scope.
-3. What tests are needed?
-   - Widget tests should verify app startup, navigation to all pages, and basic responsive shell behavior.
+1. Should tables live in separate files or inside `app_database.dart`?
+   - Tables will live in separate files under `lib/database/tables/`.
+2. Should current UI controllers be rewired to repositories in this phase?
+   - Not yet. Phase 2 will add database-backed repositories and providers while preserving Phase 1 in-memory UI behavior.
+3. How should tests verify persistence without relying on platform file paths?
+   - Use Drift in-memory databases for repository tests.
 
 ## Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Use `NavigationBar` for compact layouts and `NavigationRail` for wide layouts | Matches Android and desktop expectations while keeping one shared shell |
-| Keep page content as lightweight placeholders plus current in-memory demo actions | Phase 1 is about navigation and structure, not full feature implementation |
-| Add reusable empty-state presentation inside pages instead of a new dependency | Keeps UI consistent without adding heavy packages |
-| Continue using Material icons and existing Flutter/Riverpod dependencies | Preserves current stack and avoids scope creep |
+| Define Drift tables in `lib/database/tables/` and DAOs in `lib/database/daos/` | Matches `GOAL.md` scope and keeps schema/database access organized |
+| Keep current UI controllers in memory for now, but add database-backed repositories and providers | Preserves Phase 1 behavior while preparing Phase 3/4 to consume real persistence |
+| Use in-memory Drift databases in tests | Verifies repository behavior without depending on platform file paths |
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |-------|---------|------------|
-| Dart formatter was run against Markdown files | 1 | Re-run formatter only on Dart source folders: `lib test` |
-| Widget tests failed because `setSurfaceSize(null)` ran outside a widget test | 1 | Move surface reset into per-test `addTearDown` inside a helper |
-| `git push` failed with connection reset | 1 | Retry push after transient network failure |
+| Drift warned that `tableName` must directly return string literals | 1 | Replace table name constants in Drift table classes with string literals |
 
 ## Notes
 
 - Re-read this plan before major decisions.
-- Keep all changes within the Phase 1 scope from `GOAL.md`.
+- Keep all changes within the Phase 2 scope from `GOAL.md`.
 - Update `progress.md` after implementation and testing steps.

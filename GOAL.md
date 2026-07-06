@@ -2,63 +2,74 @@
 
 ## Objective
 
-Complete Phase 1: build a clear application shell and page navigation structure for SimpleNote.
+Complete Phase 2: connect SimpleNote to local SQLite persistence using Drift.
 
-Users should be able to move between Notes, Todos, and Settings without errors, and each page should have a simple, consistent layout that works as the foundation for later feature development.
+Notes, todos, tags, theme schemes, sync logs, and app settings should have clear database tables and repository implementations so later feature phases can store and retrieve real local data instead of relying on in-memory state.
 
 ## Scope
 
 - What should change:
-  - Improve the shared app shell.
-  - Improve navigation between Notes, Todos, and Settings.
-  - Make the three core pages visually consistent.
-  - Standardize page titles, empty states, and primary actions.
-  - Keep the UI simple and suitable for both Windows and Android.
+  - Add Drift and SQLite-related dependencies.
+  - Define the local database schema.
+  - Create DAO classes for core tables.
+  - Implement repository classes backed by the database.
+  - Initialize the database from the Flutter app.
+  - Add a basic migration/versioning strategy.
+  - Keep existing Phase 1 navigation and UI behavior working.
 
 - What files, features, or workflows are in scope:
-  - `lib/app.dart`
-  - `lib/core/routing/app_routes.dart`
-  - `lib/shared/widgets/app_shell.dart`
-  - `lib/features/notes/presentation/notes_page.dart`
-  - `lib/features/todos/presentation/todos_page.dart`
-  - `lib/features/settings/presentation/settings_page.dart`
-  - Basic navigation workflow:
-    - Notes page
-    - Todos page
-    - Settings page
+  - `pubspec.yaml`
+  - `pubspec.lock`
+  - `lib/database/app_database.dart`
+  - `lib/database/tables/`
+  - `lib/database/daos/`
+  - `lib/features/notes/data/notes_repository.dart`
+  - `lib/features/todos/data/todos_repository.dart`
+  - `lib/features/tags/data/tags_repository.dart`
+  - `lib/features/settings/data/theme_repository.dart`
+  - Database initialization and provider wiring.
+  - Repository tests or database-focused tests.
 
 ## Non-goals
 
 - What should not change:
-  - Do not implement SQLite or Drift persistence yet.
-  - Do not implement full note editing yet.
-  - Do not implement full todo editing yet.
-  - Do not implement real LAN sync yet.
-  - Do not introduce account login, cloud sync, or user authentication.
+  - Do not build the full note editor in this phase.
+  - Do not build the full todo editor in this phase.
+  - Do not implement Markdown editing improvements in this phase.
+  - Do not implement real LAN sync in this phase.
+  - Do not add cloud sync, account login, or authentication.
+  - Do not redesign the Phase 1 app shell unless required for database wiring.
 
 - What should be left for later:
-  - Phase 2: local database integration.
   - Phase 3: notes MVP.
   - Phase 4: todos MVP.
   - Phase 5: theme customization.
   - Phase 6: LAN sync MVP.
+  - Import/export and backup flows.
 
 ## Acceptance Criteria
 
-- [x] The app starts successfully.
-- [x] The Notes page can be opened.
-- [x] The Todos page can be opened.
-- [x] The Settings page can be opened.
-- [x] Navigation between the three pages does not throw errors.
-- [x] Page titles are clear and consistent.
-- [x] Empty states are clear and consistent.
-- [x] Primary actions are easy to identify.
-- [x] The layout is usable on Android-sized screens.
-- [x] The layout remains reasonable on Windows-sized screens.
-- [x] Relevant widget tests are added or updated.
+- [x] Drift and SQLite dependencies are added successfully.
+- [x] The project can generate Drift code.
+- [x] A database file can be created locally.
+- [x] The database schema includes `notes`.
+- [x] The database schema includes `todos`.
+- [x] The database schema includes `tags`.
+- [x] The database schema includes `note_tags`.
+- [x] The database schema includes `theme_schemes`.
+- [x] The database schema includes `sync_logs`.
+- [x] The database schema includes `app_settings`.
+- [x] Notes can be inserted through a repository.
+- [x] Notes can be read back through a repository.
+- [x] Todos can be inserted through a repository.
+- [x] Todos can be read back through a repository.
+- [x] Delete operations use soft-delete fields where applicable.
+- [x] Repository implementations no longer rely only on in-memory state.
+- [x] Existing Notes, Todos, and Settings navigation still works.
+- [x] Relevant tests are added or updated.
 - [x] `flutter analyze` passes.
 - [x] `flutter test` passes.
-- [x] The final result matches the intended simple, low-clutter user experience.
+- [x] The final result prepares the app cleanly for Phase 3 and Phase 4 feature work.
 
 ## Constraints
 
@@ -66,14 +77,16 @@ Users should be able to move between Notes, Todos, and Settings without errors, 
   - Keep Flutter as the cross-platform framework.
   - Keep Riverpod as the state management direction.
   - Keep the current feature-based directory structure.
-  - Keep shared UI shell logic in `lib/shared/widgets/app_shell.dart`.
-  - Keep route definitions centralized in `lib/core/routing/app_routes.dart`.
+  - Keep database code under `lib/database/`.
+  - Keep feature repositories under each feature's `data/` directory.
+  - Keep Phase 1 shell and navigation behavior intact.
 
 - Technical limits:
   - Windows desktop runtime may still require Visual Studio C++ workload.
-  - Android verification should use the `SimpleNote_Pixel` emulator.
-  - Avoid adding heavy UI dependencies at this stage.
-  - Avoid implementing storage or sync logic before the UI shell is stable.
+  - Android verification should use the `SimpleNote_Pixel` emulator when runtime validation is needed.
+  - Avoid adding heavy dependencies unrelated to local persistence.
+  - Keep schema versioning simple but explicit.
+  - Generated Drift files should be committed if they are required to build.
 
 - Compatibility requirements:
   - The app should continue to target Windows and Android.
@@ -83,11 +96,14 @@ Users should be able to move between Notes, Todos, and Settings without errors, 
 ## Notes
 
 - Extra context:
-  - This goal corresponds to `docs/DEVELOPMENT_PHASES.md`, section `?? 1:??????????`.
-  - Phase 0 has already initialized the Flutter scaffold and Android emulator.
-  - The UI should stay minimal and practical, matching the product direction of a local-first notes and todos app.
+  - This goal corresponds to `docs/DEVELOPMENT_PHASES.md`, section `阶段 2：本地数据库接入`.
+  - Phase 1 has completed the app shell and page navigation.
+  - The project already has placeholder repository interfaces and database files.
+  - Prefer a small, testable database layer over premature feature UI work.
 
 - Links or examples:
   - `docs/DEVELOPMENT_PHASES.md`
-  - `docs/PHASE_0_SETUP_REPORT.md`
   - `docs/ARCHITECTURE.md`
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
