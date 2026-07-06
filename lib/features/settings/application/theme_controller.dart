@@ -77,7 +77,7 @@ class ThemeController extends AsyncNotifier<ThemeState> {
     }
     final draftTheme = current.draftTheme.copyWith(
       id: 'draft-theme',
-      name: 'Custom Preview',
+      name: '自定义预览',
       backgroundColor: backgroundColor,
       primaryColor: primaryColor,
       textColor: textColor,
@@ -100,7 +100,7 @@ class ThemeController extends AsyncNotifier<ThemeState> {
     }
     final themeName = name?.trim().isNotEmpty == true
         ? name!.trim()
-        : 'Custom Theme ${current.savedThemes.length + 1}';
+        : '自定义主题 ${current.savedThemes.length + 1}';
     final customTheme = current.draftTheme.copyWith(
       id: IdGenerator.create(),
       name: themeName,

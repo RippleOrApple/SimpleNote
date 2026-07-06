@@ -67,17 +67,17 @@ class AppShell extends StatelessWidget {
         NavigationDestination(
           icon: Icon(Icons.note_outlined),
           selectedIcon: Icon(Icons.note),
-          label: 'Notes',
+          label: '笔记',
         ),
         NavigationDestination(
           icon: Icon(Icons.check_circle_outline),
           selectedIcon: Icon(Icons.check_circle),
-          label: 'Todos',
+          label: '待办',
         ),
         NavigationDestination(
           icon: Icon(Icons.settings_outlined),
           selectedIcon: Icon(Icons.settings),
-          label: 'Settings',
+          label: '设置',
         ),
       ];
 
@@ -85,17 +85,17 @@ class AppShell extends StatelessWidget {
         NavigationRailDestination(
           icon: Icon(Icons.note_outlined),
           selectedIcon: Icon(Icons.note),
-          label: Text('Notes'),
+          label: Text('笔记'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.check_circle_outline),
           selectedIcon: Icon(Icons.check_circle),
-          label: Text('Todos'),
+          label: Text('待办'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.settings_outlined),
           selectedIcon: Icon(Icons.settings),
-          label: Text('Settings'),
+          label: Text('设置'),
         ),
       ];
 

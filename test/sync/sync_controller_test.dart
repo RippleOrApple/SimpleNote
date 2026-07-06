@@ -30,7 +30,7 @@ void main() {
 
     await controller.syncWithPeer('');
     expect(controller.state.status, SyncStatus.error);
-    expect(controller.state.errorMessage, contains('Peer address'));
+    expect(controller.state.errorMessage, contains('对端地址'));
 
     await controller.stopServer();
     expect(controller.state.isServerRunning, isFalse);
