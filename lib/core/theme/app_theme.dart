@@ -5,6 +5,8 @@ import '../../features/settings/domain/theme_scheme.dart';
 class AppTheme {
   const AppTheme._();
 
+  static const fontFamily = 'NotoSansSC';
+
   static ThemeData fromScheme(AppThemeScheme scheme) {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: scheme.primaryColor,
@@ -15,9 +17,11 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: fontFamily,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: scheme.backgroundColor,
       textTheme: Typography.material2021().black.apply(
+            fontFamily: fontFamily,
             bodyColor: scheme.textColor,
             displayColor: scheme.textColor,
           ),
