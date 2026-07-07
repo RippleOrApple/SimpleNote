@@ -4,7 +4,7 @@
 
 ## 当前版本
 
-`v1.0.0`
+`v1.0.1`
 
 这是一个可演示的完整 MVP，已经完成从产品需求、架构设计、分阶段开发、测试验证到发布准备的主要流程。
 
@@ -52,6 +52,7 @@ D:\DevEnv\Flutter\bin\flutter.bat test
 - [分阶段开发计划](docs/DEVELOPMENT_PHASES.md)
 - [v1.0 项目总结](docs/V1_PROJECT_SUMMARY.md)
 - [v1.0 发布说明](docs/RELEASE_NOTES_v1.0.0.md)
+- [v1.0.1 发布说明](docs/RELEASE_NOTES_v1.0.1.md)
 - [Codex Skills 使用记录](docs/SKILLS_USED.md)
 
 ## 阶段完成情况
