@@ -12,8 +12,8 @@ class AppSettingsDao extends DatabaseAccessor<AppDatabase>
     return row?.value;
   }
 
-  Future<void> setValue(String key, String value) {
-    return into(appSettings).insertOnConflictUpdate(
+  Future<void> setValue(String key, String value) async {
+    await into(appSettings).insertOnConflictUpdate(
       AppSettingsCompanion.insert(key: key, value: value),
     );
   }

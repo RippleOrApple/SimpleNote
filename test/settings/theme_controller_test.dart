@@ -1,12 +1,33 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/database/app_database.dart';
+import 'package:simple_note/features/appearance/application/appearance_controller.dart';
+import 'package:simple_note/features/appearance/domain/appearance_settings.dart';
+import 'package:simple_note/features/appearance/domain/rgb_color.dart';
 import 'package:simple_note/features/settings/application/theme_controller.dart';
 import 'package:simple_note/features/settings/domain/theme_scheme.dart';
 
 void main() {
+  test('fresh adapter initialization keeps exact V2 defaults', () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final container = ProviderContainer(
+      overrides: [appDatabaseProvider.overrideWithValue(database)],
+    );
+    addTearDown(container.dispose);
+
+    await container.read(themeControllerProvider.future);
+    final appearance = await container.read(
+      appearanceControllerProvider.future,
+    );
+
+    expect(appearance.portable, AppearanceSettings.defaults());
+    expect(appearance.customColors, isEmpty);
+  });
+
   test('loads presets saves custom theme and restores active theme', () async {
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
@@ -49,5 +70,40 @@ void main() {
         .restoreDefaultTheme();
     final restored = await container.read(themeControllerProvider.future);
     expect(restored.activeTheme.id, AppThemeScheme.minimalLight.id);
+
+    await container.read(appearanceControllerProvider.future);
+    await container
+        .read(appearanceControllerProvider.notifier)
+        .setAccent(const RgbColor(0x5E9D83));
+    final adapted = await container.read(themeControllerProvider.future);
+    expect(adapted.activeTheme.primaryColor, const Color(0xFF5E9D83));
+  });
+
+  test('preserves an existing active V1 theme while seeding presets', () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    await database.themeSchemesDao.upsertTheme(
+      const ThemeSchemesCompanion(
+        id: Value('legacy-custom'),
+        name: Value('Legacy custom'),
+        backgroundColor: Value(0xFFF8F8F6),
+        primaryColor: Value(0xFF123456),
+        textColor: Value(0xFF202124),
+        surfaceColor: Value(0xFFFFFFFF),
+        brightness: Value('light'),
+        createdAt: Value(1),
+        updatedAt: Value(1),
+        isActive: Value(true),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [appDatabaseProvider.overrideWithValue(database)],
+    );
+    addTearDown(container.dispose);
+
+    final state = await container.read(themeControllerProvider.future);
+
+    expect(state.activeTheme.id, 'legacy-custom');
+    expect(state.activeTheme.primaryColor, const Color(0xFF123456));
   });
 }
