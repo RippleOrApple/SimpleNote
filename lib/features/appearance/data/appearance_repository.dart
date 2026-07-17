@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 
 import '../../../core/utils/id_generator.dart';
 import '../../../core/utils/time.dart';
@@ -10,6 +11,7 @@ import '../../sync/data/sync_repository.dart';
 import '../../sync/domain/device_info.dart';
 import '../domain/appearance_presets.dart';
 import '../domain/appearance_settings.dart';
+import '../domain/background_image.dart';
 import '../domain/custom_color.dart';
 import '../domain/device_appearance_profile.dart';
 import '../domain/rgb_color.dart';
@@ -36,6 +38,19 @@ abstract class AppearanceRepository {
   Future<void> renameCustomColor(String id, String name);
   Future<void> reorderCustomColors(List<String> orderedIds);
   Future<void> deleteCustomColor(String id);
+  Future<List<BackgroundImage>> listBackgroundImages();
+  Future<BackgroundImage> addOrReuseBackgroundImage({
+    required String sha256,
+    required String mimeType,
+    required int byteSize,
+    required int width,
+    required int height,
+    required String relativePath,
+    required String absolutePath,
+    required bool syncEnabled,
+  });
+  Future<bool> hasBackgroundImageWithSha256(String sha256);
+  Future<void> deleteBackgroundImage(String id);
 }
 
 final class DriftAppearanceRepository implements AppearanceRepository {
@@ -226,6 +241,121 @@ final class DriftAppearanceRepository implements AppearanceRepository {
     });
   }
 
+  @override
+  Future<List<BackgroundImage>> listBackgroundImages() async {
+    final rows = await _database.appearanceDao.activeBackgroundImages();
+    return rows.map(_backgroundImageFromRow).toList(growable: false);
+  }
+
+  @override
+  Future<BackgroundImage> addOrReuseBackgroundImage({
+    required String sha256,
+    required String mimeType,
+    required int byteSize,
+    required int width,
+    required int height,
+    required String relativePath,
+    required String absolutePath,
+    required bool syncEnabled,
+  }) {
+    return _database.transaction(() async {
+      final existing =
+          await _database.appearanceDao.activeBackgroundImageByContent(
+        sha256: sha256,
+        syncEnabled: syncEnabled,
+      );
+      if (existing != null) {
+        return _backgroundImageFromRow(
+          existing,
+          absolutePath: absolutePath,
+        );
+      }
+
+      final now = Clock.nowMillis();
+      final backgroundImage = BackgroundImage(
+        id: IdGenerator.create(),
+        sha256: sha256,
+        mimeType: mimeType,
+        byteSize: byteSize,
+        width: width,
+        height: height,
+        relativePath: relativePath,
+        absolutePath: absolutePath,
+        syncEnabled: syncEnabled,
+        createdAt: now,
+        updatedAt: now,
+        deviceId: _device.deviceId,
+        version: 1,
+      );
+      await _database.appearanceDao.upsertBackgroundImage(
+        _backgroundImageToCompanion(backgroundImage),
+      );
+      return backgroundImage;
+    });
+  }
+
+  @override
+  Future<bool> hasBackgroundImageWithSha256(String sha256) async {
+    final rows = await _database.appearanceDao.backgroundImagesBySha256(sha256);
+    return rows.isNotEmpty;
+  }
+
+  @override
+  Future<void> deleteBackgroundImage(String id) {
+    return _database.transaction(() async {
+      final row = await _database.appearanceDao.backgroundImageById(id);
+      if (row == null || row.deletedAt != null) {
+        return;
+      }
+
+      final now = Clock.nowMillis();
+      final deleted = _backgroundImageFromRow(row).copyWith(
+        deletedAt: now,
+        updatedAt: now,
+        deviceId: _device.deviceId,
+        version: row.version + 1,
+      );
+      await _database.appearanceDao.upsertBackgroundImage(
+        _backgroundImageToCompanion(deleted),
+      );
+
+      if (row.syncEnabled) {
+        final storedPortable = await _database.appSettingsDao.getValue(
+          AppearanceRepository.portableSettingsKey,
+        );
+        final portable = _decodePortable(storedPortable);
+        if (portable?.background.kind == BackgroundKind.syncedImage &&
+            portable?.background.imageId == id) {
+          final pureBackground = AppearancePresets.backgroundColors.contains(
+            portable!.lastPureBackground,
+          )
+              ? BackgroundSelection.presetColor(
+                  portable.lastPureBackground,
+                )
+              : BackgroundSelection.customColor(
+                  portable.lastPureBackground,
+                );
+          await savePortable(
+            portable.copyWith(background: pureBackground),
+          );
+        }
+      }
+
+      final profileId = _profileId(_device.platform);
+      final profileRow =
+          await _database.appearanceDao.deviceProfileById(profileId);
+      if (profileRow?.localBackgroundImageId == id) {
+        final profile = _deviceProfileFromRow(profileRow!).copyWith(
+          clearLocalBackgroundImageId: true,
+          updatedAt: now,
+        );
+        await _database.appearanceDao.upsertDeviceProfile(
+          _deviceProfileToCompanion(profile),
+        );
+      }
+    });
+  }
+
   AppearanceSettings? _decodePortable(String? stored) {
     if (stored == null) {
       return null;
@@ -336,6 +466,48 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       deletedAt: Value(color.deletedAt),
       deviceId: Value(color.deviceId),
       version: Value(color.version),
+    );
+  }
+
+  static BackgroundImage _backgroundImageFromRow(
+    BackgroundImageRow row, {
+    String? absolutePath,
+  }) {
+    return BackgroundImage(
+      id: row.id,
+      sha256: row.sha256,
+      mimeType: row.mimeType,
+      byteSize: row.byteSize,
+      width: row.width,
+      height: row.height,
+      relativePath: row.relativePath,
+      absolutePath: absolutePath ?? p.absolute(row.relativePath),
+      syncEnabled: row.syncEnabled,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      deletedAt: row.deletedAt,
+      deviceId: row.deviceId,
+      version: row.version,
+    );
+  }
+
+  static BackgroundImagesCompanion _backgroundImageToCompanion(
+    BackgroundImage backgroundImage,
+  ) {
+    return BackgroundImagesCompanion(
+      id: Value(backgroundImage.id),
+      sha256: Value(backgroundImage.sha256),
+      mimeType: Value(backgroundImage.mimeType),
+      byteSize: Value(backgroundImage.byteSize),
+      width: Value(backgroundImage.width),
+      height: Value(backgroundImage.height),
+      relativePath: Value(backgroundImage.relativePath),
+      syncEnabled: Value(backgroundImage.syncEnabled),
+      createdAt: Value(backgroundImage.createdAt),
+      updatedAt: Value(backgroundImage.updatedAt),
+      deletedAt: Value(backgroundImage.deletedAt),
+      deviceId: Value(backgroundImage.deviceId),
+      version: Value(backgroundImage.version),
     );
   }
 

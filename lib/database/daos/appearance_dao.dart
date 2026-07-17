@@ -27,6 +27,47 @@ class AppearanceDao extends DatabaseAccessor<AppDatabase>
     await into(customColors).insertOnConflictUpdate(color);
   }
 
+  Future<List<BackgroundImageRow>> activeBackgroundImages() {
+    return (select(backgroundImages)
+          ..where((entry) => entry.deletedAt.isNull())
+          ..orderBy([
+            (entry) => OrderingTerm.asc(entry.createdAt),
+            (entry) => OrderingTerm.asc(entry.id),
+          ]))
+        .get();
+  }
+
+  Future<BackgroundImageRow?> backgroundImageById(String id) {
+    return (select(backgroundImages)..where((entry) => entry.id.equals(id)))
+        .getSingleOrNull();
+  }
+
+  Future<BackgroundImageRow?> activeBackgroundImageByContent({
+    required String sha256,
+    required bool syncEnabled,
+  }) {
+    return (select(backgroundImages)
+          ..where(
+            (entry) =>
+                entry.sha256.equals(sha256) &
+                entry.syncEnabled.equals(syncEnabled) &
+                entry.deletedAt.isNull(),
+          ))
+        .getSingleOrNull();
+  }
+
+  Future<List<BackgroundImageRow>> backgroundImagesBySha256(String sha256) {
+    return (select(backgroundImages)
+          ..where((entry) => entry.sha256.equals(sha256)))
+        .get();
+  }
+
+  Future<void> upsertBackgroundImage(
+    BackgroundImagesCompanion backgroundImage,
+  ) async {
+    await into(backgroundImages).insertOnConflictUpdate(backgroundImage);
+  }
+
   Future<DeviceAppearanceProfileRow?> deviceProfileById(String id) {
     return (select(deviceAppearanceProfiles)
           ..where((profile) => profile.id.equals(id)))

@@ -372,6 +372,11 @@ final class _DelayedAppearanceRepository implements AppearanceRepository {
   Future<void> reorderCustomColors(List<String> orderedIds) {
     throw UnsupportedError('Not used by this controller test.');
   }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnsupportedError('Not used by this controller test.');
+  }
 }
 
 final class _DelayedPortableRead {
