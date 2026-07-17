@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:simple_note/app.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/settings/domain/theme_scheme.dart';
+import 'package:simple_note/shared/widgets/app_background.dart';
 
 void main() {
   testWidgets('SimpleNote starts on the notes page', (tester) async {
@@ -14,6 +15,15 @@ void main() {
     expect(find.text('笔记'), findsWidgets);
     expect(find.text('还没有笔记'), findsOneWidget);
     expect(find.text('新建笔记'), findsWidgets);
+  });
+
+  testWidgets('SimpleNote installs the appearance theme and global background',
+      (tester) async {
+    await _pumpApp(tester);
+
+    expect(find.byType(AppBackground), findsOneWidget);
+    final theme = Theme.of(tester.element(find.byType(Scaffold).first));
+    expect(theme.textTheme.bodyMedium?.fontFamily, 'ResourceHanRoundedCN');
   });
 
   testWidgets('bottom navigation opens todos and settings on compact screens',
@@ -58,6 +68,10 @@ void main() {
       '# Heading\n\n- item\n- [ ] task\n\n**bold** [link](https://example.com) `code`\n\n```dart\nvoid main() {}\n```\n\n> quote',
     );
     await tester.pump(const Duration(milliseconds: 100));
+    final noteEditor = tester.widget<TextField>(
+      find.byKey(const Key('note-content-field')),
+    );
+    expect(noteEditor.style?.fontFamily, 'LXGWWenKai');
 
     await tester.enterText(find.byKey(const Key('new-tag-field')), 'work');
     await tester.tap(find.text('添加标签'));
@@ -215,6 +229,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Interview Demo'), findsWidgets);
+
+    await tester.dragUntilVisible(
+      find.byKey(const Key('appearance-background-image-button')),
+      find.byKey(const Key('settings-list')),
+      const Offset(0, -320),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('appearance-background-image-button')),
+      findsOneWidget,
+    );
 
     await tester.dragUntilVisible(
       find.byKey(const Key('sync-start-server-button')),

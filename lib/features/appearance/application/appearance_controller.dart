@@ -73,6 +73,12 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
     return _updatePortable((portable) => portable.copyWith(accent: value));
   }
 
+  Future<void> setBrightnessMode(AppBrightnessMode value) {
+    return _updatePortable(
+      (portable) => portable.copyWith(brightnessMode: value),
+    );
+  }
+
   Future<void> setBackground(BackgroundSelection value) {
     return _updatePortable((portable) {
       final pureColor = switch (value.kind) {
@@ -153,6 +159,33 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
     return _updateDevice((profile) => profile.copyWith(hapticsMode: value));
   }
 
+  Future<void> addCustomColor({
+    required String name,
+    required RgbColor color,
+  }) {
+    return _updateCustomColors(
+      () => _repository.addCustomColor(name: name, color: color),
+    );
+  }
+
+  Future<void> renameCustomColor(String id, String name) {
+    return _updateCustomColors(
+      () => _repository.renameCustomColor(id, name),
+    );
+  }
+
+  Future<void> reorderCustomColors(List<String> orderedIds) {
+    return _updateCustomColors(
+      () => _repository.reorderCustomColors(orderedIds),
+    );
+  }
+
+  Future<void> deleteCustomColor(String id) {
+    return _updateCustomColors(
+      () => _repository.deleteCustomColor(id),
+    );
+  }
+
   Future<void> _updatePortable(
     AppearanceSettings Function(AppearanceSettings current) update,
   ) {
@@ -183,6 +216,21 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
       _mutationRevision++;
       if (epoch == _buildEpoch) {
         state = AsyncData(current.copyWith(deviceProfile: profile));
+      } else {
+        ref.invalidateSelf();
+      }
+    });
+  }
+
+  Future<void> _updateCustomColors(Future<Object?> Function() operation) {
+    return _enqueueMutation(() async {
+      final epoch = _buildEpoch;
+      final current = _requireState();
+      await operation();
+      final customColors = await _repository.listCustomColors();
+      _mutationRevision++;
+      if (epoch == _buildEpoch) {
+        state = AsyncData(current.copyWith(customColors: customColors));
       } else {
         ref.invalidateSelf();
       }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/app_shell.dart';
+import '../../appearance/presentation/appearance_page.dart';
 import '../../sync/application/sync_controller.dart';
 import '../../sync/domain/sync_result.dart';
 import '../application/theme_controller.dart';
@@ -184,6 +185,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         icon: const Icon(Icons.check_circle_outline),
                       ),
               ),
+            const Divider(height: 36),
+            Text(
+              'Appearance V2',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            const AppearancePage(embedded: true),
             const Divider(height: 36),
             Text('同步', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),

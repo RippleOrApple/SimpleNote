@@ -166,6 +166,21 @@ void main() {
     expect(sentinel.readAsStringSync(), 'unchanged');
   });
 
+  test('catalog excludes missing files without resolving against CWD',
+      () async {
+    final imported = await service.importImage(
+      XFile.fromData(pngBytes, name: 'catalog.png'),
+      syncEnabled: false,
+    );
+    await File(imported.absolutePath).delete();
+
+    final catalog = await service.loadCatalog();
+
+    expect(catalog.availableImages, isEmpty);
+    expect(catalog.unavailableImageIds, {imported.id});
+    expect(p.isAbsolute(imported.absolutePath), isTrue);
+  });
+
   test('reuses an existing content file and active metadata', () async {
     final source = XFile.fromData(pngBytes, name: 'sample.png');
     final first = await service.importImage(source, syncEnabled: false);

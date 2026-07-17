@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../motion/app_motion.dart';
 import '../../features/notes/presentation/notes_page.dart';
 import '../../features/settings/presentation/settings_page.dart';
 import '../../features/todos/presentation/todos_page.dart';
@@ -17,14 +18,17 @@ class AppRoutes {
         settings: (_) => const SettingsPage(),
       };
 
-  static Route<void> onGenerateRoute(RouteSettings settings) {
+  static Route<void> onGenerateRoute(
+    RouteSettings settings, {
+    Duration transitionDuration = AppMotion.standard,
+  }) {
     final builder = routes[settings.name] ?? routes[home]!;
 
     return PageRouteBuilder<void>(
       settings: settings,
       pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-      transitionDuration: const Duration(milliseconds: 120),
-      reverseTransitionDuration: const Duration(milliseconds: 90),
+      transitionDuration: transitionDuration,
+      reverseTransitionDuration: transitionDuration,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         final curve = CurvedAnimation(
           parent: animation,

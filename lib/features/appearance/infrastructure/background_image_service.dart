@@ -4,14 +4,34 @@ import 'dart:typed_data';
 
 import 'package:cross_file/cross_file.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 import '../../../core/utils/id_generator.dart';
 import '../data/appearance_repository.dart';
 import '../domain/background_image.dart';
 import '../domain/rgb_color.dart';
 import 'palette_extractor.dart';
+
+final applicationSupportDirectoryProvider = FutureProvider<Directory>((ref) {
+  return getApplicationSupportDirectory();
+});
+
+final backgroundImageServiceProvider =
+    FutureProvider<BackgroundImageService>((ref) async {
+  return BackgroundImageService(
+    repository: ref.watch(appearanceRepositoryProvider),
+    rootDirectory: await ref.watch(applicationSupportDirectoryProvider.future),
+  );
+});
+
+final backgroundImageCatalogProvider =
+    FutureProvider<BackgroundImageCatalog>((ref) async {
+  final service = await ref.watch(backgroundImageServiceProvider.future);
+  return service.loadCatalog();
+});
 
 final class BackgroundImageService {
   BackgroundImageService({
@@ -20,7 +40,15 @@ final class BackgroundImageService {
     PaletteExtractor paletteExtractor = const PaletteExtractor(),
   })  : _repository = repository,
         _rootDirectory = rootDirectory,
-        _paletteExtractor = paletteExtractor;
+        _paletteExtractor = paletteExtractor {
+    if (!p.isAbsolute(rootDirectory.path)) {
+      throw ArgumentError.value(
+        rootDirectory.path,
+        'rootDirectory',
+        'Must be an absolute application-support directory.',
+      );
+    }
+  }
 
   static const maxByteSize = 20 * 1024 * 1024;
 
@@ -129,6 +157,25 @@ final class BackgroundImageService {
     return _paletteExtractor.extract(decoded.bytes);
   }
 
+  Future<BackgroundImageCatalog> loadCatalog() async {
+    final images = await _repository.listBackgroundImages(
+      rootDirectory: _rootDirectory,
+    );
+    final available = <BackgroundImage>[];
+    final unavailableIds = <String>{};
+    for (final image in images) {
+      if (await File(image.absolutePath).exists()) {
+        available.add(image);
+      } else {
+        unavailableIds.add(image.id);
+      }
+    }
+    return BackgroundImageCatalog(
+      availableImages: available,
+      unavailableImageIds: unavailableIds,
+    );
+  }
+
   Future<void> deleteImage(String id) {
     return _repository.deleteBackgroundImage(id);
   }
@@ -194,6 +241,17 @@ final class BackgroundImageService {
       throw FormatException('Image data could not be decoded: $error');
     }
   }
+}
+
+final class BackgroundImageCatalog {
+  BackgroundImageCatalog({
+    required Iterable<BackgroundImage> availableImages,
+    required Iterable<String> unavailableImageIds,
+  })  : availableImages = List.unmodifiable(availableImages),
+        unavailableImageIds = Set.unmodifiable(unavailableImageIds);
+
+  final List<BackgroundImage> availableImages;
+  final Set<String> unavailableImageIds;
 }
 
 final class _DecodedImage {

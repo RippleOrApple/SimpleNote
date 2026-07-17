@@ -176,6 +176,7 @@ void main() {
     );
 
     await controller.setNotePaper(const RgbColor(0xF8F0DE));
+    await controller.setBrightnessMode(AppBrightnessMode.dark);
     await controller.setTintStrength(2);
     await controller.setGlassOpacity(-1);
     await controller.setDarkOverlay(0.8);
@@ -186,6 +187,7 @@ void main() {
     container.invalidate(appearanceControllerProvider);
     final reloaded = await container.read(appearanceControllerProvider.future);
     expect(reloaded.portable.notePaper, const RgbColor(0xF8F0DE));
+    expect(reloaded.portable.brightnessMode, AppBrightnessMode.dark);
     expect(reloaded.portable.tintStrength, 1);
     expect(reloaded.portable.glassOpacity, 0);
     expect(reloaded.portable.darkOverlay, 0.8);
@@ -227,6 +229,35 @@ void main() {
     expect(windows.deviceProfile.density, LayoutDensity.compact);
     expect(windows.deviceProfile.localBackgroundImageId, 'windows-image');
     expect(windows.deviceProfile.hapticsMode, HapticsMode.off);
+  });
+
+  test('manages My Colors through the controller state', () async {
+    final container = _container(database, _windowsDevice);
+    addTearDown(container.dispose);
+    await container.read(appearanceControllerProvider.future);
+    final controller = container.read(appearanceControllerProvider.notifier);
+
+    await controller.addCustomColor(
+      name: 'Forest',
+      color: const RgbColor(0x5E9D83),
+    );
+    await controller.addCustomColor(
+      name: 'Rose',
+      color: const RgbColor(0xB66B86),
+    );
+    var state = await container.read(appearanceControllerProvider.future);
+    expect(state.customColors.map((entry) => entry.name), ['Forest', 'Rose']);
+
+    await controller.renameCustomColor(state.customColors.first.id, 'Moss');
+    await controller.reorderCustomColors(
+      state.customColors.reversed.map((entry) => entry.id).toList(),
+    );
+    state = await container.read(appearanceControllerProvider.future);
+    expect(state.customColors.map((entry) => entry.name), ['Rose', 'Moss']);
+
+    await controller.deleteCustomColor(state.customColors.first.id);
+    state = await container.read(appearanceControllerProvider.future);
+    expect(state.customColors.map((entry) => entry.name), ['Moss']);
   });
 
   test('reloads the same profile from a reconstructed durable identity',

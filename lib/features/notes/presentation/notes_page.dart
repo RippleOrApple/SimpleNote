@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_shell.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../tags/domain/tag.dart';
@@ -291,6 +292,23 @@ class _NoteEditorState extends State<_NoteEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final appTypography = Theme.of(context).extension<AppTypographyTheme>();
+    final noteStyle = appTypography?.noteBodyStyle;
+    final markdownStyle = MarkdownStyleSheet.fromTheme(
+      Theme.of(context),
+    ).copyWith(
+      p: noteStyle,
+      a: noteStyle?.copyWith(
+        color: Theme.of(context).colorScheme.primary,
+        decoration: TextDecoration.underline,
+      ),
+      em: noteStyle?.copyWith(fontStyle: FontStyle.italic),
+      strong: noteStyle?.copyWith(fontWeight: FontWeight.w700),
+      blockquote: noteStyle,
+      listBullet: noteStyle,
+      tableBody: noteStyle,
+      code: appTypography?.codeStyle,
+    );
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -349,10 +367,12 @@ class _NoteEditorState extends State<_NoteEditor> {
             constraints: const BoxConstraints(minHeight: 280),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
+              color: appTypography?.notePaperColor,
               border: Border.all(color: Theme.of(context).dividerColor),
               borderRadius: BorderRadius.circular(8),
             ),
             child: MarkdownBody(
+              styleSheet: markdownStyle,
               data: widget.note.content.isEmpty
                   ? '_暂无可预览内容。_'
                   : widget.note.content,
@@ -362,12 +382,14 @@ class _NoteEditorState extends State<_NoteEditor> {
           TextField(
             key: const Key('note-content-field'),
             controller: _contentController,
-            minLines: 12,
-            maxLines: null,
-            decoration: const InputDecoration(
+            style: noteStyle,
+            minLines: 8,
+            maxLines: 10,
+            decoration: InputDecoration(
               labelText: 'Markdown 内容',
               alignLabelWithHint: true,
-              border: OutlineInputBorder(),
+              fillColor: appTypography?.notePaperColor,
+              border: const OutlineInputBorder(),
             ),
             onChanged: widget.onContentChanged,
           ),
