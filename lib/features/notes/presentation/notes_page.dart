@@ -383,8 +383,8 @@ class _NoteEditorState extends State<_NoteEditor> {
             key: const Key('note-content-field'),
             controller: _contentController,
             style: noteStyle,
-            minLines: 8,
-            maxLines: 10,
+            minLines: 12,
+            maxLines: null,
             decoration: InputDecoration(
               labelText: 'Markdown 内容',
               alignLabelWithHint: true,

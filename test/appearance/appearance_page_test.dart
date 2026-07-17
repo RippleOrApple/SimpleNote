@@ -44,7 +44,7 @@ void main() {
     expect(find.textContaining('Navigation'), findsNothing);
   });
 
-  testWidgets('keeps the previous color when RGB validation fails',
+  testWidgets('malformed RGB and HEX never replace the previous color',
       (tester) async {
     final harness = await _pumpAppearance(tester);
     addTearDown(harness.dispose);
@@ -54,20 +54,31 @@ void main() {
         .portable
         .accent;
 
-    await tester.enterText(
-      find.byKey(const Key('appearance-rgb-field')),
+    for (final malformed in [
       '#12345',
-    );
-    await tester.tap(find.byKey(const Key('appearance-save-color-button')));
-    await tester.pump();
+      '12#3456',
+      '+1,2,3',
+      '-0,2,3',
+      '0x10,2,3',
+    ]) {
+      await tester.enterText(
+        find.byKey(const Key('appearance-rgb-field')),
+        malformed,
+      );
+      await tester.tap(find.byKey(const Key('appearance-save-color-button')));
+      await tester.pump();
 
-    expect(find.textContaining('six hexadecimal'), findsOneWidget);
-    final after = (await harness.container.read(
-      appearanceControllerProvider.future,
-    ))
-        .portable
-        .accent;
-    expect(after, before);
+      final field = tester.widget<TextField>(
+        find.byKey(const Key('appearance-rgb-field')),
+      );
+      expect(field.decoration?.errorText, isNotNull, reason: malformed);
+      final after = (await harness.container.read(
+        appearanceControllerProvider.future,
+      ))
+          .portable
+          .accent;
+      expect(after, before, reason: malformed);
+    }
   });
 
   testWidgets('applies a valid RGB value to the selected target',

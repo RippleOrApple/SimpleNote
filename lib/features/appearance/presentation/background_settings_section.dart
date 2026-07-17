@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/app_background.dart';
 import '../application/appearance_image_picker.dart';
 import '../domain/appearance_settings.dart';
-import '../domain/background_image.dart';
 import '../domain/device_appearance_profile.dart';
 
 class BackgroundSettingsSection extends StatefulWidget {
@@ -17,7 +16,7 @@ class BackgroundSettingsSection extends StatefulWidget {
     required this.onImportImage,
     required this.onPresentationChanged,
     super.key,
-    this.backgroundImages = const [],
+    this.imageProviders = const {},
     this.unavailableImageIds = const {},
   });
 
@@ -26,7 +25,7 @@ class BackgroundSettingsSection extends StatefulWidget {
   final String platform;
   final Brightness brightness;
   final String? warning;
-  final List<BackgroundImage> backgroundImages;
+  final Map<String, ImageProvider<Object>> imageProviders;
   final Set<String> unavailableImageIds;
   final ValueChanged<String> onSelectBundled;
   final Future<void> Function(
@@ -136,7 +135,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
               settings: widget.settings,
               deviceProfile: profile,
               brightness: widget.brightness,
-              backgroundImages: widget.backgroundImages,
+              imageProviders: widget.imageProviders,
               unavailableImageIds: widget.unavailableImageIds,
               child: DecoratedBox(
                 decoration: BoxDecoration(

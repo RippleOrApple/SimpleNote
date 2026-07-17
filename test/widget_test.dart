@@ -56,7 +56,7 @@ void main() {
 
   testWidgets('notes page creates edits tags and previews markdown',
       (tester) async {
-    await _pumpApp(tester, surfaceSize: const Size(1024, 768));
+    await _pumpApp(tester, surfaceSize: const Size(1024, 1000));
 
     await tester.tap(find.text('新建笔记').first);
     await tester.pump(const Duration(milliseconds: 100));
@@ -72,6 +72,8 @@ void main() {
       find.byKey(const Key('note-content-field')),
     );
     expect(noteEditor.style?.fontFamily, 'LXGWWenKai');
+    expect(noteEditor.minLines, 12);
+    expect(noteEditor.maxLines, isNull);
 
     await tester.enterText(find.byKey(const Key('new-tag-field')), 'work');
     await tester.tap(find.text('添加标签'));
@@ -251,6 +253,30 @@ void main() {
     expect(find.byKey(const Key('sync-start-server-button')), findsOneWidget);
     expect(find.byKey(const Key('sync-peer-address-field')), findsOneWidget);
     expect(find.byKey(const Key('sync-now-button')), findsOneWidget);
+  });
+
+  testWidgets('legacy preset updates the effective MaterialApp theme',
+      (tester) async {
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+    addTearDown(
+      tester.platformDispatcher.clearPlatformBrightnessTestValue,
+    );
+    await _pumpApp(tester, surfaceSize: const Size(1024, 768));
+
+    Navigator.of(tester.element(find.byType(Scaffold).first))
+        .pushReplacementNamed('/settings');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppThemeScheme.nightBlack.name).first);
+    await tester.pumpAndSettle();
+
+    final actualTheme = Theme.of(
+      tester.element(find.byType(Scaffold).first),
+    );
+    expect(actualTheme.brightness, AppThemeScheme.nightBlack.brightness);
+    expect(
+      actualTheme.colorScheme.primary,
+      AppThemeScheme.nightBlack.primaryColor,
+    );
   });
 }
 

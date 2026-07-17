@@ -309,8 +309,12 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
 
   Future<void> _reorder(int oldIndex, int newIndex) async {
     final entries = widget.customColors.toList();
+    if (oldIndex < 0 || oldIndex >= entries.length) {
+      return;
+    }
     final moved = entries.removeAt(oldIndex);
-    entries.insert(newIndex, moved);
+    final insertionIndex = newIndex.clamp(0, entries.length);
+    entries.insert(insertionIndex, moved);
     await widget.onReorderCustomColors(
       entries.map((entry) => entry.id).toList(),
     );

@@ -143,6 +143,11 @@ class ThemeController extends AsyncNotifier<ThemeState> {
   Future<void> _applySchemeToAppearance(AppThemeScheme scheme) async {
     await ref.read(appearanceControllerProvider.future);
     final controller = ref.read(appearanceControllerProvider.notifier);
+    await controller.setBrightnessMode(
+      scheme.brightness == Brightness.dark
+          ? AppBrightnessMode.dark
+          : AppBrightnessMode.light,
+    );
     await controller.setAccent(RgbColor.fromColor(scheme.primaryColor));
     final background = RgbColor.fromColor(scheme.backgroundColor);
     final selection = AppearancePresets.backgroundColors.contains(background)

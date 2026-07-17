@@ -15,6 +15,10 @@ void main() {
     expect(() => RgbColor.parse('1,two,3'), throwsFormatException);
     expect(() => RgbColor.parse('#12345'), throwsFormatException);
     expect(() => RgbColor.parse('##5E9D83'), throwsFormatException);
+    expect(() => RgbColor.parse('12#3456'), throwsFormatException);
+    expect(() => RgbColor.parse('+1,2,3'), throwsFormatException);
+    expect(() => RgbColor.parse('-0,2,3'), throwsFormatException);
+    expect(() => RgbColor.parse('0x10,2,3'), throwsFormatException);
   });
 
   test('normalizes output and compares by 24-bit value', () {

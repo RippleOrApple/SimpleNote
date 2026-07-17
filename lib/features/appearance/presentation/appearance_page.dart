@@ -8,6 +8,7 @@ import '../application/appearance_image_picker.dart';
 import '../domain/appearance_presets.dart';
 import '../domain/appearance_settings.dart';
 import '../domain/rgb_color.dart';
+import '../infrastructure/background_image_render_adapter.dart';
 import '../infrastructure/background_image_service.dart';
 import 'background_settings_section.dart';
 import 'color_settings_section.dart';
@@ -71,7 +72,7 @@ class _AppearanceContent extends StatelessWidget {
     final requiresCatalog = profile.localBackgroundImageId != null ||
         portable.background.kind == BackgroundKind.syncedImage;
     final catalog = requiresCatalog
-        ? ref.watch(backgroundImageCatalogProvider).valueOrNull
+        ? ref.watch(backgroundRenderCatalogProvider).valueOrNull
         : null;
 
     return Column(
@@ -106,7 +107,7 @@ class _AppearanceContent extends StatelessWidget {
             platform: profile.platform,
             brightness: Theme.of(context).brightness,
             warning: warning,
-            backgroundImages: catalog?.availableImages ?? const [],
+            imageProviders: catalog?.imageProviders ?? const {},
             unavailableImageIds: catalog?.unavailableImageIds ?? const {},
             onSelectBundled: (assetPath) => _selectPortableBackground(
               controller,

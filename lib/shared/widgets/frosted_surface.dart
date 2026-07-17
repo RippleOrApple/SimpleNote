@@ -2,26 +2,61 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../../core/accessibility/transparency_preference.dart';
+
 @immutable
 final class AppAccessibilityPolicy {
   const AppAccessibilityPolicy({
     required this.reduceMotion,
     required this.reduceTransparency,
+    this.highContrast = false,
   });
 
-  factory AppAccessibilityPolicy.fromMediaQueryData(MediaQueryData data) {
+  factory AppAccessibilityPolicy.fromMediaQueryData(
+    MediaQueryData data, {
+    TransparencyPreference transparencyPreference =
+        const TransparencyPreference.unsupported(),
+  }) {
     return AppAccessibilityPolicy(
       reduceMotion: data.disableAnimations,
-      reduceTransparency: data.highContrast,
+      reduceTransparency: transparencyPreference.reduceTransparency,
+      highContrast: data.highContrast,
     );
   }
 
   factory AppAccessibilityPolicy.of(BuildContext context) {
-    return AppAccessibilityPolicy.fromMediaQueryData(MediaQuery.of(context));
+    return AppAccessibilityPolicyScope.maybeOf(context) ??
+        AppAccessibilityPolicy.fromMediaQueryData(MediaQuery.of(context));
   }
 
   final bool reduceMotion;
   final bool reduceTransparency;
+  final bool highContrast;
+
+  bool get disableBlur => reduceTransparency || highContrast;
+}
+
+class AppAccessibilityPolicyScope extends InheritedWidget {
+  const AppAccessibilityPolicyScope({
+    required this.policy,
+    required super.child,
+    super.key,
+  });
+
+  final AppAccessibilityPolicy policy;
+
+  static AppAccessibilityPolicy? maybeOf(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<AppAccessibilityPolicyScope>()
+        ?.policy;
+  }
+
+  @override
+  bool updateShouldNotify(AppAccessibilityPolicyScope oldWidget) {
+    return oldWidget.policy.reduceMotion != policy.reduceMotion ||
+        oldWidget.policy.reduceTransparency != policy.reduceTransparency ||
+        oldWidget.policy.highContrast != policy.highContrast;
+  }
 }
 
 class FrostedSurface extends StatelessWidget {
@@ -75,7 +110,7 @@ class FrostedSurface extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: borderRadius,
-      child: policy.reduceTransparency || blurSigma <= 0
+      child: policy.disableBlur || effectiveOpacity >= 1 || blurSigma <= 0
           ? decorated
           : BackdropFilter(
               filter: ImageFilter.blur(

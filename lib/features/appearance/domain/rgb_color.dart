@@ -8,23 +8,29 @@ final class RgbColor {
   factory RgbColor.parse(String input) {
     final value = input.trim();
     if (value.contains(',')) {
-      final parts =
-          value.split(',').map((part) => int.tryParse(part.trim())).toList();
-      if (parts.length != 3 ||
-          parts.any((part) => part == null || part < 0 || part > 255)) {
+      final segments = value.split(',').map((part) => part.trim()).toList();
+      final decimal = RegExp(r'^[0-9]+$');
+      if (segments.length != 3 ||
+          segments.any((segment) => !decimal.hasMatch(segment))) {
         throw const FormatException(
           'RGB must contain three values from 0 to 255.',
         );
       }
-      return RgbColor((parts[0]! << 16) | (parts[1]! << 8) | parts[2]!);
+      final parts = segments.map(int.parse).toList();
+      if (parts.length != 3 || parts.any((part) => part < 0 || part > 255)) {
+        throw const FormatException(
+          'RGB must contain three values from 0 to 255.',
+        );
+      }
+      return RgbColor((parts[0] << 16) | (parts[1] << 8) | parts[2]);
     }
-    final normalized = value.replaceFirst('#', '');
-    if (!RegExp(r'^[0-9a-fA-F]{6}$').hasMatch(normalized)) {
+    final match = RegExp(r'^#?([0-9a-fA-F]{6})$').firstMatch(value);
+    if (match == null) {
       throw const FormatException(
         'HEX must contain exactly six hexadecimal digits.',
       );
     }
-    return RgbColor(int.parse(normalized, radix: 16));
+    return RgbColor(int.parse(match.group(1)!, radix: 16));
   }
 
   factory RgbColor.fromColor(Color color) {

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/appearance/domain/appearance_presets.dart';
 import '../../features/appearance/domain/appearance_settings.dart';
-import '../../features/appearance/domain/background_image.dart';
 import '../../features/appearance/domain/device_appearance_profile.dart';
 
 final appBackgroundWarningProvider = StateProvider<String?>((ref) => null);
@@ -18,7 +16,7 @@ class AppBackground extends StatefulWidget {
     required this.brightness,
     required this.child,
     super.key,
-    this.backgroundImages = const [],
+    this.imageProviders = const {},
     this.unavailableImageIds = const {},
     this.onWarningChanged,
   });
@@ -27,7 +25,7 @@ class AppBackground extends StatefulWidget {
   final DeviceAppearanceProfile deviceProfile;
   final Brightness brightness;
   final Widget child;
-  final List<BackgroundImage> backgroundImages;
+  final Map<String, ImageProvider<Object>> imageProviders;
   final Set<String> unavailableImageIds;
   final ValueChanged<String?>? onWarningChanged;
 
@@ -41,7 +39,7 @@ class AppBackground extends StatefulWidget {
   static String? metadataWarning(
     AppearanceSettings settings,
     DeviceAppearanceProfile profile,
-    List<BackgroundImage> images,
+    Map<String, ImageProvider<Object>> imageProviders,
     Set<String> unavailableImageIds,
   ) {
     final imageId = profile.localBackgroundImageId ??
@@ -52,7 +50,7 @@ class AppBackground extends StatefulWidget {
       return null;
     }
     if (unavailableImageIds.contains(imageId) ||
-        !images.any((image) => image.id == imageId)) {
+        !imageProviders.containsKey(imageId)) {
       return 'The selected background image is unavailable. '
           'The last solid background is being used.';
     }
@@ -71,7 +69,7 @@ class _AppBackgroundState extends State<AppBackground> {
     final metadataWarning = AppBackground.metadataWarning(
       widget.settings,
       widget.deviceProfile,
-      widget.backgroundImages,
+      widget.imageProviders,
       widget.unavailableImageIds,
     );
     _reportWarning(metadataWarning);
@@ -114,7 +112,7 @@ class _AppBackgroundState extends State<AppBackground> {
 
     final localImageId = widget.deviceProfile.localBackgroundImageId;
     if (localImageId != null) {
-      return _fileBackground(_imageById(localImageId)!);
+      return _storedBackground(widget.imageProviders[localImageId]!);
     }
 
     return switch (widget.settings.background.kind) {
@@ -132,25 +130,16 @@ class _AppBackgroundState extends State<AppBackground> {
             ),
           ),
         ),
-      BackgroundKind.syncedImage => _fileBackground(
-          _imageById(widget.settings.background.imageId!)!,
+      BackgroundKind.syncedImage => _storedBackground(
+          widget.imageProviders[widget.settings.background.imageId!]!,
         ),
     };
   }
 
-  BackgroundImage? _imageById(String id) {
-    for (final image in widget.backgroundImages) {
-      if (image.id == id) {
-        return image;
-      }
-    }
-    return null;
-  }
-
-  Widget _fileBackground(BackgroundImage image) {
+  Widget _storedBackground(ImageProvider<Object> imageProvider) {
     return _imageEffects(
-      Image.file(
-        File(image.absolutePath),
+      Image(
+        image: imageProvider,
         fit: BoxFit.cover,
         alignment: _focus,
         errorBuilder: (_, __, ___) => _fallback(
