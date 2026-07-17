@@ -8,4 +8,13 @@ class DatabaseTables {
   static const themeSchemes = 'theme_schemes';
   static const syncLogs = 'sync_logs';
   static const appSettings = 'app_settings';
+  static const taskLists = 'task_lists';
+  static const tasksV2 = 'tasks_v2';
+  static const taskTags = 'task_tags';
+  static const taskTagLinks = 'task_tag_links';
+  static const smartFilters = 'smart_filters';
+  static const contentAttachments = 'content_attachments';
+  static const customColors = 'custom_colors';
+  static const backgroundImages = 'background_images';
+  static const deviceAppearanceProfiles = 'device_appearance_profiles';
 }
