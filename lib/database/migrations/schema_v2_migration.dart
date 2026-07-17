@@ -34,16 +34,16 @@ class SchemaV2Migration {
 
   static Future<void> createIndexes(AppDatabase db) async {
     await db.customStatement(
-      'CREATE UNIQUE INDEX custom_colors_rgb_active '
+      'CREATE UNIQUE INDEX IF NOT EXISTS custom_colors_rgb_active '
       'ON custom_colors(rgb) WHERE deleted_at IS NULL',
     );
     await db.customStatement(
-      'CREATE INDEX content_attachments_owner_active '
+      'CREATE INDEX IF NOT EXISTS content_attachments_owner_active '
       'ON content_attachments(owner_type, owner_id, sort_order) '
       'WHERE deleted_at IS NULL',
     );
     await db.customStatement(
-      'CREATE INDEX tasks_v2_due_active '
+      'CREATE INDEX IF NOT EXISTS tasks_v2_due_active '
       'ON tasks_v2(due_at, completed) WHERE deleted_at IS NULL',
     );
   }
