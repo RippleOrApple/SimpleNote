@@ -74,6 +74,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
           name: 'Imported color',
           color: accent,
           now: Clock.nowMillis(),
+          skipIfFull: true,
         );
       }
       await savePortable(portable);
@@ -117,13 +118,13 @@ final class DriftAppearanceRepository implements AppearanceRepository {
     required String name,
     required RgbColor color,
   }) {
-    return _database.transaction(
-      () => _addCustomColor(
+    return _database.transaction(() async {
+      return (await _addCustomColor(
         name: name,
         color: color,
         now: Clock.nowMillis(),
-      ),
-    );
+      ))!;
+    });
   }
 
   @override
@@ -244,10 +245,11 @@ final class DriftAppearanceRepository implements AppearanceRepository {
     }
   }
 
-  Future<CustomColor> _addCustomColor({
+  Future<CustomColor?> _addCustomColor({
     required String name,
     required RgbColor color,
     required int now,
+    bool skipIfFull = false,
   }) async {
     final existing = await listCustomColors();
     for (final entry in existing) {
@@ -256,6 +258,9 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       }
     }
     if (existing.length >= 24) {
+      if (skipIfFull) {
+        return null;
+      }
       throw StateError('My Colors supports at most 24 colors.');
     }
     final custom = CustomColor(

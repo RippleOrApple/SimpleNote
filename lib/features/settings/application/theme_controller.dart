@@ -68,11 +68,14 @@ class ThemeController extends AsyncNotifier<ThemeState> {
 
   @Deprecated('Use appearanceControllerProvider for appearance writes.')
   Future<void> applyTheme(AppThemeScheme scheme) async {
-    await _repository.saveTheme(scheme.copyWith(isActive: true));
-    await _repository.activateTheme(scheme.id);
-    await _applySchemeToAppearance(scheme);
+    final normalized = _repository.normalizeLegacyTheme(
+      scheme.copyWith(isActive: true),
+    );
+    await _repository.saveTheme(normalized);
+    await _repository.activateTheme(normalized.id);
+    await _applySchemeToAppearance(normalized);
     state = await AsyncValue.guard(
-      () => _load(draftTheme: scheme.copyWith(isActive: true)),
+      () => _load(draftTheme: normalized),
     );
   }
 
@@ -93,15 +96,17 @@ class ThemeController extends AsyncNotifier<ThemeState> {
     if (current == null) {
       return;
     }
-    final draftTheme = current.draftTheme.copyWith(
-      id: 'draft-theme',
-      name: '自定义预览',
-      backgroundColor: backgroundColor,
-      primaryColor: primaryColor,
-      textColor: textColor,
-      surfaceColor: surfaceColor,
-      brightness: brightness,
-      isActive: true,
+    final draftTheme = _repository.normalizeLegacyTheme(
+      current.draftTheme.copyWith(
+        id: 'draft-theme',
+        name: '自定义预览',
+        backgroundColor: backgroundColor,
+        primaryColor: primaryColor,
+        textColor: textColor,
+        surfaceColor: surfaceColor,
+        brightness: brightness,
+        isActive: true,
+      ),
     );
     state = AsyncData(
       current.copyWith(
@@ -120,10 +125,12 @@ class ThemeController extends AsyncNotifier<ThemeState> {
     final themeName = name?.trim().isNotEmpty == true
         ? name!.trim()
         : '自定义主题 ${current.savedThemes.length + 1}';
-    final customTheme = current.draftTheme.copyWith(
-      id: IdGenerator.create(),
-      name: themeName,
-      isActive: true,
+    final customTheme = _repository.normalizeLegacyTheme(
+      current.draftTheme.copyWith(
+        id: IdGenerator.create(),
+        name: themeName,
+        isActive: true,
+      ),
     );
     await _repository.saveTheme(customTheme);
     await _repository.activateTheme(customTheme.id);
@@ -150,7 +157,9 @@ class ThemeController extends AsyncNotifier<ThemeState> {
     for (final preset in AppThemeScheme.presets) {
       if (!savedIds.contains(preset.id)) {
         await _repository.saveTheme(
-          preset.copyWith(isActive: false),
+          _repository.normalizeLegacyTheme(
+            preset.copyWith(isActive: false),
+          ),
         );
       }
     }

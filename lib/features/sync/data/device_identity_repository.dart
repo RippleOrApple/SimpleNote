@@ -36,19 +36,15 @@ final class DeviceIdentityRepository {
       final encoded = await _database.appSettingsDao.getValue(
         identitySettingsKey,
       );
-      final stored = _decode(encoded);
-      if (stored != null) {
+      final storedDeviceId = _decodeDeviceId(encoded);
+      if (storedDeviceId != null) {
         final current = DeviceInfo(
-          deviceId: stored.deviceId,
+          deviceId: storedDeviceId,
           deviceName: _deviceName,
           platform: _platform,
           appVersion: _appVersion,
         );
-        if (stored.deviceName != current.deviceName ||
-            stored.platform != current.platform ||
-            stored.appVersion != current.appVersion) {
-          await _save(current);
-        }
+        await _save(current);
         return current;
       }
 
@@ -67,7 +63,7 @@ final class DeviceIdentityRepository {
     });
   }
 
-  DeviceInfo? _decode(String? encoded) {
+  String? _decodeDeviceId(String? encoded) {
     if (encoded == null) {
       return null;
     }
@@ -77,16 +73,7 @@ final class DeviceIdentityRepository {
         return null;
       }
       final json = Map<String, Object?>.from(decoded);
-      final deviceId = _requiredString(json, 'deviceId');
-      final deviceName = _requiredString(json, 'deviceName');
-      final platform = _requiredString(json, 'platform');
-      final appVersion = _requiredString(json, 'appVersion');
-      return DeviceInfo(
-        deviceId: deviceId,
-        deviceName: deviceName,
-        platform: platform,
-        appVersion: appVersion,
-      );
+      return _requiredString(json, 'deviceId');
     } on FormatException {
       return null;
     } on TypeError {

@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:simple_note/core/theme/derived_surface_palette.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/appearance/application/appearance_controller.dart';
 import 'package:simple_note/features/appearance/domain/appearance_settings.dart';
@@ -105,5 +106,46 @@ void main() {
 
     expect(state.activeTheme.id, 'legacy-custom');
     expect(state.activeTheme.primaryColor, const Color(0xFF123456));
+  });
+
+  test('normalizes deprecated text and surface edits before draft and save',
+      () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final container = ProviderContainer(
+      overrides: [appDatabaseProvider.overrideWithValue(database)],
+    );
+    addTearDown(container.dispose);
+    await container.read(themeControllerProvider.future);
+    final controller = container.read(themeControllerProvider.notifier);
+    const background = Color(0xFFDFE8F5);
+    const primary = Color(0xFF5E9D83);
+    final expected = DerivedSurfacePalette.from(
+      accent: RgbColor.fromColor(primary),
+      background: RgbColor.fromColor(background),
+      brightness: Brightness.light,
+    );
+
+    controller.updateDraft(
+      backgroundColor: background,
+      primaryColor: primary,
+      textColor: const Color(0xFFFF00FF),
+      surfaceColor: const Color(0xFF00FFFF),
+      brightness: Brightness.light,
+    );
+
+    final draft = container.read(themeControllerProvider).valueOrNull!;
+    expect(draft.draftTheme.textColor, expected.onBackground);
+    expect(draft.draftTheme.surfaceColor, expected.surface);
+
+    await controller.saveCustomTheme(name: 'Canonical');
+    final saved = await database.themeSchemesDao.activeTheme();
+    expect(saved!.textColor, expected.onBackground.toARGB32());
+    expect(saved.surfaceColor, expected.surface.toARGB32());
+
+    container.invalidate(themeControllerProvider);
+    final reloaded = await container.read(themeControllerProvider.future);
+    expect(reloaded.activeTheme.textColor, expected.onBackground);
+    expect(reloaded.activeTheme.surfaceColor, expected.surface);
   });
 }

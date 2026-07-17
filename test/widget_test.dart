@@ -193,6 +193,7 @@ void main() {
 
     expect(find.text('预设主题'), findsOneWidget);
     expect(find.text(AppThemeScheme.nightBlack.name), findsWidgets);
+    expect(find.byKey(const Key('derived-colors-note')), findsOneWidget);
 
     await tester.tap(find.text(AppThemeScheme.nightBlack.name).first);
     await tester.pumpAndSettle();

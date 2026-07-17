@@ -97,4 +97,44 @@ void main() {
       recovered.toJson(),
     );
   });
+
+  test('keeps a valid device ID when other identity fields are malformed',
+      () async {
+    final malformedIdentities = [
+      <String, Object?>{'deviceId': 'local-stable-id'},
+      <String, Object?>{
+        'deviceId': 'local-stable-id',
+        'deviceName': 42,
+        'platform': null,
+        'appVersion': false,
+      },
+    ];
+
+    for (final malformed in malformedIdentities) {
+      await database.appSettingsDao.setValue(
+        DeviceIdentityRepository.identitySettingsKey,
+        jsonEncode(malformed),
+      );
+      final identity = await DeviceIdentityRepository(
+        database,
+        deviceName: 'Current device',
+        platform: 'windows',
+        appVersion: '1.0.1',
+        createId: () => throw StateError('Must preserve the stored ID.'),
+      ).loadOrCreate();
+
+      expect(identity.deviceId, 'local-stable-id');
+      expect(identity.deviceName, 'Current device');
+      expect(identity.platform, 'windows');
+      expect(identity.appVersion, '1.0.1');
+      expect(
+        jsonDecode(
+          (await database.appSettingsDao.getValue(
+            DeviceIdentityRepository.identitySettingsKey,
+          ))!,
+        ),
+        identity.toJson(),
+      );
+    }
+  });
 }

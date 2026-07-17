@@ -34,22 +34,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     Color(0xFF8AB4F8),
   ];
 
-  static const _textSwatches = [
-    Color(0xFF202124),
-    Color(0xFF1F2937),
-    Color(0xFF203128),
-    Color(0xFF2B213A),
-    Color(0xFFE8EAED),
-  ];
-
-  static const _surfaceSwatches = [
-    Color(0xFFFFFFFF),
-    Color(0xFFF8FAFC),
-    Color(0xFFF1F5F9),
-    Color(0xFFEFF6FF),
-    Color(0xFF1F232B),
-  ];
-
   @override
   void dispose() {
     _themeNameController.dispose();
@@ -122,20 +106,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               onSelected: (color) =>
                   controller.updateDraft(primaryColor: color),
             ),
-            _ColorSwatchRow(
-              keyPrefix: 'text',
-              label: '文字',
-              colors: _textSwatches,
-              selectedColor: activeTheme.textColor,
-              onSelected: (color) => controller.updateDraft(textColor: color),
-            ),
-            _ColorSwatchRow(
-              keyPrefix: 'surface',
-              label: '面板',
-              colors: _surfaceSwatches,
-              selectedColor: activeTheme.surfaceColor,
-              onSelected: (color) =>
-                  controller.updateDraft(surfaceColor: color),
+            const Text(
+              '文字与面板颜色会根据强调色和背景自动生成，以保证安全对比度。',
+              key: Key('derived-colors-note'),
             ),
             const SizedBox(height: 8),
             SegmentedButton<Brightness>(

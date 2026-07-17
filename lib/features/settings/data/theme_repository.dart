@@ -7,6 +7,7 @@ import '../../../database/app_database.dart';
 import '../../../core/utils/time.dart';
 import '../../appearance/domain/appearance_presets.dart';
 import '../../appearance/domain/appearance_settings.dart';
+import '../../appearance/domain/rgb_color.dart';
 import '../domain/theme_scheme.dart';
 
 final themeRepositoryProvider = Provider<ThemeRepository>((ref) {
@@ -22,6 +23,7 @@ abstract class ThemeRepository {
     AppearanceSettings appearance, {
     AppThemeScheme? metadata,
   });
+  AppThemeScheme normalizeLegacyTheme(AppThemeScheme scheme);
 }
 
 class DriftThemeRepository implements ThemeRepository {
@@ -77,6 +79,19 @@ class DriftThemeRepository implements ThemeRepository {
       surfaceColor: palette.surface,
       brightness: brightness,
       isActive: true,
+    );
+  }
+
+  @override
+  AppThemeScheme normalizeLegacyTheme(AppThemeScheme scheme) {
+    final palette = DerivedSurfacePalette.from(
+      accent: RgbColor.fromColor(scheme.primaryColor),
+      background: RgbColor.fromColor(scheme.backgroundColor),
+      brightness: scheme.brightness,
+    );
+    return scheme.copyWith(
+      textColor: palette.onBackground,
+      surfaceColor: palette.surface,
     );
   }
 

@@ -44,20 +44,29 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
   late String _platform;
   Future<void> _mutationTail = Future<void>.value();
   int _buildEpoch = 0;
+  int _mutationRevision = 0;
 
   @override
   Future<AppearanceState> build() async {
     _buildEpoch++;
     _repository = ref.watch(appearanceRepositoryProvider);
     _platform = ref.watch(deviceInfoProvider).platform;
-    final portable = await _repository.loadPortable();
-    final deviceProfile = await _repository.loadDeviceProfile(_platform);
-    final customColors = await _repository.listCustomColors();
-    return AppearanceState(
-      portable: portable,
-      deviceProfile: deviceProfile,
-      customColors: customColors,
-    );
+    while (true) {
+      final revisionBeforeRead = _mutationRevision;
+      final portable = await _repository.loadPortable();
+      final deviceProfile = await _repository.loadDeviceProfile(_platform);
+      final customColors = await _repository.listCustomColors();
+      final mutationsBeforeReturn = _mutationTail;
+      await mutationsBeforeReturn;
+      if (identical(mutationsBeforeReturn, _mutationTail) &&
+          revisionBeforeRead == _mutationRevision) {
+        return AppearanceState(
+          portable: portable,
+          deviceProfile: deviceProfile,
+          customColors: customColors,
+        );
+      }
+    }
   }
 
   Future<void> setAccent(RgbColor value) {
@@ -152,6 +161,7 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
       final current = _requireState();
       final portable = update(current.portable);
       await _repository.savePortable(portable);
+      _mutationRevision++;
       if (epoch == _buildEpoch) {
         state = AsyncData(current.copyWith(portable: portable));
       } else {
@@ -170,6 +180,7 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
         updatedAt: Clock.nowMillis(),
       );
       await _repository.saveDeviceProfile(profile);
+      _mutationRevision++;
       if (epoch == _buildEpoch) {
         state = AsyncData(current.copyWith(deviceProfile: profile));
       } else {

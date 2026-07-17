@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart' show driftRuntimeOptions;
@@ -8,8 +9,11 @@ import 'package:path/path.dart' as p;
 import 'package:simple_note/core/theme/typography_preferences.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/appearance/application/appearance_controller.dart';
+import 'package:simple_note/features/appearance/data/appearance_repository.dart';
 import 'package:simple_note/features/appearance/domain/appearance_presets.dart';
 import 'package:simple_note/features/appearance/domain/appearance_settings.dart';
+import 'package:simple_note/features/appearance/domain/custom_color.dart';
+import 'package:simple_note/features/appearance/domain/device_appearance_profile.dart';
 import 'package:simple_note/features/appearance/domain/rgb_color.dart';
 import 'package:simple_note/features/sync/data/device_identity_repository.dart';
 import 'package:simple_note/features/sync/data/sync_repository.dart';
@@ -72,6 +76,37 @@ void main() {
 
     expect(current.portable.accent, const RgbColor(0x5E9D83));
     expect(current.deviceProfile.density, LayoutDensity.compact);
+  });
+
+  test('refresh cannot overwrite a mutation with its older snapshot', () async {
+    final repository = _DelayedAppearanceRepository();
+    final container = ProviderContainer(
+      overrides: [
+        appearanceRepositoryProvider.overrideWithValue(repository),
+        deviceInfoProvider.overrideWithValue(_windowsDevice),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(appearanceControllerProvider.future);
+    final controller = container.read(appearanceControllerProvider.notifier);
+    final delayedRead = repository.delayNextPortableLoad();
+
+    container.invalidate(appearanceControllerProvider);
+    final refresh = container.read(appearanceControllerProvider.future);
+    await delayedRead.snapshotTaken.future;
+
+    const newAccent = RgbColor(0x5E9D83);
+    await controller.setAccent(newAccent);
+    delayedRead.release.complete();
+    await container.pump();
+    await refresh;
+    await controller.setGlassOpacity(0.2);
+
+    final current = await container.read(appearanceControllerProvider.future);
+    expect(current.portable.accent, newAccent);
+    expect(current.portable.glassOpacity, 0.2);
+    expect(repository.portable.accent, newAccent);
+    expect(repository.portable.glassOpacity, 0.2);
   });
 
   test('updates last pure background only for pure selections', () async {
@@ -273,3 +308,73 @@ const _androidDevice = DeviceInfo(
   platform: 'android',
   appVersion: '1.0.0',
 );
+
+final class _DelayedAppearanceRepository implements AppearanceRepository {
+  AppearanceSettings portable = AppearanceSettings.defaults();
+  final DeviceAppearanceProfile _profile = DeviceAppearanceProfile.defaults(
+    id: 'test-device:windows',
+    platform: 'windows',
+    updatedAt: 1,
+  );
+  _DelayedPortableRead? _delayedRead;
+
+  _DelayedPortableRead delayNextPortableLoad() {
+    return _delayedRead = _DelayedPortableRead();
+  }
+
+  @override
+  Future<AppearanceSettings> loadPortable() async {
+    final snapshot = portable;
+    final delayedRead = _delayedRead;
+    if (delayedRead != null) {
+      _delayedRead = null;
+      delayedRead.snapshotTaken.complete();
+      await delayedRead.release.future;
+    }
+    return snapshot;
+  }
+
+  @override
+  Future<void> savePortable(AppearanceSettings settings) async {
+    portable = settings;
+  }
+
+  @override
+  Future<DeviceAppearanceProfile> loadDeviceProfile(String platform) async {
+    return _profile;
+  }
+
+  @override
+  Future<void> saveDeviceProfile(DeviceAppearanceProfile profile) async {}
+
+  @override
+  Future<List<CustomColor>> listCustomColors() async => const [];
+
+  @override
+  Future<CustomColor> addCustomColor({
+    required String name,
+    required RgbColor color,
+  }) {
+    throw UnsupportedError('Not used by this controller test.');
+  }
+
+  @override
+  Future<void> deleteCustomColor(String id) {
+    throw UnsupportedError('Not used by this controller test.');
+  }
+
+  @override
+  Future<void> renameCustomColor(String id, String name) {
+    throw UnsupportedError('Not used by this controller test.');
+  }
+
+  @override
+  Future<void> reorderCustomColors(List<String> orderedIds) {
+    throw UnsupportedError('Not used by this controller test.');
+  }
+}
+
+final class _DelayedPortableRead {
+  final snapshotTaken = Completer<void>();
+  final release = Completer<void>();
+}

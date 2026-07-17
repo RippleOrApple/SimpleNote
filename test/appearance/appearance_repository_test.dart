@@ -128,6 +128,39 @@ void main() {
     );
   });
 
+  test('repairs portable JSON when legacy accent import finds My Colors full',
+      () async {
+    for (var index = 0; index < 24; index++) {
+      await repository.addCustomColor(
+        name: 'Color $index',
+        color: RgbColor(index),
+      );
+    }
+    await _insertActiveTheme(database, primaryColor: 0xFF123456);
+    await database.appSettingsDao.setValue(
+      AppearanceRepository.portableSettingsKey,
+      '{"schemaVersion":999}',
+    );
+
+    final portable = await repository.loadPortable();
+
+    expect(portable.accent, const RgbColor(0x123456));
+    expect(await repository.listCustomColors(), hasLength(24));
+    expect(
+      await database.appSettingsDao.getValue(
+        AppearanceRepository.portableSettingsKey,
+      ),
+      contains('"accent":1193046'),
+    );
+    expect(
+      () => repository.addCustomColor(
+        name: 'Still full',
+        color: const RgbColor(0x654321),
+      ),
+      throwsA(isA<StateError>()),
+    );
+  });
+
   test('deleting a custom color does not change the portable accent', () async {
     final originalAccent = (await repository.loadPortable()).accent;
     final custom = await repository.addCustomColor(
