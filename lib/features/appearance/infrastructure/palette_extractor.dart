@@ -23,7 +23,7 @@ final class PaletteExtractor {
       throw FormatException('Image data could not be decoded: $error');
     }
 
-    final resized = _resize(decoded);
+    final resized = _resize(decoded).convert(format: img.Format.uint8);
     final buckets = <int, _Bucket>{};
     for (final pixel in resized) {
       final alpha = pixel.a.toInt();

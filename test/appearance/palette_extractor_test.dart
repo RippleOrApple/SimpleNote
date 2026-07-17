@@ -65,4 +65,32 @@ void main() {
     expect(result.first.value, 0x406080);
     expect(result[1].value, 0x806040);
   });
+
+  test('extracts uint16 PNG colors exactly like equivalent uint8 colors', () {
+    const red = 0x40;
+    const green = 0x60;
+    const blue = 0x80;
+    final uint8Image = img.Image(width: 4, height: 4, numChannels: 4)
+      ..clear(img.ColorRgba8(red, green, blue, 0xff));
+    final uint16Image = img.Image(
+      width: 4,
+      height: 4,
+      format: img.Format.uint16,
+      numChannels: 4,
+    );
+    for (final pixel in uint16Image) {
+      pixel
+        ..r = red * 257
+        ..g = green * 257
+        ..b = blue * 257
+        ..a = 0xffff;
+    }
+    final uint8Bytes = Uint8List.fromList(img.encodePng(uint8Image));
+    final uint16Bytes = Uint8List.fromList(img.encodePng(uint16Image));
+
+    expect(img.decodePng(uint16Bytes)?.format, img.Format.uint16);
+
+    const extractor = PaletteExtractor();
+    expect(extractor.extract(uint16Bytes), extractor.extract(uint8Bytes));
+  });
 }
