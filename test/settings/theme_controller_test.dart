@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:simple_note/core/theme/app_theme.dart';
 import 'package:simple_note/core/theme/derived_surface_palette.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/appearance/application/appearance_controller.dart';
@@ -148,4 +149,80 @@ void main() {
     expect(reloaded.activeTheme.textColor, expected.onBackground);
     expect(reloaded.activeTheme.surfaceColor, expected.surface);
   });
+
+  test('dark legacy theme derives rendering without mutating portable color',
+      () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final container = ProviderContainer(
+      overrides: [appDatabaseProvider.overrideWithValue(database)],
+    );
+    addTearDown(container.dispose);
+    await container.read(themeControllerProvider.future);
+    final controller = container.read(themeControllerProvider.notifier);
+    const rawBackground = Color(0xFFEEDBD5);
+    const rawAccent = Color(0xFFCA806E);
+    final expected = DerivedSurfacePalette.from(
+      accent: RgbColor.fromColor(rawAccent),
+      background: RgbColor.fromColor(rawBackground),
+      brightness: Brightness.dark,
+    );
+
+    controller.updateDraft(
+      backgroundColor: rawBackground,
+      primaryColor: rawAccent,
+      brightness: Brightness.dark,
+    );
+
+    final draft = container.read(themeControllerProvider).valueOrNull!;
+    expect(draft.activeTheme.backgroundColor, rawBackground);
+    _expectThemeUsesPalette(
+      AppTheme.fromScheme(draft.activeTheme),
+      expected,
+    );
+
+    await controller.saveCustomTheme(name: 'Dark raw input');
+
+    final appearance = await container.read(
+      appearanceControllerProvider.future,
+    );
+    expect(
+      appearance.portable.background.color,
+      RgbColor.fromColor(rawBackground),
+    );
+    expect(
+      appearance.portable.lastPureBackground,
+      RgbColor.fromColor(rawBackground),
+    );
+    final saved = container.read(themeControllerProvider).valueOrNull!;
+    expect(saved.activeTheme.backgroundColor, rawBackground);
+    _expectThemeUsesPalette(
+      AppTheme.fromScheme(saved.activeTheme),
+      expected,
+    );
+  });
+}
+
+void _expectThemeUsesPalette(
+  ThemeData theme,
+  DerivedSurfacePalette expected,
+) {
+  expect(theme.scaffoldBackgroundColor, expected.background);
+  expect(theme.appBarTheme.backgroundColor, expected.background);
+  expect(theme.appBarTheme.foregroundColor, expected.onBackground);
+  expect(theme.textTheme.bodyMedium!.color, expected.onBackground);
+  expect(theme.colorScheme.primary, expected.accent);
+  expect(theme.colorScheme.onPrimary, expected.onAccent);
+  expect(theme.colorScheme.surface, expected.surface);
+  expect(theme.colorScheme.onSurface, expected.onSurface);
+  expect(theme.cardTheme.color, expected.surface);
+  expect(theme.floatingActionButtonTheme.backgroundColor, expected.accent);
+  expect(theme.floatingActionButtonTheme.foregroundColor, expected.onAccent);
+  expect(
+    contrastRatio(
+      theme.textTheme.bodyMedium!.color!,
+      theme.scaffoldBackgroundColor,
+    ),
+    greaterThanOrEqualTo(4.5),
+  );
 }

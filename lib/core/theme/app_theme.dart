@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../features/appearance/domain/rgb_color.dart';
 import '../../features/settings/domain/theme_scheme.dart';
+import 'derived_surface_palette.dart';
 
 class AppTheme {
   const AppTheme._();
@@ -8,49 +10,57 @@ class AppTheme {
   static const fontFamily = 'NotoSansSC';
 
   static ThemeData fromScheme(AppThemeScheme scheme) {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: scheme.primaryColor,
-      primary: scheme.primaryColor,
-      surface: scheme.surfaceColor,
+    final palette = DerivedSurfacePalette.from(
+      accent: RgbColor.fromColor(scheme.primaryColor),
+      background: RgbColor.fromColor(scheme.backgroundColor),
       brightness: scheme.brightness,
+    );
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: palette.accent,
+      brightness: scheme.brightness,
+    ).copyWith(
+      primary: palette.accent,
+      onPrimary: palette.onAccent,
+      surface: palette.surface,
+      onSurface: palette.onSurface,
     );
 
     return ThemeData(
       useMaterial3: true,
       fontFamily: fontFamily,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: scheme.backgroundColor,
+      scaffoldBackgroundColor: palette.background,
       textTheme: Typography.material2021().black.apply(
             fontFamily: fontFamily,
-            bodyColor: scheme.textColor,
-            displayColor: scheme.textColor,
+            bodyColor: palette.onBackground,
+            displayColor: palette.onBackground,
           ),
       cardTheme: CardThemeData(
-        color: scheme.surfaceColor,
+        color: palette.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: scheme.backgroundColor,
-        foregroundColor: scheme.textColor,
+        backgroundColor: palette.background,
+        foregroundColor: palette.onBackground,
         elevation: 0,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: scheme.surfaceColor,
-        indicatorColor: scheme.primaryColor.withValues(alpha: 0.18),
+        backgroundColor: palette.surface,
+        indicatorColor: palette.accent.withValues(alpha: 0.18),
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: scheme.surfaceColor,
-        indicatorColor: scheme.primaryColor.withValues(alpha: 0.18),
+        backgroundColor: palette.surface,
+        indicatorColor: palette.accent.withValues(alpha: 0.18),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: scheme.surfaceColor,
+        fillColor: palette.surface,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: scheme.primaryColor,
-        foregroundColor: Colors.white,
+        backgroundColor: palette.accent,
+        foregroundColor: palette.onAccent,
       ),
     );
   }

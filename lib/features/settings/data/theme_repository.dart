@@ -73,8 +73,8 @@ class DriftThemeRepository implements ThemeRepository {
     return AppThemeScheme(
       id: metadata?.id ?? 'appearance-v2',
       name: metadata?.name ?? 'Appearance',
-      backgroundColor: palette.background,
-      primaryColor: palette.accent,
+      backgroundColor: background.toColor(),
+      primaryColor: appearance.accent.toColor(),
       textColor: palette.onBackground,
       surfaceColor: palette.surface,
       brightness: brightness,
