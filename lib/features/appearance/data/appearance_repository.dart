@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,7 +39,9 @@ abstract class AppearanceRepository {
   Future<void> renameCustomColor(String id, String name);
   Future<void> reorderCustomColors(List<String> orderedIds);
   Future<void> deleteCustomColor(String id);
-  Future<List<BackgroundImage>> listBackgroundImages();
+  Future<List<BackgroundImage>> listBackgroundImages({
+    required Directory rootDirectory,
+  });
   Future<BackgroundImage> addOrReuseBackgroundImage({
     required String sha256,
     required String mimeType,
@@ -242,9 +245,25 @@ final class DriftAppearanceRepository implements AppearanceRepository {
   }
 
   @override
-  Future<List<BackgroundImage>> listBackgroundImages() async {
+  Future<List<BackgroundImage>> listBackgroundImages({
+    required Directory rootDirectory,
+  }) async {
+    if (!p.isAbsolute(rootDirectory.path)) {
+      throw ArgumentError.value(
+        rootDirectory.path,
+        'rootDirectory',
+        'Must be an absolute application-support directory.',
+      );
+    }
     final rows = await _database.appearanceDao.activeBackgroundImages();
-    return rows.map(_backgroundImageFromRow).toList(growable: false);
+    return rows
+        .map(
+          (row) => _backgroundImageFromRow(
+            row,
+            absolutePath: p.join(rootDirectory.path, row.relativePath),
+          ),
+        )
+        .toList(growable: false);
   }
 
   @override
@@ -309,14 +328,12 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       }
 
       final now = Clock.nowMillis();
-      final deleted = _backgroundImageFromRow(row).copyWith(
-        deletedAt: now,
-        updatedAt: now,
-        deviceId: _device.deviceId,
-        version: row.version + 1,
-      );
       await _database.appearanceDao.upsertBackgroundImage(
-        _backgroundImageToCompanion(deleted),
+        _softDeletedBackgroundImageToCompanion(
+          row,
+          deletedAt: now,
+          deviceId: _device.deviceId,
+        ),
       );
 
       if (row.syncEnabled) {
@@ -471,7 +488,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
 
   static BackgroundImage _backgroundImageFromRow(
     BackgroundImageRow row, {
-    String? absolutePath,
+    required String absolutePath,
   }) {
     return BackgroundImage(
       id: row.id,
@@ -481,7 +498,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       width: row.width,
       height: row.height,
       relativePath: row.relativePath,
-      absolutePath: absolutePath ?? p.absolute(row.relativePath),
+      absolutePath: absolutePath,
       syncEnabled: row.syncEnabled,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
@@ -508,6 +525,28 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       deletedAt: Value(backgroundImage.deletedAt),
       deviceId: Value(backgroundImage.deviceId),
       version: Value(backgroundImage.version),
+    );
+  }
+
+  static BackgroundImagesCompanion _softDeletedBackgroundImageToCompanion(
+    BackgroundImageRow row, {
+    required int deletedAt,
+    required String deviceId,
+  }) {
+    return BackgroundImagesCompanion(
+      id: Value(row.id),
+      sha256: Value(row.sha256),
+      mimeType: Value(row.mimeType),
+      byteSize: Value(row.byteSize),
+      width: Value(row.width),
+      height: Value(row.height),
+      relativePath: Value(row.relativePath),
+      syncEnabled: Value(row.syncEnabled),
+      createdAt: Value(row.createdAt),
+      updatedAt: Value(deletedAt),
+      deletedAt: Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(row.version + 1),
     );
   }
 

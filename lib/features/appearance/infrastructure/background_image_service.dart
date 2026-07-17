@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -33,6 +34,21 @@ final class BackgroundImageService {
   }) async {
     final decoded = await _readSupportedImage(source);
     final contentHash = sha256.convert(decoded.bytes).toString();
+    return _ShaImportLock.run(
+      contentHash,
+      () => _persistDecodedImage(
+        decoded,
+        contentHash: contentHash,
+        syncEnabled: syncEnabled,
+      ),
+    );
+  }
+
+  Future<BackgroundImage> _persistDecodedImage(
+    _DecodedImage decoded, {
+    required String contentHash,
+    required bool syncEnabled,
+  }) async {
     final fileName = '$contentHash.${decoded.extension}';
     final relativePath = p.join('backgrounds', fileName);
     final backgroundDirectory = Directory(
@@ -192,6 +208,32 @@ final class _DecodedImage {
   final img.Image image;
   final String mimeType;
   final String extension;
+}
+
+abstract final class _ShaImportLock {
+  static final Map<String, Future<void>> _tails = {};
+
+  static Future<T> run<T>(
+    String sha256,
+    Future<T> Function() operation,
+  ) {
+    final previous = _tails[sha256] ?? Future<void>.value();
+    final release = Completer<void>();
+    final current = release.future;
+    _tails[sha256] = current;
+
+    return () async {
+      await previous;
+      try {
+        return await operation();
+      } finally {
+        release.complete();
+        if (identical(_tails[sha256], current)) {
+          _tails.remove(sha256);
+        }
+      }
+    }();
+  }
 }
 
 final class _ImageFormat {

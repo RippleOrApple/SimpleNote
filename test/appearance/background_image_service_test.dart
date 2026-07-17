@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -60,7 +61,10 @@ void main() {
         imported.relativePath, p.join('backgrounds', '${imported.sha256}.png'));
     expect(File(imported.absolutePath).existsSync(), isTrue);
     expect(await File(imported.absolutePath).readAsBytes(), pngBytes);
-    expect(await repository.listBackgroundImages(), hasLength(1));
+    expect(
+      await repository.listBackgroundImages(rootDirectory: rootDirectory),
+      hasLength(1),
+    );
     expect(
       Directory(p.join(rootDirectory.path, 'backgrounds'))
           .listSync()
@@ -107,7 +111,10 @@ void main() {
       throwsFormatException,
     );
 
-    expect(await repository.listBackgroundImages(), isEmpty);
+    expect(
+      await repository.listBackgroundImages(rootDirectory: rootDirectory),
+      isEmpty,
+    );
     expect(
       Directory(p.join(rootDirectory.path, 'backgrounds')).existsSync(),
       isFalse,
@@ -123,7 +130,10 @@ void main() {
       throwsA(isA<FileSystemException>()),
     );
 
-    expect(await repository.listBackgroundImages(), isEmpty);
+    expect(
+      await repository.listBackgroundImages(rootDirectory: rootDirectory),
+      isEmpty,
+    );
   });
 
   test('extracts colors without retaining bytes or metadata', () async {
@@ -142,7 +152,10 @@ void main() {
     );
 
     expect(colors, hasLength(5));
-    expect(await repository.listBackgroundImages(), isEmpty);
+    expect(
+      await repository.listBackgroundImages(rootDirectory: rootDirectory),
+      isEmpty,
+    );
     expect(
       backgroundDirectory
           .listSync()
@@ -167,7 +180,81 @@ void main() {
       storedFile.lastModifiedSync().millisecondsSinceEpoch,
       preservedTimestamp.millisecondsSinceEpoch,
     );
-    expect(await repository.listBackgroundImages(), hasLength(1));
+    expect(
+      await repository.listBackgroundImages(rootDirectory: rootDirectory),
+      hasLength(1),
+    );
+  });
+
+  test('serializes same-SHA imports across services and releases after failure',
+      () async {
+    final failingRepository = _GatedMetadataRepository(
+      delegate: repository,
+      fail: true,
+    );
+    final succeedingRepository = _GatedMetadataRepository(
+      delegate: repository,
+      fail: false,
+    );
+    final failingService = BackgroundImageService(
+      repository: failingRepository,
+      rootDirectory: rootDirectory,
+    );
+    final succeedingService = BackgroundImageService(
+      repository: succeedingRepository,
+      rootDirectory: rootDirectory,
+    );
+    final failingImport = failingService.importImage(
+      XFile.fromData(pngBytes, name: 'first.png'),
+      syncEnabled: false,
+    );
+    await failingRepository.addStarted.future;
+
+    final secondRead = Completer<void>();
+    final succeedingImport = succeedingService.importImage(
+      _SignalingXFile(pngBytes, bytesRead: secondRead),
+      syncEnabled: false,
+    );
+    await secondRead.future;
+
+    failingRepository.release.complete();
+    await expectLater(failingImport, throwsStateError);
+    await succeedingRepository.addStarted.future;
+    succeedingRepository.release.complete();
+    final imported = await succeedingImport;
+
+    expect(File(imported.absolutePath).existsSync(), isTrue);
+    expect(
+      await repository.listBackgroundImages(rootDirectory: rootDirectory),
+      hasLength(1),
+    );
+  });
+
+  test('reloads absolute paths from an explicit root, never the CWD', () async {
+    final imported = await service.importImage(
+      XFile.fromData(pngBytes, name: 'sample.png'),
+      syncEnabled: false,
+    );
+    final unrelatedDirectory = await Directory.systemTemp.createTemp(
+      'simple-note-unrelated-cwd-',
+    );
+    final originalCurrentDirectory = Directory.current;
+    try {
+      Directory.current = unrelatedDirectory.path;
+      final reloaded = await repository.listBackgroundImages(
+        rootDirectory: rootDirectory,
+      );
+      final expectedPath = p.join(
+        rootDirectory.path,
+        imported.relativePath,
+      );
+
+      expect(reloaded.single.absolutePath, expectedPath);
+      expect(File(reloaded.single.absolutePath).existsSync(), isTrue);
+    } finally {
+      Directory.current = originalCurrentDirectory.path;
+      await unrelatedDirectory.delete(recursive: true);
+    }
   });
 
   test('rolls back a newly-created unreferenced file on metadata failure',
@@ -268,7 +355,10 @@ void main() {
       (await repository.loadDeviceProfile('android')).localBackgroundImageId,
       imported.id,
     );
-    expect(await repository.listBackgroundImages(), isEmpty);
+    expect(
+      await repository.listBackgroundImages(rootDirectory: rootDirectory),
+      isEmpty,
+    );
     final deletedRow =
         await database.appearanceDao.backgroundImageById(imported.id);
     expect(deletedRow?.deletedAt, isNotNull);
@@ -294,6 +384,76 @@ final class _UnreadableOversizedXFile extends XFile {
   @override
   Future<Uint8List> readAsBytes() {
     throw StateError('readAsBytes must not be called for oversized input.');
+  }
+}
+
+final class _SignalingXFile extends XFile {
+  _SignalingXFile(
+    super.bytes, {
+    required this.bytesRead,
+  }) : super.fromData(name: 'signaling.png');
+
+  final Completer<void> bytesRead;
+
+  @override
+  Future<Uint8List> readAsBytes() async {
+    final bytes = await super.readAsBytes();
+    if (!bytesRead.isCompleted) {
+      bytesRead.complete();
+    }
+    return bytes;
+  }
+}
+
+final class _GatedMetadataRepository implements AppearanceRepository {
+  _GatedMetadataRepository({
+    required this.delegate,
+    required this.fail,
+  });
+
+  final AppearanceRepository delegate;
+  final bool fail;
+  final Completer<void> addStarted = Completer<void>();
+  final Completer<void> release = Completer<void>();
+
+  @override
+  Future<BackgroundImage> addOrReuseBackgroundImage({
+    required String sha256,
+    required String mimeType,
+    required int byteSize,
+    required int width,
+    required int height,
+    required String relativePath,
+    required String absolutePath,
+    required bool syncEnabled,
+  }) async {
+    if (!addStarted.isCompleted) {
+      addStarted.complete();
+    }
+    await release.future;
+    if (fail) {
+      throw StateError('metadata insert failed');
+    }
+    return delegate.addOrReuseBackgroundImage(
+      sha256: sha256,
+      mimeType: mimeType,
+      byteSize: byteSize,
+      width: width,
+      height: height,
+      relativePath: relativePath,
+      absolutePath: absolutePath,
+      syncEnabled: syncEnabled,
+    );
+  }
+
+  @override
+  Future<bool> hasBackgroundImageWithSha256(String sha256) {
+    return delegate.hasBackgroundImageWithSha256(sha256);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnsupportedError('Not used by this service test.');
   }
 }
 
