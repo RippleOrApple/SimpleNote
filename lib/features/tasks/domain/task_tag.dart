@@ -51,4 +51,24 @@ class TaskTag implements Syncable {
         deviceId: json['deviceId']! as String,
         version: json['version'] as int? ?? 1,
       );
+
+  TaskTag copyWith({
+    String? name,
+    int? color,
+    int? updatedAt,
+    int? deletedAt,
+    int? version,
+    bool clearDeletedAt = false,
+  }) {
+    return TaskTag(
+      id: id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: clearDeletedAt ? null : deletedAt ?? this.deletedAt,
+      deviceId: deviceId,
+      version: version ?? this.version,
+    );
+  }
 }

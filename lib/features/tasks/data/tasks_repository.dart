@@ -23,6 +23,8 @@ abstract class TasksRepository {
     bool includeCompleted = false,
   });
   Future<Task?> findTask(String id);
+  Future<List<Task>> listSubtasks(String parentId);
+  Future<Map<String, Set<String>>> taskTagIds(Iterable<String> taskIds);
   Future<void> upsertTask(Task task);
   Future<void> softDeleteTask(String id, int deletedAt);
   Future<void> replaceTaskTags(String taskId, Iterable<String> tagIds);
@@ -30,6 +32,7 @@ abstract class TasksRepository {
   Future<List<TaskList>> listTaskLists();
   Future<void> upsertTaskList(TaskList list);
   Future<void> softDeleteTaskList(String id, int deletedAt);
+  Future<void> deleteTaskListAndMoveTasksToInbox(String id, int deletedAt);
   Future<List<TaskTag>> listTaskTags();
   Future<void> upsertTaskTag(TaskTag tag);
   Future<void> softDeleteTaskTag(String id, int deletedAt);
@@ -117,6 +120,33 @@ class DriftTasksRepository implements TasksRepository {
   Future<Task?> findTask(String id) async {
     final row = await _database.tasksV2Dao.findById(id);
     return row == null ? null : _fromRow(row);
+  }
+
+  @override
+  Future<List<Task>> listSubtasks(String parentId) async {
+    final rows = await _database.tasksV2Dao.directChildren(parentId);
+    return rows.where((row) => row.deletedAt == null).map(_fromRow).toList()
+      ..sort((left, right) => left.sortOrder.compareTo(right.sortOrder));
+  }
+
+  @override
+  Future<Map<String, Set<String>>> taskTagIds(
+    Iterable<String> taskIds,
+  ) async {
+    final ids = taskIds.toSet();
+    final links = await _database.taskTaxonomyDao.activeLinksForTasks(ids);
+    final activeTagIds = (await _database.taskTaxonomyDao.activeTags())
+        .map((tag) => tag.id)
+        .toSet();
+    final result = <String, Set<String>>{
+      for (final id in ids) id: <String>{},
+    };
+    for (final link in links) {
+      if (activeTagIds.contains(link.tagId)) {
+        result[link.taskId]?.add(link.tagId);
+      }
+    }
+    return result;
   }
 
   @override
@@ -227,6 +257,24 @@ class DriftTasksRepository implements TasksRepository {
         deletedAt: Value(deletedAt),
         updatedAt: Value(deletedAt),
       ));
+
+  @override
+  Future<void> deleteTaskListAndMoveTasksToInbox(
+    String id,
+    int deletedAt,
+  ) {
+    return _database.transaction(() async {
+      await (_database.update(_database.tasksV2)
+            ..where((row) => row.listId.equals(id) & row.deletedAt.isNull()))
+          .write(
+        TasksV2Companion(
+          listId: const Value(null),
+          updatedAt: Value(deletedAt),
+        ),
+      );
+      await softDeleteTaskList(id, deletedAt);
+    });
+  }
 
   @override
   Future<List<TaskTag>> listTaskTags() async {
@@ -353,6 +401,10 @@ class DriftTasksRepository implements TasksRepository {
     Set<String> tagIds,
   ) async {
     if (tagIds.isEmpty) return rows;
+    final activeTagIds = (await _database.taskTaxonomyDao.activeTags())
+        .map((tag) => tag.id)
+        .toSet();
+    if (!activeTagIds.containsAll(tagIds)) return const [];
     final links = await _database.taskTaxonomyDao.activeLinksForTasks(
       rows.map((row) => row.id),
     );

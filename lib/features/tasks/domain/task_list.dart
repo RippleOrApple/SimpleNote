@@ -63,4 +63,30 @@ class TaskList implements Syncable {
         deviceId: json['deviceId']! as String,
         version: json['version'] as int? ?? 1,
       );
+
+  TaskList copyWith({
+    String? name,
+    int? color,
+    String? iconKey,
+    int? sortOrder,
+    bool? archived,
+    int? updatedAt,
+    int? deletedAt,
+    int? version,
+    bool clearDeletedAt = false,
+  }) {
+    return TaskList(
+      id: id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      iconKey: iconKey ?? this.iconKey,
+      sortOrder: sortOrder ?? this.sortOrder,
+      archived: archived ?? this.archived,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: clearDeletedAt ? null : deletedAt ?? this.deletedAt,
+      deviceId: deviceId,
+      version: version ?? this.version,
+    );
+  }
 }

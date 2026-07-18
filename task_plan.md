@@ -85,3 +85,14 @@ Complete
 - Enforced one subtask level, parent list inheritance, cascading soft deletes, and active-tag validation.
 - **Verification:** `flutter analyze` passed; `flutter test` passed with 141 tests.
 - **Next:** V2 Task 9, task application state, smart sources, lists, tags, and filters.
+
+## V2 Task 9: Task Application State and Sources
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added `tasksControllerProvider`, application state, built-in sources, selection, subtasks, search results, and save status.
+- Added quick add, task edits, completion, deletion, subtasks, list/tag/filter CRUD, source selection, sorting, and completed visibility controls.
+- Added debounced search with cancellation safety and restoration of the last non-search source.
+- Added transactional list deletion that moves tasks back to virtual Inbox and active-tag filtering for task links.
+- **Verification:** `flutter analyze` passed; `flutter test` passed with 147 tests.
+- **Next:** V2 Task 10, Windows and Android task workspaces.

@@ -1571,7 +1571,7 @@ git commit -m "feat: add v2 task repository"
 - Produces `TasksState` with sources, current query, search text/results, visible tasks, selected task, lists, tags, filters, and save status.
 - Produces quick add, search, edit, complete, delete, child task, list, tag, filter, source selection, and sort operations.
 
-- [ ] **Step 1: Write the failing controller workflow test**
+- [x] **Step 1: Write the failing controller workflow test**
 
 ```dart
 await controller.quickAdd('Prepare release');
@@ -1605,7 +1605,7 @@ expect(state.tagIdsFor(taskId), {tagId});
 
 Also test quick-add trims input and ignores a blank title, four priority values survive reload, source changes preserve only valid selection, and deleting a list moves its tasks to virtual Inbox by clearing `list_id`.
 
-- [ ] **Step 2: Run the focused test and verify the red state**
+- [x] **Step 2: Run the focused test and verify the red state**
 
 Run:
 
@@ -1615,7 +1615,7 @@ flutter test test/tasks/tasks_controller_test.dart
 
 Expected: FAIL because `TasksController` does not exist.
 
-- [ ] **Step 3: Define application state**
+- [x] **Step 3: Define application state**
 
 ```dart
 enum TaskSaveStatus { idle, saving, saved, failed }
@@ -1661,7 +1661,7 @@ class TasksState {
 }
 ```
 
-- [ ] **Step 4: Implement exact controller operations**
+- [x] **Step 4: Implement exact controller operations**
 
 ```dart
 Future<void> quickAdd(String title);
@@ -1709,7 +1709,7 @@ void clearSelection();
 
 Every write sets `saveStatus = saving`, commits through the repository, reloads, then sets `saved`. On failure, retain current state and selection, set `failed`, and expose the error string. Use a 350ms debounce for title and Markdown changes in presentation; quick add and toggles save immediately. Search uses a separate 250ms debounce, preserves the last non-search source query, and restores that source when the trimmed search text becomes empty.
 
-- [ ] **Step 5: Run the focused test**
+- [x] **Step 5: Run the focused test**
 
 Run:
 
@@ -1720,7 +1720,7 @@ flutter test test/tasks/tasks_controller_test.dart test/tasks/tasks_repository_t
 
 Expected: both controller and repository tests pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add lib/features/tasks/application test/tasks

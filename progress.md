@@ -117,3 +117,26 @@
 
 - V2 Task 8 is complete.
 - V2 Task 9 is next: task application state, smart sources, lists, tags, and filters.
+
+## Session: 2026-07-18 - V2 Task 9
+
+### Implementation
+
+- Added task application state with sources, queries, search results, selection, subtasks, taxonomy, and save status.
+- Added task quick add/edit/toggle/delete and one-level subtask workflows.
+- Added list, tag, and smart-filter creation and updates plus list archiving and deletion.
+- Added source and sort selection, completed visibility, debounced search, and source restoration.
+- Extended the repository for subtask loading, active task-tag maps, and transactional list deletion to Inbox.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/tasks` | Pass, 17 tests |
+| `flutter test` | Pass, 147 tests |
+
+### Handoff
+
+- V2 Task 9 is complete.
+- V2 Task 10 is next: Windows four-zone and Android task workspaces.

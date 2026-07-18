@@ -14,7 +14,8 @@ class TaskTaxonomyDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<TaskListRow>> activeLists() {
     return (select(taskLists)
-          ..where((item) => item.deletedAt.isNull())
+          ..where(
+              (item) => item.deletedAt.isNull() & item.archived.equals(false))
           ..orderBy([(item) => OrderingTerm.asc(item.sortOrder)]))
         .get();
   }

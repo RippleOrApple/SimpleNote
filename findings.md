@@ -47,3 +47,11 @@
 - Search uses one parameterized SQL query across task title, Markdown body, active list name, and active tag name, with wildcard escaping and `DISTINCT` task rows.
 - Smart-filter list, completion, priority, and tag rules are intersections; multiple selected tags require every tag.
 - Subtasks inherit the parent's list, cannot have children, cannot reference themselves, and are soft-deleted with their direct parent transactionally.
+
+## V2 Task 9 Findings
+
+- Built-in task sources can be represented directly by stable `TaskQuery` objects; `TasksState.sources` exposes the four standard source descriptors.
+- A task moved between Inbox and a custom list must also move the active query so the selected task remains valid.
+- Deleting a custom list is one transaction: clear active task `list_id` values, then soft-delete the list.
+- Search debounce cancellation must complete superseded Futures; otherwise rapid typing can leave callers waiting forever.
+- Soft-deleted tags remain sync history, but active task-tag maps and smart-filter evaluation must ignore their links.
