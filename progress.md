@@ -187,3 +187,27 @@
 
 - V2 Task 11 is complete.
 - V2 Task 12 is next: shared Markdown toolbar, editor, and attachment renderer.
+
+## Session: 2026-07-18 - V2 Task 12
+
+### Implementation
+
+- Added `MarkdownEditingController` with wrapping, insertion, and selected-line prefix operations.
+- Added a shared Markdown editor with heading, bold, italic, list, task-list, quote, code, code-block, link, and image controls.
+- Added Android file/gallery/camera and Windows file image menus with trimmed alt text and cancellation-safe selection handling.
+- Added `EmbeddedMarkdownView` with local attachment URI parsing and explicit remote-image rejection.
+- Added thumbnail-first attachment rendering, stable inline dimensions, resolver/missing-file placeholders, original-image full-screen zoom, and confirmed deletion.
+- Cached attachment resolver Futures and clamped service-returned selections before restoring the editor.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/attachments/embedded_markdown_editor_test.dart test/attachments/embedded_markdown_view_test.dart` | Pass, 12 tests |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 174 tests |
+
+### Handoff
+
+- V2 Task 12 is complete.
+- V2 Task 13 is next: inline images in Notes and Tasks.

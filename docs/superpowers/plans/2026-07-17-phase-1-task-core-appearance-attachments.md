@@ -2135,7 +2135,7 @@ git commit -m "feat: add transactional content attachments"
 - Produces `EmbeddedMarkdownView` that resolves `attachment://` without storing device absolute paths in Markdown.
 - Produces full-screen preview and delete confirmation for embedded images.
 
-- [ ] **Step 1: Write failing editor and renderer tests**
+- [x] **Step 1: Write failing editor and renderer tests**
 
 Selection insertion:
 
@@ -2167,7 +2167,7 @@ await tester.pumpAndSettle();
 expect(find.byKey(const Key('attachment-fullscreen-att-1')), findsOneWidget);
 ```
 
-- [ ] **Step 2: Run focused tests and verify the red state**
+- [x] **Step 2: Run focused tests and verify the red state**
 
 Run:
 
@@ -2177,7 +2177,7 @@ flutter test test/attachments/embedded_markdown_editor_test.dart test/attachment
 
 Expected: FAIL because the shared Markdown widgets do not exist.
 
-- [ ] **Step 3: Implement toolbar editing operations**
+- [x] **Step 3: Implement toolbar editing operations**
 
 Toolbar operations:
 
@@ -2219,7 +2219,7 @@ class EmbeddedMarkdownEditor extends StatefulWidget {
 
 The image menu includes a compact alt-text field initialized to `图片`; trim it and fall back to `图片` when blank. Pass it to `onInsertImage`. When the callback returns a result, replace editor text and restore the returned selection. When the user cancels, do not mutate text or selection.
 
-- [ ] **Step 4: Implement attachment rendering**
+- [x] **Step 4: Implement attachment rendering**
 
 `EmbeddedMarkdownView` passes:
 
@@ -2247,7 +2247,7 @@ imageBuilder: (uri, title, alt) {
 - Shows delete only when an `onDelete` callback is supplied.
 - Requires confirmation text `从正文中删除这张图片？`.
 
-- [ ] **Step 5: Run focused tests**
+- [x] **Step 5: Run focused tests**
 
 Run:
 
@@ -2258,7 +2258,7 @@ flutter test test/attachments/embedded_markdown_editor_test.dart test/attachment
 
 Expected: selection, toolbar, insertion, preview, missing-file, and delete-confirmation tests pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add lib/shared/widgets lib/features/attachments/presentation test/attachments

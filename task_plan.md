@@ -118,3 +118,14 @@ Complete
 - Added Android lost-image retrieval as pending imports without silently changing the active editor.
 - **Verification:** `flutter analyze` passed; `flutter test` passed with 162 tests.
 - **Next:** V2 Task 12, shared Markdown toolbar, editor, and attachment renderer.
+
+## V2 Task 12: Shared Markdown Editor and Attachment Renderer
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added shared Markdown selection wrapping, insertion, line-prefix operations, syntax toolbar, and image-source/alt-text dialog.
+- Added local `attachment://` rendering with asynchronous metadata resolution, thumbnail-first loading, remote-image rejection, and missing-file states.
+- Added full-screen original-image preview with zoom/pan and confirmed inline-image deletion callbacks.
+- Added stable 280x180 inline image dimensions and cached resolver Futures to avoid repeated queries and layout churn.
+- **Verification:** `flutter analyze` passed; `flutter test` passed with 174 tests.
+- **Next:** V2 Task 13, inline-image integration for Notes and Tasks.

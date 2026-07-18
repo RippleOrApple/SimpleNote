@@ -72,3 +72,12 @@
 - Import transactions validate the Note or Task owner inside the transaction, update Markdown and owner version, and insert metadata as one unit.
 - Delete transactions validate attachment ownership and require an exact Markdown image node before soft-deleting metadata; physical files remain for Phase 1 cleanup policy.
 - Android `retrieveLostData()` is called once through a cached provider, and recovered images remain pending until an editor explicitly consumes them.
+
+## V2 Task 12 Findings
+
+- Programmatic Markdown toolbar edits do not trigger `TextField.onChanged`, so toolbar actions explicitly emit the updated string while service-returned image edits remain controller-owned commits.
+- Image insertion must snapshot editor selection before opening the source dialog; dialog focus must not replace the target selection.
+- The installed `flutter_markdown` version deprecates `imageBuilder` and has legacy argument-order behavior, so `sizedImageBuilder` provides unambiguous URI, alt, and title fields.
+- Attachment resolver Futures must be cached in `AttachmentImage`; creating one on every build repeatedly queries metadata and can leave the image in a loading loop.
+- A stable 280x180 inline image canvas prevents Markdown `Wrap` relayout shifts across loading, missing, and loaded states while full-screen preview preserves the original aspect ratio.
+- Widget tests that perform real temporary-file IO inside Flutter fake async must use synchronous operations or `runAsync`; direct async `File.delete()` can stall the test isolate.
