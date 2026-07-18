@@ -74,3 +74,14 @@ Complete
 - Migrated compatibility routes and updated regression tests to the v2 shell contract.
 - **Verification:** `flutter analyze` passed; `flutter test` passed with 130 tests.
 - **Next:** V2 Task 8, task domain models, queries, and repository.
+
+## V2 Task 8: Task Domain, Queries, and Repository
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added Task, TaskList, TaskTag, SmartFilter, TaskFilterRules, TaskQuery, TaskPriority, and TaskSortMode contracts.
+- Added tasks_v2 and taxonomy DAO operations plus the transactional V2 task repository.
+- Added inbox, today, next-seven-days, all, list, smart-filter, and cross-taxonomy search semantics.
+- Enforced one subtask level, parent list inheritance, cascading soft deletes, and active-tag validation.
+- **Verification:** `flutter analyze` passed; `flutter test` passed with 141 tests.
+- **Next:** V2 Task 9, task application state, smart sources, lists, tags, and filters.

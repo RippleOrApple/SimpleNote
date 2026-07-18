@@ -1393,7 +1393,7 @@ git commit -m "feat: add adaptive customizable navigation"
 - Produces `TasksRepository.queryTasks`, `searchTasks(query, {sortMode, includeCompleted})`, `findTask`, `upsertTask`, `softDeleteTask`, `replaceTaskTags`, and taxonomy CRUD.
 - Enforces only one subtask level.
 
-- [ ] **Step 1: Write failing domain and repository tests**
+- [x] **Step 1: Write failing domain and repository tests**
 
 Domain JSON assertions:
 
@@ -1423,7 +1423,7 @@ await expectLater(
 );
 ```
 
-- [ ] **Step 2: Run focused tests and verify the red state**
+- [x] **Step 2: Run focused tests and verify the red state**
 
 Run:
 
@@ -1433,7 +1433,7 @@ flutter test test/tasks/task_domain_test.dart test/tasks/tasks_repository_test.d
 
 Expected: FAIL because V2 task domain and repository files do not exist.
 
-- [ ] **Step 3: Implement the exact Task contract**
+- [x] **Step 3: Implement the exact Task contract**
 
 ```dart
 enum TaskPriority { none, low, medium, high }
@@ -1494,7 +1494,7 @@ class Task implements Syncable {
 
 Implement complete `toJson`, `fromJson`, and `copyWith`, including explicit clear flags for nullable fields.
 
-- [ ] **Step 4: Implement query semantics**
+- [x] **Step 4: Implement query semantics**
 
 ```dart
 sealed class TaskQuery {
@@ -1531,7 +1531,7 @@ Semantics:
 - Smart filter: intersect selected list IDs, tag IDs, completion state, and priorities.
 - Search: trim and case-fold the query, escape SQL wildcard characters, and match task title, Markdown body text, custom-list name, or any task-tag name. Return each top-level task once even when multiple tags match, preserve the selected sort mode, and open the matching task directly from results.
 
-- [ ] **Step 5: Enforce subtask and transaction rules**
+- [x] **Step 5: Enforce subtask and transaction rules**
 
 Before writing a task whose `parentId` is non-null:
 
@@ -1542,7 +1542,7 @@ Before writing a task whose `parentId` is non-null:
 
 `softDeleteTask` soft-deletes direct children in the same transaction. `replaceTaskTags` rejects tag IDs that are missing or soft-deleted.
 
-- [ ] **Step 6: Run focused tests**
+- [x] **Step 6: Run focused tests**
 
 Run:
 
@@ -1553,7 +1553,7 @@ flutter test test/tasks/task_domain_test.dart test/tasks/tasks_repository_test.d
 
 Expected: all task and migration tests pass.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```powershell
 git add lib/features/tasks lib/database/daos test/tasks test/database

@@ -95,3 +95,25 @@
 
 - V2 Task 7 is complete.
 - V2 Task 8 is next: task domain models, queries, and repository.
+
+## Session: 2026-07-18 - V2 Task 8
+
+### Implementation
+
+- Added V2 task and taxonomy domain objects with JSON and copy contracts.
+- Added TaskQuery factories for inbox, today, next seven days, all tasks, custom lists, and smart filters.
+- Implemented V2 task persistence, parameterized search, sorting, taxonomy CRUD, tag replacement, and soft deletion.
+- Added transactional subtask validation, parent list inheritance, direct-child deletion, and active-tag validation.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/tasks test/database/migration_v2_test.dart` | Pass, 14 tests |
+| `flutter test` | Pass, 141 tests |
+
+### Handoff
+
+- V2 Task 8 is complete.
+- V2 Task 9 is next: task application state, smart sources, lists, tags, and filters.

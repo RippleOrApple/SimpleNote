@@ -39,3 +39,11 @@
 - Windows rail selection uses the injected device platform, with the 920 logical-pixel breakpoint as the adaptive fallback.
 - Legacy `/todos`, `/notes`, and `/settings` routes now resolve through the adaptive shell; Notes and Settings remain compatible modules while Today is the Task 10 placeholder.
 - Appearance navigation settings are persisted through `AppearanceController.setNavigation` and normalized by `DeviceAppearanceProfile`.
+
+## V2 Task 8 Findings
+
+- The V2 tables and migration already existed, but `TasksV2Dao` and `TaskTaxonomyDao` were empty accessors.
+- Routed task work must use `tasks_v2`; the legacy Todo domain remains compatibility code only.
+- Search uses one parameterized SQL query across task title, Markdown body, active list name, and active tag name, with wildcard escaping and `DISTINCT` task rows.
+- Smart-filter list, completion, priority, and tag rules are intersections; multiple selected tags require every tag.
+- Subtasks inherit the parent's list, cannot have children, cannot reference themselves, and are soft-deleted with their direct parent transactionally.
