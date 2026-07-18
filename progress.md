@@ -405,3 +405,34 @@
 
 - V2 Task 18 is complete.
 - V2 Task 19 is next: reminder scheduling.
+
+## Session: 2026-07-18 - V2 Task 19
+
+### Planning
+
+- Updated `GOAL.md` for reminder scheduling.
+- Confirmed `task_reminders` persistence exists, but no scheduling service or notification adapter exists yet.
+- Scoped Task 19 to repository pending-schedule queries, a notification scheduling interface, reconciliation, cancellation, and fired-state persistence.
+
+### Implementation
+
+- Added `LocalNotificationRequest`, `LocalNotificationScheduler`, and a default no-op notification adapter.
+- Added `TaskReminderSchedule` as the resolved task/reminder/fire-time contract.
+- Extended `TasksRepository` with pending reminder schedule queries and `markTaskReminderFired`.
+- Resolved absolute reminders directly and relative reminders from due time, falling back to start time.
+- Added `TaskReminderScheduler` to reconcile pending reminders, cancel stale task-reminder notifications, and mark reminders fired.
+- Added focused repository and notification scheduler tests.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/tasks/tasks_repository_test.dart test/notifications/task_reminder_scheduler_test.dart` | Red first for missing repository methods/notification module, then pass with 20 focused tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 177 files unchanged |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 215 tests |
+
+### Handoff
+
+- V2 Task 19 is complete.
+- V2 Task 20 is next: reminder UI and scheduling hooks.

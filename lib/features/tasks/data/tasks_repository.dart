@@ -12,6 +12,7 @@ import '../domain/task_list.dart';
 import '../domain/task_query.dart';
 import '../domain/task_recurrence.dart';
 import '../domain/task_reminder.dart';
+import '../domain/task_reminder_schedule.dart';
 import '../domain/task_tag.dart';
 
 final tasksRepositoryProvider = Provider<TasksRepository>(
@@ -29,6 +30,10 @@ abstract class TasksRepository {
   Future<List<Task>> listSubtasks(String parentId);
   Future<List<TaskCompletion>> listTaskCompletions(String taskId);
   Future<List<TaskReminder>> listTaskReminders(String taskId);
+  Future<List<TaskReminderSchedule>> listPendingTaskReminderSchedules({
+    required int now,
+    required int before,
+  });
   Future<Map<String, Set<String>>> taskTagIds(Iterable<String> taskIds);
   Future<void> upsertTask(Task task);
   Future<void> completeTaskOccurrence(
@@ -38,6 +43,7 @@ abstract class TasksRepository {
   });
   Future<void> uncompleteTask(String id, int updatedAt);
   Future<void> upsertTaskReminder(TaskReminder reminder);
+  Future<void> markTaskReminderFired(String id, int firedAt);
   Future<void> softDeleteTask(String id, int deletedAt);
   Future<void> softDeleteTaskReminder(String id, int deletedAt);
   Future<void> replaceTaskTags(String taskId, Iterable<String> tagIds);
@@ -148,6 +154,36 @@ class DriftTasksRepository implements TasksRepository {
           ..where((row) => row.taskId.equals(taskId) & row.deletedAt.isNull()))
         .get();
     return rows.map(_fromReminderRow).toList()..sort(_reminderComparator);
+  }
+
+  @override
+  Future<List<TaskReminderSchedule>> listPendingTaskReminderSchedules({
+    required int now,
+    required int before,
+  }) async {
+    if (before <= now) return const [];
+    final reminderRows = await (_database.select(_database.taskReminders)
+          ..where(
+            (reminder) =>
+                reminder.deletedAt.isNull() & reminder.firedAt.isNull(),
+          ))
+        .get();
+    final schedules = <TaskReminderSchedule>[];
+    for (final reminderRow in reminderRows) {
+      final taskRow = await _database.tasksV2Dao.findById(reminderRow.taskId);
+      if (taskRow == null || taskRow.deletedAt != null || taskRow.completed) {
+        continue;
+      }
+      final fireAt = _resolveReminderFireAt(reminderRow, taskRow);
+      if (fireAt == null || fireAt <= now || fireAt >= before) continue;
+      schedules.add(TaskReminderSchedule(
+        task: _fromRow(taskRow),
+        reminder: _fromReminderRow(reminderRow),
+        fireAt: fireAt,
+      ));
+    }
+    schedules.sort(_scheduleComparator);
+    return schedules;
   }
 
   @override
@@ -297,6 +333,21 @@ class DriftTasksRepository implements TasksRepository {
             _toReminderCompanion(reminder),
           );
     });
+  }
+
+  @override
+  Future<void> markTaskReminderFired(String id, int firedAt) async {
+    final row = await (_database.select(_database.taskReminders)
+          ..where((reminder) => reminder.id.equals(id)))
+        .getSingleOrNull();
+    if (row == null || row.deletedAt != null) return;
+    await (_database.update(_database.taskReminders)
+          ..where((reminder) => reminder.id.equals(id)))
+        .write(TaskRemindersCompanion(
+      firedAt: Value(firedAt),
+      updatedAt: Value(firedAt),
+      version: Value(row.version + 1),
+    ));
   }
 
   @override
@@ -745,6 +796,30 @@ class DriftTasksRepository implements TasksRepository {
       return leftOffset.compareTo(rightOffset);
     }
     return left.createdAt.compareTo(right.createdAt);
+  }
+
+  static int? _resolveReminderFireAt(
+    TaskReminderRow reminder,
+    TaskV2Row task,
+  ) {
+    final absolute = reminder.triggerAt;
+    if (absolute != null) return absolute;
+    final offset = reminder.offsetMinutes;
+    final anchor = task.dueAt ?? task.startAt;
+    if (offset == null || anchor == null) return null;
+    return anchor + offset * 60 * 1000;
+  }
+
+  static int _scheduleComparator(
+    TaskReminderSchedule left,
+    TaskReminderSchedule right,
+  ) {
+    final time = left.fireAt.compareTo(right.fireAt);
+    if (time != 0) return time;
+    final reminderCreated =
+        left.reminder.createdAt.compareTo(right.reminder.createdAt);
+    if (reminderCreated != 0) return reminderCreated;
+    return left.reminder.id.compareTo(right.reminder.id);
   }
 
   static void _validateReminderTrigger(TaskReminder reminder) {

@@ -361,6 +361,103 @@ void main() {
     );
   });
 
+  test('lists pending reminder schedules with resolved fire times', () async {
+    await repository.upsertTask(_task('absolute'));
+    await repository.upsertTaskReminder(_reminder(
+      'absolute-reminder',
+      'absolute',
+      triggerAt: 5000,
+    ));
+    await repository.upsertTask(_task('relative-due', dueAt: 10000000));
+    await repository.upsertTaskReminder(_reminder(
+      'relative-due-reminder',
+      'relative-due',
+      offsetMinutes: -30,
+    ));
+    await repository.upsertTask(_task('relative-start', startAt: 5000000));
+    await repository.upsertTaskReminder(_reminder(
+      'relative-start-reminder',
+      'relative-start',
+      offsetMinutes: 10,
+    ));
+    await repository.upsertTask(_task('past'));
+    await repository.upsertTaskReminder(_reminder(
+      'past-reminder',
+      'past',
+      triggerAt: 500,
+    ));
+    await repository.upsertTask(_task('completed', completed: true));
+    await repository.upsertTaskReminder(_reminder(
+      'completed-reminder',
+      'completed',
+      triggerAt: 6000,
+    ));
+    await repository.upsertTask(_task('unanchored'));
+    await repository.upsertTaskReminder(_reminder(
+      'unanchored-reminder',
+      'unanchored',
+      offsetMinutes: -5,
+    ));
+    await repository.upsertTask(_task('fired'));
+    await repository.upsertTaskReminder(_reminder(
+      'fired-reminder',
+      'fired',
+      triggerAt: 7000,
+      firedAt: 6500,
+    ));
+    await repository.upsertTask(_task('deleted'));
+    await repository.upsertTaskReminder(_reminder(
+      'deleted-reminder',
+      'deleted',
+      triggerAt: 8000,
+    ));
+    await repository.softDeleteTask('deleted', 2000);
+
+    final schedules = await repository.listPendingTaskReminderSchedules(
+      now: 1000,
+      before: 20000000,
+    );
+
+    expect(schedules.map((schedule) => schedule.reminder.id), [
+      'absolute-reminder',
+      'relative-start-reminder',
+      'relative-due-reminder',
+    ]);
+    expect(schedules.map((schedule) => schedule.fireAt), [
+      5000,
+      5600000,
+      8200000,
+    ]);
+    expect(schedules.map((schedule) => schedule.task.id), [
+      'absolute',
+      'relative-start',
+      'relative-due',
+    ]);
+  });
+
+  test('marking a reminder fired removes it from pending schedules', () async {
+    await repository.upsertTask(_task('task'));
+    await repository.upsertTaskReminder(_reminder(
+      'absolute',
+      'task',
+      triggerAt: 5000,
+    ));
+
+    await repository.markTaskReminderFired('absolute', 3000);
+
+    expect(
+      (await repository.listTaskReminders('task')).single.firedAt,
+      3000,
+    );
+    expect(
+      await repository.listPendingTaskReminderSchedules(
+        now: 1000,
+        before: 10000,
+      ),
+      isEmpty,
+    );
+  });
+
   test('rejects reminders for missing or deleted tasks', () async {
     await expectLater(
       repository.upsertTaskReminder(_reminder('missing', 'missing')),
@@ -423,6 +520,7 @@ Task _task(
   TaskPriority priority = TaskPriority.none,
   int? startAt,
   int? dueAt,
+  int? deletedAt,
   String? recurrenceRule,
   int? recurrenceCount,
 }) {
@@ -436,6 +534,7 @@ Task _task(
     priority: priority,
     startAt: startAt,
     dueAt: dueAt,
+    deletedAt: deletedAt,
     recurrenceRule: recurrenceRule,
     recurrenceCount: recurrenceCount,
     createdAt: 1,
@@ -449,6 +548,7 @@ TaskReminder _reminder(
   String taskId, {
   int? triggerAt,
   int? offsetMinutes,
+  int? firedAt,
   int createdAt = 1,
   int updatedAt = 1,
 }) {
@@ -459,6 +559,7 @@ TaskReminder _reminder(
     taskId: taskId,
     triggerAt: effectiveTriggerAt,
     offsetMinutes: offsetMinutes,
+    firedAt: firedAt,
     createdAt: createdAt,
     updatedAt: updatedAt,
     deviceId: 'device',

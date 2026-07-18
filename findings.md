@@ -133,3 +133,12 @@
 - Until a full visual calendar exists, the important deliverable is deterministic range aggregation that later UI can reuse.
 - Recurring task expansion can reuse `TaskRecurrenceRule`; invalid rules should fall back to the current task marker instead of breaking the entire calendar query.
 - A recurring task's `recurrenceCount` must be interpreted against active completion events because completed occurrences are stored separately in `task_completions`.
+
+## V2 Task 19 Findings
+
+- The spec places notification ownership outside Tasks: Notifications convert reminder definitions into current-platform local notifications.
+- The project does not currently depend on a native notification plugin, so Task 19 should introduce a replaceable platform scheduler interface first.
+- Relative reminders need a task time anchor; due time is the strongest anchor, with start time as the fallback.
+- `firedAt` already exists in `task_reminders`, but the repository needs an explicit operation to persist it from the scheduling layer.
+- Stable platform notification IDs can be derived from reminder IDs with a `task-reminder:` prefix, making reconciliation independent of database row order.
+- Reconciliation should preserve unrelated notification IDs and only cancel stale IDs in the task-reminder namespace.

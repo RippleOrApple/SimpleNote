@@ -207,3 +207,17 @@ Complete
 - Cover grouping, sorting, recurrence caps, invalid recurrence fallback, and controller reload behavior.
 - **Verification:** formatter, `flutter analyze`, targeted calendar tests, and full `flutter test` passed with 211 tests.
 - **Next:** V2 Task 19, reminder scheduling.
+
+## V2 Task 19: Reminder Scheduling
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Add a notification scheduling interface with a no-op default adapter.
+- Add task reminder schedule domain objects.
+- Resolve pending absolute and relative task reminders through the task repository.
+- Reconcile pending reminders into platform notification requests.
+- Cancel stale task reminder notification IDs and mark reminders fired.
+- Cover repository filtering, relative trigger resolution, reconciliation, cancellation, and fired-state persistence.
+- **Verification:** formatter, `flutter analyze`, targeted task/notification tests, and full `flutter test` passed with 215 tests.
+- **Next:** V2 Task 20, reminder UI and scheduling hooks.
