@@ -1930,7 +1930,7 @@ git commit -m "feat: add adaptive v2 task workspace"
 - Produces `AttachmentImportService.importAndAttach` and `deleteAndDetach`.
 - Generates original and thumbnail content-addressed files and commits owner Markdown plus metadata in one database transaction.
 
-- [ ] **Step 1: Write failing file and transaction tests**
+- [x] **Step 1: Write failing file and transaction tests**
 
 Use a temporary directory, memory database, and 80×40 PNG:
 
@@ -1954,7 +1954,7 @@ expect(File(result.attachment.thumbnailAbsolutePath).existsSync(), isTrue);
 
 Inject a repository that throws during commit and assert that no attachment record, Markdown reference, temporary file, original file, or thumbnail remains.
 
-- [ ] **Step 2: Run focused tests and verify the red state**
+- [x] **Step 2: Run focused tests and verify the red state**
 
 Run:
 
@@ -1964,7 +1964,7 @@ flutter test test/attachments/attachment_file_store_test.dart test/attachments/a
 
 Expected: FAIL because the attachment module does not exist.
 
-- [ ] **Step 3: Define attachment contracts**
+- [x] **Step 3: Define attachment contracts**
 
 ```dart
 enum AttachmentOwnerType { task, note }
@@ -2046,7 +2046,7 @@ final class AttachmentImportResult {
 
 Controllers return `result.edit` to presentation after reloading the committed owner.
 
-- [ ] **Step 4: Implement picker behavior**
+- [x] **Step 4: Implement picker behavior**
 
 ```dart
 Future<XFile?> pick(AttachmentPickSource source) {
@@ -2073,7 +2073,7 @@ FilePicker.platform.pickFiles(
 
 On Android startup, call `ImagePicker.retrieveLostData()` once and route recovered images to a pending-import prompt instead of silently inserting them into whichever editor is open.
 
-- [ ] **Step 5: Implement the file store**
+- [x] **Step 5: Implement the file store**
 
 Validation and storage:
 
@@ -2088,7 +2088,7 @@ Validation and storage:
 
 On rollback, remove only files created by the current stage.
 
-- [ ] **Step 6: Implement repository transactions**
+- [x] **Step 6: Implement repository transactions**
 
 `commitImport` switches on owner type inside one Drift transaction:
 
@@ -2102,7 +2102,7 @@ set owner updated_at to the supplied timestamp
 
 `deleteAndDetach` removes exactly the `attachment://<id>` image node from Markdown and soft-deletes the attachment in the same transaction. It does not physically remove files in Phase 1.
 
-- [ ] **Step 7: Run focused tests**
+- [x] **Step 7: Run focused tests**
 
 Run:
 
@@ -2113,7 +2113,7 @@ flutter test test/attachments/attachment_file_store_test.dart test/attachments/a
 
 Expected: file validation, thumbnail creation, transactional commit, and rollback tests pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```powershell
 git add lib/features/attachments lib/database/daos test/attachments

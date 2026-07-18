@@ -163,3 +163,27 @@
 
 - V2 Task 10 is complete.
 - V2 Task 11 is next: transactional attachment import, storage, and metadata.
+
+## Session: 2026-07-18 - V2 Task 11
+
+### Implementation
+
+- Added content attachment ownership, metadata, input adapters, and shared Markdown selection/edit contracts.
+- Added file/gallery/camera picking and one-time Android lost-image recovery into a pending-import prompt.
+- Added 20 MB preflight validation, decoded-format enforcement, SHA-256 paths, 720px JPEG thumbnails, flushed temporary writes, and atomic final moves.
+- Added shared SHA staging leases so concurrent imports preserve files after any successful transaction and clean them only when every lease fails.
+- Added Drift attachment queries plus atomic Note/Task Markdown and metadata import/delete transactions.
+- Added exact Markdown image-node removal, soft deletion, version increments, and physical-file preservation on detach.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/attachments` | Pass, 12 tests |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 162 tests |
+
+### Handoff
+
+- V2 Task 11 is complete.
+- V2 Task 12 is next: shared Markdown toolbar, editor, and attachment renderer.

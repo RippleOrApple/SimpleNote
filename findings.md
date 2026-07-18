@@ -63,3 +63,12 @@
 - Task title and Markdown description controllers remain mounted across saves and failures; only task selection changes replace their text, while writes debounce for 350 ms.
 - Completion and deletion haptics belong after the repository write reports `saved`; failed transactions must not emit feedback.
 - The temporary AppShell could be removed by retaining only a narrow embed scope and letting Notes and Settings own their standalone Scaffold fallback.
+
+## V2 Task 11 Findings
+
+- Attachment paths stored in syncable metadata must remain support-directory-relative; absolute original and thumbnail paths are local computed fields and are omitted from JSON.
+- File staging and database transactions need separate rollback coordination: temporary and final files are outside SQLite, so the service explicitly resolves a staged-file lease after commit or failure.
+- Same-SHA concurrent imports require a shared lease per absolute storage root and SHA. One successful commit preserves the files; files are removed only after every lease fails.
+- Import transactions validate the Note or Task owner inside the transaction, update Markdown and owner version, and insert metadata as one unit.
+- Delete transactions validate attachment ownership and require an exact Markdown image node before soft-deleting metadata; physical files remain for Phase 1 cleanup policy.
+- Android `retrieveLostData()` is called once through a cached provider, and recovered images remain pending until an editor explicitly consumes them.

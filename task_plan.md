@@ -107,3 +107,14 @@ Complete
 - Added completion animation and post-commit Android haptic feedback for completion and deletion.
 - **Verification:** `flutter analyze` passed; `flutter test` passed with 150 tests.
 - **Next:** V2 Task 11, transactional attachment import, storage, and metadata.
+
+## V2 Task 11: Transactional Content Attachments
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added attachment owner, input, metadata, picker, Markdown edit, file-store, repository, and import-service contracts.
+- Added content-addressed JPEG/PNG/WebP originals, 720px JPEG thumbnails, 20 MB preflight validation, atomic moves, and shared-SHA rollback leases.
+- Added atomic Note/Task Markdown plus metadata imports and exact Markdown-node plus metadata deletion transactions.
+- Added Android lost-image retrieval as pending imports without silently changing the active editor.
+- **Verification:** `flutter analyze` passed; `flutter test` passed with 162 tests.
+- **Next:** V2 Task 12, shared Markdown toolbar, editor, and attachment renderer.
