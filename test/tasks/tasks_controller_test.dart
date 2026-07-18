@@ -41,6 +41,12 @@ void main() {
       taskId,
       listId: list.id,
       priority: TaskPriority.high,
+      startAt: 1000,
+      dueAt: 2000,
+      allDay: true,
+      recurrenceRule: 'FREQ=DAILY',
+      recurrenceEndAt: 9000,
+      recurrenceCount: 3,
     );
     await controller.createTag(
       'focus',
@@ -61,6 +67,12 @@ void main() {
 
     state = await harness.state;
     expect(state.selectedTask?.priority, TaskPriority.high);
+    expect(state.selectedTask?.startAt, 1000);
+    expect(state.selectedTask?.dueAt, 2000);
+    expect(state.selectedTask?.allDay, isTrue);
+    expect(state.selectedTask?.recurrenceRule, 'FREQ=DAILY');
+    expect(state.selectedTask?.recurrenceEndAt, 9000);
+    expect(state.selectedTask?.recurrenceCount, 3);
     expect(state.subtasks, hasLength(1));
     expect(state.tagIdsFor(taskId), {tag.id});
 

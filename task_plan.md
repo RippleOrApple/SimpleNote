@@ -152,3 +152,16 @@ Complete
 - Stabilized Android debug builds on the mixed Kotlin plugin tree with AGP 8.9.1, Gradle 8.11.1, JDK 17, and non-incremental Kotlin compilation.
 - **Verification:** formatter, build_runner, `flutter analyze`, 186 tests, Windows Debug build, and Android Debug APK build passed.
 - **Next:** Phase 1 implementation is complete; physical-device release QA remains documented in the acceptance record.
+
+## V2 Task 15: Task Time and Reminder Foundation
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Move the database to schema version 3.
+- Add `task_reminders` with sync metadata and exactly-one trigger validation.
+- Add `TaskReminder` domain and repository contracts.
+- Preserve the existing Phase 1 `tasks_v2` time and recurrence fields.
+- Cover schema 1 -> 3, schema 2 -> 3, repository, and domain behavior with tests.
+- **Verification:** build_runner, formatter, `flutter analyze`, targeted task/database tests, and full `flutter test` passed.
+- **Next:** V2 Task 16, recurrence completion events and next-date advancement.

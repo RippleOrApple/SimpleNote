@@ -9,6 +9,7 @@ import '../domain/smart_filter.dart';
 import '../domain/task.dart';
 import '../domain/task_list.dart';
 import '../domain/task_query.dart';
+import '../domain/task_reminder.dart';
 import '../domain/task_tag.dart';
 
 final tasksRepositoryProvider = Provider<TasksRepository>(
@@ -24,9 +25,12 @@ abstract class TasksRepository {
   });
   Future<Task?> findTask(String id);
   Future<List<Task>> listSubtasks(String parentId);
+  Future<List<TaskReminder>> listTaskReminders(String taskId);
   Future<Map<String, Set<String>>> taskTagIds(Iterable<String> taskIds);
   Future<void> upsertTask(Task task);
+  Future<void> upsertTaskReminder(TaskReminder reminder);
   Future<void> softDeleteTask(String id, int deletedAt);
+  Future<void> softDeleteTaskReminder(String id, int deletedAt);
   Future<void> replaceTaskTags(String taskId, Iterable<String> tagIds);
 
   Future<List<TaskList>> listTaskLists();
@@ -130,6 +134,14 @@ class DriftTasksRepository implements TasksRepository {
   }
 
   @override
+  Future<List<TaskReminder>> listTaskReminders(String taskId) async {
+    final rows = await (_database.select(_database.taskReminders)
+          ..where((row) => row.taskId.equals(taskId) & row.deletedAt.isNull()))
+        .get();
+    return rows.map(_fromReminderRow).toList()..sort(_reminderComparator);
+  }
+
+  @override
   Future<Map<String, Set<String>>> taskTagIds(
     Iterable<String> taskIds,
   ) async {
@@ -174,8 +186,27 @@ class DriftTasksRepository implements TasksRepository {
   }
 
   @override
+  Future<void> upsertTaskReminder(TaskReminder reminder) async {
+    _validateReminderTrigger(reminder);
+    await _database.transaction(() async {
+      final task = await _database.tasksV2Dao.findById(reminder.taskId);
+      if (task == null || task.deletedAt != null) {
+        throw StateError('Cannot create a reminder for a missing task.');
+      }
+      await _database.into(_database.taskReminders).insertOnConflictUpdate(
+            _toReminderCompanion(reminder),
+          );
+    });
+  }
+
+  @override
   Future<void> softDeleteTask(String id, int deletedAt) {
     return _database.transaction(() async {
+      final children = await _database.tasksV2Dao.directChildren(id);
+      final taskIds = [
+        id,
+        ...children.map((child) => child.id),
+      ];
       await (_database.update(_database.tasksV2)
             ..where((task) => task.id.equals(id)))
           .write(
@@ -192,8 +223,28 @@ class DriftTasksRepository implements TasksRepository {
           updatedAt: Value(deletedAt),
         ),
       );
+      await (_database.update(_database.taskReminders)
+            ..where(
+              (reminder) =>
+                  reminder.taskId.isIn(taskIds) & reminder.deletedAt.isNull(),
+            ))
+          .write(
+        TaskRemindersCompanion(
+          deletedAt: Value(deletedAt),
+          updatedAt: Value(deletedAt),
+        ),
+      );
     });
   }
+
+  @override
+  Future<void> softDeleteTaskReminder(String id, int deletedAt) =>
+      (_database.update(_database.taskReminders)
+            ..where((row) => row.id.equals(id)))
+          .write(TaskRemindersCompanion(
+        deletedAt: Value(deletedAt),
+        updatedAt: Value(deletedAt),
+      ));
 
   @override
   Future<void> replaceTaskTags(String taskId, Iterable<String> tagIds) async {
@@ -470,6 +521,22 @@ class DriftTasksRepository implements TasksRepository {
         version: Value(task.version),
       );
 
+  static TaskRemindersCompanion _toReminderCompanion(
+    TaskReminder reminder,
+  ) =>
+      TaskRemindersCompanion(
+        id: Value(reminder.id),
+        taskId: Value(reminder.taskId),
+        triggerAt: Value(reminder.triggerAt),
+        offsetMinutes: Value(reminder.offsetMinutes),
+        firedAt: Value(reminder.firedAt),
+        createdAt: Value(reminder.createdAt),
+        updatedAt: Value(reminder.updatedAt),
+        deletedAt: Value(reminder.deletedAt),
+        deviceId: Value(reminder.deviceId),
+        version: Value(reminder.version),
+      );
+
   static Task _fromRow(TaskV2Row row) => Task(
         id: row.id,
         parentId: row.parentId,
@@ -492,6 +559,41 @@ class DriftTasksRepository implements TasksRepository {
         deviceId: row.deviceId,
         version: row.version,
       );
+
+  static TaskReminder _fromReminderRow(TaskReminderRow row) => TaskReminder(
+        id: row.id,
+        taskId: row.taskId,
+        triggerAt: row.triggerAt,
+        offsetMinutes: row.offsetMinutes,
+        firedAt: row.firedAt,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        deletedAt: row.deletedAt,
+        deviceId: row.deviceId,
+        version: row.version,
+      );
+
+  static int _reminderComparator(TaskReminder left, TaskReminder right) {
+    final leftTime = left.triggerAt;
+    final rightTime = right.triggerAt;
+    if (leftTime != null && rightTime != null && leftTime != rightTime) {
+      return leftTime.compareTo(rightTime);
+    }
+    if (leftTime != null && rightTime == null) return -1;
+    if (leftTime == null && rightTime != null) return 1;
+    final leftOffset = left.offsetMinutes ?? 0;
+    final rightOffset = right.offsetMinutes ?? 0;
+    if (leftOffset != rightOffset) {
+      return leftOffset.compareTo(rightOffset);
+    }
+    return left.createdAt.compareTo(right.createdAt);
+  }
+
+  static void _validateReminderTrigger(TaskReminder reminder) {
+    if ((reminder.triggerAt == null) == (reminder.offsetMinutes == null)) {
+      throw StateError('A reminder must use exactly one trigger type.');
+    }
+  }
 
   static TaskList _fromListRow(TaskListRow row) => TaskList(
         id: row.id,

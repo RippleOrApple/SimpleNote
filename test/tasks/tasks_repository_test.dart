@@ -6,6 +6,7 @@ import 'package:simple_note/features/tasks/domain/smart_filter.dart';
 import 'package:simple_note/features/tasks/domain/task.dart';
 import 'package:simple_note/features/tasks/domain/task_list.dart';
 import 'package:simple_note/features/tasks/domain/task_query.dart';
+import 'package:simple_note/features/tasks/domain/task_reminder.dart';
 import 'package:simple_note/features/tasks/domain/task_tag.dart';
 
 void main() {
@@ -157,6 +158,72 @@ void main() {
     );
   });
 
+  test('creates, updates, lists, and soft deletes task reminders', () async {
+    await repository.upsertTask(_task('task'));
+    await repository.upsertTaskReminder(_reminder(
+      'absolute',
+      'task',
+      triggerAt: 2000,
+    ));
+    await repository.upsertTaskReminder(_reminder(
+      'relative',
+      'task',
+      offsetMinutes: -30,
+    ));
+
+    expect(
+      (await repository.listTaskReminders('task')).map((item) => item.id),
+      ['absolute', 'relative'],
+    );
+
+    await repository.upsertTaskReminder(_reminder(
+      'relative',
+      'task',
+      offsetMinutes: -15,
+      updatedAt: 2,
+    ));
+    expect(
+      (await repository.listTaskReminders('task'))
+          .singleWhere((item) => item.id == 'relative')
+          .offsetMinutes,
+      -15,
+    );
+
+    await repository.softDeleteTaskReminder('absolute', 3000);
+
+    expect(
+      (await repository.listTaskReminders('task')).map((item) => item.id),
+      ['relative'],
+    );
+  });
+
+  test('rejects reminders for missing or deleted tasks', () async {
+    await expectLater(
+      repository.upsertTaskReminder(_reminder('missing', 'missing')),
+      throwsA(isA<StateError>()),
+    );
+
+    await repository.upsertTask(_task('deleted'));
+    await repository.softDeleteTask('deleted', 9000);
+
+    await expectLater(
+      repository.upsertTaskReminder(_reminder('deleted-reminder', 'deleted')),
+      throwsA(isA<StateError>()),
+    );
+  });
+
+  test('soft deleting a task cascades active reminders', () async {
+    await repository.upsertTask(_task('parent'));
+    await repository.upsertTask(_task('child', parentId: 'parent'));
+    await repository.upsertTaskReminder(_reminder('parent-reminder', 'parent'));
+    await repository.upsertTaskReminder(_reminder('child-reminder', 'child'));
+
+    await repository.softDeleteTask('parent', 9000);
+
+    expect(await repository.listTaskReminders('parent'), isEmpty);
+    expect(await repository.listTaskReminders('child'), isEmpty);
+  });
+
   test('taxonomy CRUD soft deletes records', () async {
     await repository.upsertTaskList(_list('list-1'));
     await repository.upsertTaskTag(_tag('tag-1'));
@@ -195,6 +262,27 @@ Task _task(
     dueAt: dueAt,
     createdAt: 1,
     updatedAt: 1,
+    deviceId: 'device',
+  );
+}
+
+TaskReminder _reminder(
+  String id,
+  String taskId, {
+  int? triggerAt,
+  int? offsetMinutes,
+  int createdAt = 1,
+  int updatedAt = 1,
+}) {
+  final effectiveTriggerAt =
+      triggerAt == null && offsetMinutes == null ? 1000 : triggerAt;
+  return TaskReminder(
+    id: id,
+    taskId: taskId,
+    triggerAt: effectiveTriggerAt,
+    offsetMinutes: offsetMinutes,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
     deviceId: 'device',
   );
 }

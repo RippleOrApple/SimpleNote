@@ -4,12 +4,12 @@ import 'package:simple_note/database/app_database.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 void main() {
-  test('schema v2 creates every phase one table', () async {
+  test('schema v3 creates phase one and task reminder tables', () async {
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
     await database.open();
 
-    expect(database.schemaVersion, 2);
+    expect(database.schemaVersion, 3);
 
     final rows = await database
         .customSelect("SELECT name FROM sqlite_master WHERE type = 'table'")
@@ -21,6 +21,7 @@ void main() {
       containsAll({
         'task_lists',
         'tasks_v2',
+        'task_reminders',
         'task_tags',
         'task_tag_links',
         'smart_filters',
@@ -41,11 +42,12 @@ void main() {
         'custom_colors_rgb_active',
         'content_attachments_owner_active',
         'tasks_v2_due_active',
+        'task_reminders_task_active',
       }),
     );
   });
 
-  test('schema v2 accepts legal check-constraint boundary values', () async {
+  test('schema v3 accepts legal check-constraint boundary values', () async {
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
     await database.open();
@@ -60,6 +62,8 @@ void main() {
       '(id, title, priority, created_at, updated_at, device_id) '
       "VALUES ('priority-max', 'Max', 3, 1, 1, 'device')",
     );
+    await database.customStatement(_reminderInsert('absolute', 100, null));
+    await database.customStatement(_reminderInsert('relative', null, -30));
     await database.customStatement(_attachmentInsert('owner-task', 'task'));
     await database.customStatement(_attachmentInsert('owner-note', 'note'));
     await database.customStatement(_colorInsert('rgb-min', 0));
@@ -75,7 +79,7 @@ void main() {
     );
   });
 
-  test('schema v2 rejects only check-constraint violations', () async {
+  test('schema v3 rejects only check-constraint violations', () async {
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
     await database.open();
@@ -91,6 +95,14 @@ void main() {
       'INSERT INTO tasks_v2 '
       '(id, title, priority, created_at, updated_at, device_id) '
       "VALUES ('priority-high', 'Bad', 4, 1, 1, 'device')",
+    );
+    await _expectCheckFailure(
+      database,
+      _reminderInsert('missing-trigger', null, null),
+    );
+    await _expectCheckFailure(
+      database,
+      _reminderInsert('two-triggers', 100, -10),
     );
     await _expectCheckFailure(
       database,
@@ -167,6 +179,16 @@ String _attachmentInsert(String id, String ownerType) {
       "VALUES ('$id', '$ownerType', 'owner', 'sha-$id', 'image/png', "
       "1, 1, 1, '$id', '$id-thumb', 0, 1, 1, 'device', 1)";
 }
+
+String _reminderInsert(String id, int? triggerAt, int? offsetMinutes) {
+  return 'INSERT INTO task_reminders '
+      '(id, task_id, trigger_at, offset_minutes, created_at, updated_at, '
+      'device_id, version) '
+      "VALUES ('$id', 'task', ${_sqlInt(triggerAt)}, "
+      "${_sqlInt(offsetMinutes)}, 1, 1, 'device', 1)";
+}
+
+String _sqlInt(int? value) => value == null ? 'NULL' : '$value';
 
 String _colorInsert(String id, int rgb) {
   return 'INSERT INTO custom_colors '

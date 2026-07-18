@@ -281,3 +281,36 @@
 | `dart format --output=none --set-exit-if-changed lib test` | Pass, 159 files unchanged |
 | `flutter analyze` | Pass, no issues |
 | `flutter test` | Pass, 186 tests |
+
+## Session: 2026-07-18 - V2 Task 15
+
+### Planning
+
+- Created branch `codex/ticktick-v2-phase2-time` from updated `main`.
+- Replaced the old Phase 7 `GOAL.md` with the V2 Task 15 goal.
+- Confirmed Phase 1 already includes task start/due/all-day/recurrence fields.
+- Scoped Task 15 to schema v3, `task_reminders`, repository contracts, and tests.
+
+### Implementation
+
+- Added schema v3, `task_reminders`, and the active reminder index.
+- Extended production backups so schema 2 databases get a `pre-v3` backup before migration.
+- Added `TaskReminder` with JSON round-trip support and exactly-one trigger semantics.
+- Added task reminder list/upsert/soft-delete repository APIs.
+- Cascaded task soft deletion to active reminders on the task and its direct children.
+- Exposed task start/due/all-day/recurrence fields through `TasksController.updateTask`.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `dart run build_runner build --delete-conflicting-outputs` | Pass, 300 outputs written |
+| `flutter test test/database/schema_v2_test.dart test/database/migration_v2_test.dart test/tasks/task_domain_test.dart test/tasks/tasks_repository_test.dart test/tasks/tasks_controller_test.dart` | Pass, 29 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 162 files unchanged |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 192 tests |
+
+### Handoff
+
+- V2 Task 15 is complete.
+- V2 Task 16 is next: recurrence completion events and next-date advancement.

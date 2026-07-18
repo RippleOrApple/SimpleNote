@@ -100,3 +100,10 @@
 - The current Android plugin tree is incompatible with AGP 9 because `file_picker` expects Built-in Kotlin while `flutter_plugin_android_lifecycle` still applies legacy KGP. AGP 8.9.1 plus Gradle 8.11.1 and JDK 17 builds successfully.
 - Kotlin incremental caches cannot relativize Pub Cache sources on `C:` against a project on `D:`; `kotlin.incremental=false` avoids that cross-drive failure.
 - The Android emulator confirmed final APK startup, icon-only navigation, Android More routing, and first-viewport sync notice rendering without overlap.
+
+## V2 Task 15 Findings
+
+- Phase 1 already created `tasks_v2.start_at`, `due_at`, `all_day`, `recurrence_rule`, `recurrence_end_at`, and `recurrence_count`, and the task domain/repository already round-trip them.
+- The missing Task 15 persistence piece is `task_reminders`, plus schema version 3 migration and repository contracts.
+- `DatabaseBackupService` currently backs up only schema 1 before schema 2 migration; schema 2 -> 3 should also create a pre-v3 backup for production files.
+- Reminder UI, native notification scheduling, recurrence completion events, and calendar aggregation are separate Phase 2 tasks.
