@@ -20,6 +20,7 @@ void main() {
             query: TaskQuery.inbox(),
             searchText: '',
             subtasks: const [],
+            selectedTaskReminders: const [],
           ),
           onSave: ({required name, required rules, required sortMode}) async {},
         ),

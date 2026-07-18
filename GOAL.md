@@ -2,46 +2,46 @@
 
 ## Objective
 
-Complete V2 Task 19: add reminder scheduling.
+Complete V2 Task 20: add reminder UI and scheduling hooks.
 
-Task reminders already persist as absolute or relative definitions. This task
-adds the application scheduling layer that resolves those definitions into
-local notification requests without letting notification code own task data.
+Task reminders can already be persisted and reconciled into notification
+requests. This task exposes reminder management from the task detail workflow
+and triggers reminder reconciliation after task/reminder changes.
 
 ## Scope
 
-- Add a platform notification scheduling interface and no-op default adapter.
-- Add reminder schedule domain objects.
-- Query pending task reminder schedules from the task repository.
-- Resolve absolute `triggerAt` reminders.
-- Resolve relative `offsetMinutes` reminders from due time, falling back to
-  start time.
-- Exclude fired, past, deleted, completed, and unanchored relative reminders.
-- Reconcile pending reminders into platform notification requests.
-- Cancel task reminder notifications for deleted or completed tasks.
-- Mark reminders as fired.
-- Add repository and scheduler tests.
+- Load selected-task reminders into task application state.
+- Add controller operations to create absolute reminders.
+- Add controller operations to create relative reminders.
+- Add controller operations to delete reminders.
+- Trigger reminder reconciliation after task time, completion, deletion, and
+  reminder changes.
+- Add reminder controls to the task detail pane.
+- Show existing reminders with deterministic labels and remove actions.
+- Disable reminder creation when a task has no start/due anchor.
+- Add controller and widget tests.
 - Update planning files with findings and verification results.
 
 ## Non-goals
 
-- Do not add reminder UI controls yet.
-- Do not add a real native notification plugin in this task.
+- Do not add a real native notification plugin yet.
 - Do not request Android notification permissions yet.
+- Do not build complex custom date/time pickers.
 - Do not add recurring reminder UI.
 - Do not add sync behavior.
 
 ## Acceptance Criteria
 
-- [x] Absolute reminders are converted to scheduled notification requests.
-- [x] Relative reminders are resolved from due time, falling back to start time.
-- [x] Fired reminders are excluded from pending schedules.
-- [x] Past reminders are excluded from pending schedules.
-- [x] Reminders for completed or soft-deleted tasks are excluded.
-- [x] Relative reminders without a task start/due anchor are excluded.
-- [x] Reminder reconciliation cancels stale task reminder notification IDs.
-- [x] Reminder reconciliation schedules all pending reminders inside the horizon.
-- [x] Marking a reminder fired persists `firedAt` and cancels its notification.
+- [x] Selecting a task loads its active reminders into task state.
+- [x] Controller can create an absolute reminder for the selected task.
+- [x] Controller can create a relative reminder for the selected task.
+- [x] Controller can delete an active reminder.
+- [x] Reminder create/delete triggers task reminder reconciliation.
+- [x] Task time changes trigger task reminder reconciliation.
+- [x] Task completion and deletion trigger reminder reconciliation.
+- [x] Task detail pane exposes reminder controls.
+- [x] Task detail pane displays existing reminders and remove actions.
+- [x] Reminder creation controls are disabled when the task has no start/due anchor.
 - [x] `dart format --output=none --set-exit-if-changed lib test` passes.
 - [x] `flutter analyze` passes.
 - [x] Relevant tests pass.
@@ -49,12 +49,11 @@ local notification requests without letting notification code own task data.
 ## Constraints
 
 - Keep date values as epoch milliseconds.
-- Keep notification platform integration behind an interface.
-- Keep task repository as the source of reminder/task truth.
-- Use deterministic notification IDs derived from reminder IDs.
+- Keep native notification integration behind the existing interface.
+- Keep UI controls compact and consistent with the existing task detail panel.
+- Use repository and scheduler APIs instead of direct database access from UI.
 
 ## Notes
 
-- A native notification adapter can replace the no-op adapter later.
-- Reminder UI remains a later task.
+- Full native notification delivery remains a later task.
 - V2 sync remains Phase 4.

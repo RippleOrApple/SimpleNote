@@ -142,3 +142,11 @@
 - `firedAt` already exists in `task_reminders`, but the repository needs an explicit operation to persist it from the scheduling layer.
 - Stable platform notification IDs can be derived from reminder IDs with a `task-reminder:` prefix, making reconciliation independent of database row order.
 - Reconciliation should preserve unrelated notification IDs and only cancel stale IDs in the task-reminder namespace.
+
+## V2 Task 20 Findings
+
+- `TasksState` currently loads selected subtasks but not selected reminders, so reminder UI needs state support instead of direct widget database calls.
+- `TaskDetailPane` is already the central place for task metadata controls, tags, subtasks, save status, and delete actions.
+- Scheduling hooks belong in controller writes because controller methods already coordinate repository writes and UI save state.
+- Relative reminder creation needs a task anchor; the detail pane can keep controls enabled only when `dueAt` or `startAt` exists.
+- Reminder reconciliation should run after the repository write completes so the scheduler sees current task/reminder state.

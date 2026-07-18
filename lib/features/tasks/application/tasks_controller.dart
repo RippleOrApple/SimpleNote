@@ -13,12 +13,14 @@ import '../../appearance/domain/rgb_color.dart';
 import '../../attachments/application/attachment_import_service.dart';
 import '../../attachments/domain/content_attachment.dart';
 import '../../attachments/infrastructure/attachment_picker.dart';
+import '../../notifications/application/task_reminder_scheduler.dart';
 import '../../sync/data/sync_repository.dart';
 import '../data/tasks_repository.dart';
 import '../domain/smart_filter.dart';
 import '../domain/task.dart';
 import '../domain/task_list.dart';
 import '../domain/task_query.dart';
+import '../domain/task_reminder.dart';
 import '../domain/task_tag.dart';
 
 final tasksControllerProvider =
@@ -46,6 +48,7 @@ class TasksState {
     required this.query,
     required this.searchText,
     required Iterable<Task> subtasks,
+    required Iterable<TaskReminder> selectedTaskReminders,
     this.selectedTaskId,
     this.saveStatus = TaskSaveStatus.idle,
     this.errorMessage,
@@ -58,7 +61,8 @@ class TasksState {
           for (final entry in tagIdsByTaskId.entries)
             entry.key: Set.unmodifiable(entry.value),
         }),
-        subtasks = List.unmodifiable(subtasks);
+        subtasks = List.unmodifiable(subtasks),
+        selectedTaskReminders = List.unmodifiable(selectedTaskReminders);
 
   final List<TaskSource> sources;
   final List<Task> tasks;
@@ -69,6 +73,7 @@ class TasksState {
   final TaskQuery query;
   final String searchText;
   final List<Task> subtasks;
+  final List<TaskReminder> selectedTaskReminders;
   final String? selectedTaskId;
   final TaskSaveStatus saveStatus;
   final String? errorMessage;
@@ -96,6 +101,7 @@ class TasksState {
     TaskQuery? query,
     String? searchText,
     Iterable<Task>? subtasks,
+    Iterable<TaskReminder>? selectedTaskReminders,
     String? selectedTaskId,
     bool clearSelectedTaskId = false,
     TaskSaveStatus? saveStatus,
@@ -112,6 +118,8 @@ class TasksState {
       query: query ?? this.query,
       searchText: searchText ?? this.searchText,
       subtasks: subtasks ?? this.subtasks,
+      selectedTaskReminders:
+          selectedTaskReminders ?? this.selectedTaskReminders,
       selectedTaskId:
           clearSelectedTaskId ? null : selectedTaskId ?? this.selectedTaskId,
       saveStatus: saveStatus ?? this.saveStatus,
@@ -130,6 +138,7 @@ class TasksController extends AsyncNotifier<TasksState> {
   ];
 
   late TasksRepository _repository;
+  late TaskReminderScheduler _reminderScheduler;
   late String _deviceId;
   late String _platform;
   Timer? _searchDebounce;
@@ -140,6 +149,7 @@ class TasksController extends AsyncNotifier<TasksState> {
   @override
   Future<TasksState> build() async {
     _repository = ref.watch(tasksRepositoryProvider);
+    _reminderScheduler = ref.watch(taskReminderSchedulerProvider);
     final device = ref.watch(deviceInfoProvider);
     _deviceId = device.deviceId;
     _platform = device.platform;
@@ -180,6 +190,9 @@ class TasksController extends AsyncNotifier<TasksState> {
     final subtasks = selection == null
         ? const <Task>[]
         : await _repository.listSubtasks(selection);
+    final reminders = selection == null
+        ? const <TaskReminder>[]
+        : await _repository.listTaskReminders(selection);
     return TasksState(
       sources: sources,
       tasks: tasks,
@@ -190,6 +203,7 @@ class TasksController extends AsyncNotifier<TasksState> {
       query: query,
       searchText: searchText,
       subtasks: subtasks,
+      selectedTaskReminders: reminders,
       selectedTaskId: selection,
       saveStatus: saveStatus,
       errorMessage: errorMessage,
@@ -281,6 +295,7 @@ class TasksController extends AsyncNotifier<TasksState> {
       () => _repository.upsertTask(updated),
       selectedTaskId: id,
       queryOverride: queryOverride,
+      reconcileReminders: true,
     );
   }
 
@@ -298,6 +313,7 @@ class TasksController extends AsyncNotifier<TasksState> {
                 completionId: IdGenerator.create(),
               ),
       selectedTaskId: id,
+      reconcileReminders: true,
     );
     if (state.valueOrNull?.saveStatus == TaskSaveStatus.saved) {
       _triggerFeedback(HapticEvent.complete);
@@ -308,10 +324,69 @@ class TasksController extends AsyncNotifier<TasksState> {
     await _write(
       () => _repository.softDeleteTask(id, Clock.nowMillis()),
       clearSelection: true,
+      reconcileReminders: true,
     );
     if (state.valueOrNull?.saveStatus == TaskSaveStatus.saved) {
       _triggerFeedback(HapticEvent.delete);
     }
+  }
+
+  Future<void> createAbsoluteTaskReminder(
+    String taskId, {
+    required int triggerAt,
+  }) async {
+    final current = state.valueOrNull;
+    final task = current == null ? null : _taskById(current, taskId);
+    if (task == null) return;
+    final now = Clock.nowMillis();
+    await _write(
+      () => _repository.upsertTaskReminder(TaskReminder(
+        id: IdGenerator.create(),
+        taskId: taskId,
+        triggerAt: triggerAt,
+        createdAt: now,
+        updatedAt: now,
+        deviceId: _deviceId,
+      )),
+      selectedTaskId: taskId,
+      reconcileReminders: true,
+    );
+  }
+
+  Future<void> createRelativeTaskReminder(
+    String taskId, {
+    required int offsetMinutes,
+  }) async {
+    final current = state.valueOrNull;
+    final task = current == null ? null : _taskById(current, taskId);
+    if (task == null) return;
+    final now = Clock.nowMillis();
+    await _write(
+      () => _repository.upsertTaskReminder(TaskReminder(
+        id: IdGenerator.create(),
+        taskId: taskId,
+        offsetMinutes: offsetMinutes,
+        createdAt: now,
+        updatedAt: now,
+        deviceId: _deviceId,
+      )),
+      selectedTaskId: taskId,
+      reconcileReminders: true,
+    );
+  }
+
+  Future<void> deleteTaskReminder(String id) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    final reminder = current.selectedTaskReminders
+        .where((reminder) => reminder.id == id)
+        .firstOrNull;
+    if (reminder == null) return;
+    await _write(
+      () => _repository.softDeleteTaskReminder(id, Clock.nowMillis()),
+      selectedTaskId: reminder.taskId,
+      reconcileReminders: true,
+    );
   }
 
   Future<MarkdownEditResult?> insertImage(
@@ -657,10 +732,12 @@ class TasksController extends AsyncNotifier<TasksState> {
 
   Future<void> _selectTask(TasksState current, String id) async {
     final subtasks = await _repository.listSubtasks(id);
+    final reminders = await _repository.listTaskReminders(id);
     if (state.valueOrNull != current) return;
     state = AsyncData(current.copyWith(
       selectedTaskId: id,
       subtasks: subtasks,
+      selectedTaskReminders: reminders,
     ));
   }
 
@@ -670,6 +747,7 @@ class TasksController extends AsyncNotifier<TasksState> {
     state = AsyncData(current.copyWith(
       clearSelectedTaskId: true,
       subtasks: const [],
+      selectedTaskReminders: const [],
     ));
   }
 
@@ -678,6 +756,7 @@ class TasksController extends AsyncNotifier<TasksState> {
     String? selectedTaskId,
     bool clearSelection = false,
     TaskQuery? queryOverride,
+    bool reconcileReminders = false,
   }) async {
     final current = state.valueOrNull;
     if (current == null) return;
@@ -687,6 +766,9 @@ class TasksController extends AsyncNotifier<TasksState> {
     ));
     try {
       await operation();
+      if (reconcileReminders) {
+        await _reconcileReminders();
+      }
       final query = queryOverride ?? current.query;
       if (queryOverride != null) _lastSourceQuery = queryOverride;
       state = AsyncData(await _load(
@@ -702,6 +784,14 @@ class TasksController extends AsyncNotifier<TasksState> {
         errorMessage: error.toString(),
       ));
     }
+  }
+
+  Future<void> _reconcileReminders() {
+    final now = Clock.nowMillis();
+    return _reminderScheduler.reconcile(
+      now: now,
+      before: now + const Duration(days: 30).inMilliseconds,
+    );
   }
 
   TaskQuery _defaultTodayQuery() {

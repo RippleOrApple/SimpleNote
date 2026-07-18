@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/appearance/domain/rgb_color.dart';
+import 'package:simple_note/features/notifications/domain/local_notification_request.dart';
+import 'package:simple_note/features/notifications/infrastructure/local_notification_scheduler.dart';
 import 'package:simple_note/features/sync/data/sync_repository.dart';
 import 'package:simple_note/features/sync/domain/device_info.dart';
 import 'package:simple_note/features/tasks/application/tasks_controller.dart';
@@ -207,6 +209,43 @@ void main() {
     expect(completions.single.taskId, taskId);
   });
 
+  test('manages reminders and reconciles scheduling hooks', () async {
+    final notifications = _FakeLocalNotificationScheduler();
+    final harness = await _Harness.create(notifications: notifications);
+    addTearDown(harness.dispose);
+    final controller = harness.controller;
+    final dueAt =
+        DateTime.now().add(const Duration(days: 1)).millisecondsSinceEpoch;
+
+    await controller.quickAdd('Remember me');
+    final taskId = (await harness.state).selectedTaskId!;
+    await controller.selectQuery(TaskQuery.all(includeCompleted: true));
+    await controller.updateTask(taskId, dueAt: dueAt);
+    await controller.createRelativeTaskReminder(taskId, offsetMinutes: -30);
+    var state = await harness.state;
+
+    expect(state.selectedTaskReminders.single.offsetMinutes, -30);
+    expect(notifications.scheduled, isNotEmpty);
+    final notificationId = notifications.scheduled.last.id;
+    expect(notificationId, startsWith('task-reminder:'));
+
+    await controller.createAbsoluteTaskReminder(taskId, triggerAt: dueAt);
+    state = await harness.state;
+    expect(state.selectedTaskReminders, hasLength(2));
+
+    final absoluteId = state.selectedTaskReminders
+        .singleWhere((reminder) => reminder.triggerAt == dueAt)
+        .id;
+    await controller.deleteTaskReminder(absoluteId);
+    state = await harness.state;
+    expect(state.selectedTaskReminders, hasLength(1));
+    expect(notifications.cancelled, contains('task-reminder:$absoluteId'));
+
+    await controller.toggleTask(taskId);
+
+    expect(notifications.cancelled, contains(notificationId));
+  });
+
   test('write failure preserves state and selection', () async {
     final database = AppDatabase(NativeDatabase.memory());
     final repository = _FailingTasksRepository(database);
@@ -243,11 +282,15 @@ class _Harness {
   Future<TasksState> get state =>
       container.read(tasksControllerProvider.future);
 
-  static Future<_Harness> create() async {
+  static Future<_Harness> create({
+    LocalNotificationScheduler? notifications,
+  }) async {
     final database = AppDatabase(NativeDatabase.memory());
     final container = ProviderContainer(overrides: [
       appDatabaseProvider.overrideWithValue(database),
       deviceInfoProvider.overrideWithValue(_device),
+      if (notifications != null)
+        localNotificationSchedulerProvider.overrideWithValue(notifications),
     ]);
     await container.read(tasksControllerProvider.future);
     return _Harness(container, database);
@@ -265,6 +308,27 @@ class _FailingTasksRepository extends DriftTasksRepository {
   @override
   Future<void> upsertTask(Task task) =>
       Future.error(StateError('forced failure'));
+}
+
+class _FakeLocalNotificationScheduler implements LocalNotificationScheduler {
+  final scheduled = <LocalNotificationRequest>[];
+  final cancelled = <String>[];
+  final pending = <String>{};
+
+  @override
+  Future<Set<String>> pendingNotificationIds() async => {...pending};
+
+  @override
+  Future<void> schedule(LocalNotificationRequest request) async {
+    scheduled.add(request);
+    pending.add(request.id);
+  }
+
+  @override
+  Future<void> cancel(String id) async {
+    cancelled.add(id);
+    pending.remove(id);
+  }
 }
 
 const _device = DeviceInfo(

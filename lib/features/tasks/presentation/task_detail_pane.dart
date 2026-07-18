@@ -11,6 +11,7 @@ import '../../attachments/domain/content_attachment.dart';
 import '../application/tasks_controller.dart';
 import '../domain/task.dart';
 import '../domain/task_list.dart';
+import '../domain/task_reminder.dart';
 import '../domain/task_tag.dart';
 
 class TaskDetailPane extends StatefulWidget {
@@ -239,6 +240,12 @@ class _TaskDetailPaneState extends State<TaskDetailPane> {
                   onChanged: (ids) =>
                       widget.controller.setTaskTags(task.id, ids),
                 ),
+                const SizedBox(height: 16),
+                _ReminderSection(
+                  task: task,
+                  reminders: widget.state.selectedTaskReminders,
+                  controller: widget.controller,
+                ),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: IconButton(
@@ -442,6 +449,94 @@ class _TaskDetailPaneState extends State<TaskDetailPane> {
   }
 }
 
+class _ReminderSection extends StatelessWidget {
+  const _ReminderSection({
+    required this.task,
+    required this.reminders,
+    required this.controller,
+  });
+
+  final Task task;
+  final List<TaskReminder> reminders;
+  final TasksController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final anchor = task.dueAt ?? task.startAt;
+    return InputDecorator(
+      key: const Key('task-reminders-section'),
+      decoration: const InputDecoration(labelText: 'Reminders'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final reminder in reminders)
+                InputChip(
+                  key: const Key('task-reminder-item'),
+                  label: Text(_reminderLabel(reminder)),
+                  onDeleted: () => controller.deleteTaskReminder(reminder.id),
+                  deleteIcon: const Icon(
+                    Icons.close_rounded,
+                    key: Key('task-remove-reminder'),
+                  ),
+                ),
+              if (reminders.isEmpty)
+                Text(
+                  'No reminders',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          PopupMenuButton<int>(
+            key: const Key('task-add-reminder'),
+            enabled: anchor != null,
+            tooltip: 'Add reminder',
+            onSelected: (value) {
+              if (value == 0) {
+                controller.createAbsoluteTaskReminder(
+                  task.id,
+                  triggerAt: anchor!,
+                );
+              } else {
+                controller.createRelativeTaskReminder(
+                  task.id,
+                  offsetMinutes: value,
+                );
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                key: Key('task-reminder-absolute'),
+                value: 0,
+                child: Text('At task time'),
+              ),
+              PopupMenuItem(
+                key: Key('task-reminder-relative-10'),
+                value: -10,
+                child: Text('10 minutes before'),
+              ),
+              PopupMenuItem(
+                key: Key('task-reminder-relative-60'),
+                value: -60,
+                child: Text('1 hour before'),
+              ),
+            ],
+            child: TextButton.icon(
+              onPressed: null,
+              icon: const Icon(Icons.add_alert_outlined),
+              label: Text(anchor == null ? 'Set a time first' : 'Add reminder'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _TagPicker extends StatelessWidget {
   const _TagPicker({
     required this.tags,
@@ -494,6 +589,7 @@ class _SaveStatus extends StatelessWidget {
       TaskSaveStatus.saved => '已保存',
       TaskSaveStatus.failed => '保存失败',
     };
+
     return Semantics(
       key: const Key('task-save-status'),
       liveRegion: true,
@@ -524,3 +620,20 @@ String _priorityLabel(TaskPriority priority) => switch (priority) {
       TaskPriority.medium => '中',
       TaskPriority.high => '高',
     };
+
+String _reminderLabel(TaskReminder reminder) {
+  final triggerAt = reminder.triggerAt;
+  if (triggerAt != null) {
+    final date = DateTime.fromMillisecondsSinceEpoch(triggerAt);
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+    return '$month/$day $hour:$minute';
+  }
+  final offset = reminder.offsetMinutes ?? 0;
+  if (offset == 0) return 'At task time';
+  final abs = offset.abs();
+  final unit = abs == 1 ? 'minute' : 'minutes';
+  return offset < 0 ? '$abs $unit before' : '$abs $unit after';
+}

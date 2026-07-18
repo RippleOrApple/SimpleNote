@@ -436,3 +436,33 @@
 
 - V2 Task 19 is complete.
 - V2 Task 20 is next: reminder UI and scheduling hooks.
+
+## Session: 2026-07-18 - V2 Task 20
+
+### Planning
+
+- Updated `GOAL.md` for reminder UI and scheduling hooks.
+- Confirmed repository and scheduling service exist from Task 19, while controller/UI do not expose reminders yet.
+- Scoped Task 20 to selected-task reminder state, controller create/delete APIs, scheduling hooks, and compact task detail controls.
+
+### Implementation
+
+- Added selected-task reminder state loading and clearing to `TasksController`.
+- Added controller APIs for absolute reminder creation, relative reminder creation, and reminder deletion.
+- Routed task time changes, completion, deletion, and reminder mutations through reminder reconciliation hooks.
+- Added compact reminder chips, remove actions, and add-reminder controls to the task detail pane.
+- Added controller and widget tests for reminder state, scheduling hooks, and visible controls.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/tasks/tasks_controller_test.dart test/tasks/tasks_page_test.dart` | Pass, 12 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 217 tests |
+
+### Handoff
+
+- V2 Task 20 is complete.
+- V2 Task 21 scope was not found in repository docs; confirm the next task title before starting it.

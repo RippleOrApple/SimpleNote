@@ -221,3 +221,16 @@ Complete
 - Cover repository filtering, relative trigger resolution, reconciliation, cancellation, and fired-state persistence.
 - **Verification:** formatter, `flutter analyze`, targeted task/notification tests, and full `flutter test` passed with 215 tests.
 - **Next:** V2 Task 20, reminder UI and scheduling hooks.
+
+## V2 Task 20: Reminder UI and Scheduling Hooks
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Load selected task reminders into task state.
+- Add controller APIs for absolute reminders, relative reminders, and reminder deletion.
+- Reconcile reminder scheduling after task time/completion/deletion and reminder changes.
+- Add compact reminder controls and removal actions to the task detail pane.
+- Cover controller state, scheduling hooks, and widget reminder controls.
+- **Verification:** formatter, `flutter analyze`, targeted task tests, and full `flutter test` passed with 217 tests.
+- **Next:** confirm V2 Task 21 scope.
