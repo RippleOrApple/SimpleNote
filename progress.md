@@ -264,3 +264,20 @@
 
 - V2 Task 14 and the Phase 1 automated acceptance gate are complete.
 - Physical Android camera/gallery/haptic checks and Windows process-restart checks remain release QA, as recorded in `docs/V2_PHASE_1_ACCEPTANCE.md`.
+
+## Session: 2026-07-18 - PR Merge Conflict Resolution
+
+### Implementation
+
+- Merged `origin/main` into `codex/ticktick-v2-phase1` to resolve GitHub PR conflicts.
+- Preserved the completed V2 Phase 1 implementation, release metadata, generated database state, and v2 adaptive shell.
+- Kept the legacy Todo page and old AppShell deleted because V2 Task 10 replaced them with the adaptive task workspace.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| Conflict marker scan | Pass, no conflict markers |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 159 files unchanged |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 186 tests |
