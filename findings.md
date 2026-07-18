@@ -124,3 +124,12 @@
 - Date range checks should run in repository predicates so search, saved filters, and controller reloads share one behavior.
 - Drift nullable integer columns should be passed as generated columns for date helper predicates; `Expression<int?>` violates Drift's non-nullable generic bound.
 - The smart-filter date editor control key needs to live on the real `OutlinedButton`, not the outer row, so widget tests and pointer hit testing exercise the active control.
+
+## V2 Task 18 Findings
+
+- The design spec defines Calendar as a read-only aggregation module; it must not create calendar-owned task, note, or habit tables.
+- Notes belong on the calendar by immutable `createdAt`; editing a note must not move its calendar entry.
+- Calendar aggregation can query Drift directly through a dedicated repository because it spans multiple modules, while presentation should use a controller/provider.
+- Until a full visual calendar exists, the important deliverable is deterministic range aggregation that later UI can reuse.
+- Recurring task expansion can reuse `TaskRecurrenceRule`; invalid rules should fall back to the current task marker instead of breaking the entire calendar query.
+- A recurring task's `recurrenceCount` must be interpreted against active completion events because completed occurrences are stored separately in `task_completions`.

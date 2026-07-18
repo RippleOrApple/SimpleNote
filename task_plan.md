@@ -193,3 +193,17 @@ Complete
 - Cover JSON compatibility, repository semantics, controller persistence, and widget UI.
 - **Verification:** formatter, `flutter analyze`, targeted task tests, and full `flutter test` passed with 208 tests.
 - **Next:** V2 Task 18, calendar aggregation.
+
+## V2 Task 18: Calendar Aggregation
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Add read-only calendar domain objects for entries and day buckets.
+- Aggregate task start/due markers and note creation dates over a requested range.
+- Expand active recurring task schedules without creating calendar-owned data.
+- Exclude deleted source records and subtasks.
+- Add a Calendar controller for loading date ranges.
+- Cover grouping, sorting, recurrence caps, invalid recurrence fallback, and controller reload behavior.
+- **Verification:** formatter, `flutter analyze`, targeted calendar tests, and full `flutter test` passed with 211 tests.
+- **Next:** V2 Task 19, reminder scheduling.

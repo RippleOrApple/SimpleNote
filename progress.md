@@ -375,3 +375,33 @@
 
 - V2 Task 17 is complete.
 - V2 Task 18 is next: calendar aggregation.
+
+## Session: 2026-07-18 - V2 Task 18
+
+### Planning
+
+- Updated `GOAL.md` for read-only calendar aggregation.
+- Confirmed Calendar is a cross-module query layer and should not own task or note data.
+- Scoped Task 18 to domain objects, Drift-backed aggregation, recurrence expansion, and a range-loading controller.
+
+### Implementation
+
+- Added calendar domain objects for source entries and grouped day buckets.
+- Added `CalendarRepository` and `DriftCalendarRepository` to aggregate active task start/due markers and note creation dates.
+- Added recurring task expansion inside queried ranges, with end-date/count caps and invalid-rule fallback.
+- Added `CalendarController` with a default 30-day range and explicit `loadRange` support.
+- Added repository and controller tests for grouping, sorting, filtering, recurrence, and range replacement.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/calendar/calendar_repository_test.dart test/calendar/calendar_controller_test.dart` | Red first for missing Calendar module, then pass with 3 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 172 files unchanged |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 211 tests |
+
+### Handoff
+
+- V2 Task 18 is complete.
+- V2 Task 19 is next: reminder scheduling.
