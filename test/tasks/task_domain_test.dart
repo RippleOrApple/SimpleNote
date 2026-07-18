@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/features/tasks/domain/smart_filter.dart';
 import 'package:simple_note/features/tasks/domain/task.dart';
 import 'package:simple_note/features/tasks/domain/task_query.dart';
+import 'package:simple_note/features/tasks/domain/task_reminder.dart';
 
 void main() {
   test('Task JSON round-trips nullable fields and priority', () {
@@ -44,6 +45,56 @@ void main() {
     expect(cleared.parentId, isNull);
     expect(cleared.listId, isNull);
     expect(cleared.dueAt, isNull);
+  });
+
+  test('TaskReminder JSON round-trips absolute and relative triggers', () {
+    const absolute = TaskReminder(
+      id: 'reminder-1',
+      taskId: 'task-1',
+      triggerAt: 1000,
+      createdAt: 100,
+      updatedAt: 200,
+      deviceId: 'device',
+    );
+    const relative = TaskReminder(
+      id: 'reminder-2',
+      taskId: 'task-1',
+      offsetMinutes: -30,
+      firedAt: 1200,
+      createdAt: 100,
+      updatedAt: 200,
+      deviceId: 'device',
+    );
+
+    expect(
+        TaskReminder.fromJson(absolute.toJson()).toJson(), absolute.toJson());
+    expect(
+        TaskReminder.fromJson(relative.toJson()).toJson(), relative.toJson());
+    expect(absolute.isAbsolute, isTrue);
+    expect(relative.isRelative, isTrue);
+  });
+
+  test('TaskReminder copyWith can switch trigger type and clear fire state',
+      () {
+    const reminder = TaskReminder(
+      id: 'reminder-1',
+      taskId: 'task-1',
+      triggerAt: 1000,
+      firedAt: 1200,
+      createdAt: 100,
+      updatedAt: 200,
+      deviceId: 'device',
+    );
+
+    final updated = reminder.copyWith(
+      clearTriggerAt: true,
+      offsetMinutes: -15,
+      clearFiredAt: true,
+    );
+
+    expect(updated.triggerAt, isNull);
+    expect(updated.offsetMinutes, -15);
+    expect(updated.firedAt, isNull);
   });
 
   test('filter rules and smart filters round-trip deterministically', () {

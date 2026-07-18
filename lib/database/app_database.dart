@@ -19,6 +19,7 @@ import 'tables/smart_filters_table.dart';
 import 'tables/sync_logs_table.dart';
 import 'tables/tags_table.dart';
 import 'tables/task_lists_table.dart';
+import 'tables/task_reminders_table.dart';
 import 'tables/task_tag_links_table.dart';
 import 'tables/task_tags_table.dart';
 import 'tables/tasks_v2_table.dart';
@@ -27,6 +28,7 @@ import 'tables/todos_table.dart';
 
 part 'app_database.g.dart';
 part 'migrations/schema_v2_migration.dart';
+part 'migrations/schema_v3_migration.dart';
 part 'daos/appearance_dao.dart';
 part 'daos/app_settings_dao.dart';
 part 'daos/attachments_dao.dart';
@@ -56,6 +58,7 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
     AppSettings,
     TaskLists,
     TasksV2,
+    TaskReminders,
     TaskTags,
     TaskTagLinks,
     SmartFilters,
@@ -82,17 +85,21 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (migrator) async {
           await migrator.createAll();
           await SchemaV2Migration.createIndexes(this);
+          await SchemaV3Migration.createIndexes(this);
         },
         onUpgrade: (migrator, from, to) async {
           if (from < 2) {
             await SchemaV2Migration.run(this, migrator);
+          }
+          if (from < 3) {
+            await SchemaV3Migration.run(this, migrator);
           }
         },
       );

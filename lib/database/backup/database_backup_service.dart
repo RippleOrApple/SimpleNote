@@ -25,16 +25,19 @@ class DatabaseBackupService {
       database.close();
     }
 
-    if (currentVersion < 1 || currentVersion > 1) {
+    const latestSchemaVersion = 3;
+    if (currentVersion < 1 || currentVersion >= latestSchemaVersion) {
       return null;
     }
 
+    final targetVersion = currentVersion + 1;
     final backupDirectory = Directory(p.join(supportDirectory.path, 'backups'));
     await backupDirectory.create(recursive: true);
     final backupFile = File(
       p.join(
         backupDirectory.path,
-        'simple_note.pre-v2.${DateTime.now().millisecondsSinceEpoch}.sqlite',
+        'simple_note.pre-v$targetVersion.'
+        '${DateTime.now().millisecondsSinceEpoch}.sqlite',
       ),
     );
     return databaseFile.copy(backupFile.path);
