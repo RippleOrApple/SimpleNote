@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/widgets/app_shell.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/models/markdown_edit.dart';
+import '../../../shared/widgets/app_shell_embed_scope.dart';
+import '../../../shared/widgets/embedded_markdown_editor.dart';
+import '../../../shared/widgets/embedded_markdown_view.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../attachments/domain/content_attachment.dart';
 import '../../tags/domain/tag.dart';
 import '../application/notes_controller.dart';
 import '../domain/note.dart';
@@ -15,18 +20,20 @@ class NotesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notesState = ref.watch(notesControllerProvider);
 
-    return AppShell(
-      title: '笔记',
+    final content = notesState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(child: Text('笔记加载失败：$error')),
+      data: (state) => _NotesWorkspace(state: state),
+    );
+    if (AppShellEmbedScope.maybeOf(context)) return content;
+    return Scaffold(
+      appBar: AppBar(title: const Text('笔记')),
+      body: SafeArea(child: content),
       floatingActionButton: FloatingActionButton(
         tooltip: '新建笔记',
         onPressed: () =>
             ref.read(notesControllerProvider.notifier).createNote(),
         child: const Icon(Icons.add),
-      ),
-      child: notesState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('笔记加载失败：$error')),
-        data: (state) => _NotesWorkspace(state: state),
       ),
     );
   }
@@ -71,6 +78,10 @@ class _NotesWorkspace extends ConsumerWidget {
                   content: value,
                 ),
                 onDelete: () => controller.deleteNote(state.selectedNote!.id),
+                onInsertImage: controller.insertImage,
+                onDeleteImage: controller.deleteImage,
+                resolveAttachment: controller.resolveAttachment,
+                saveStatus: state.saveStatus,
                 onBack: isWide ? null : controller.clearSelection,
                 onPreviewModeChanged: controller.setPreviewMode,
                 onCreateTag: controller.createTag,
@@ -233,6 +244,10 @@ class _NoteEditor extends StatefulWidget {
     required this.onTitleChanged,
     required this.onContentChanged,
     required this.onDelete,
+    required this.onInsertImage,
+    required this.onDeleteImage,
+    required this.resolveAttachment,
+    required this.saveStatus,
     required this.onPreviewModeChanged,
     required this.onCreateTag,
     required this.onToggleTag,
@@ -246,6 +261,14 @@ class _NoteEditor extends StatefulWidget {
   final ValueChanged<String> onTitleChanged;
   final ValueChanged<String> onContentChanged;
   final Future<void> Function() onDelete;
+  final Future<MarkdownEditResult?> Function(
+    AttachmentPickSource source,
+    MarkdownSelection selection, {
+    required String altText,
+  }) onInsertImage;
+  final Future<void> Function(String attachmentId) onDeleteImage;
+  final Future<ContentAttachment?> Function(String id) resolveAttachment;
+  final NoteSaveStatus saveStatus;
   final ValueChanged<bool> onPreviewModeChanged;
   final ValueChanged<String> onCreateTag;
   final ValueChanged<String> onToggleTag;
@@ -257,14 +280,12 @@ class _NoteEditor extends StatefulWidget {
 
 class _NoteEditorState extends State<_NoteEditor> {
   late final TextEditingController _titleController;
-  late final TextEditingController _contentController;
   late final TextEditingController _tagController;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.note.title);
-    _contentController = TextEditingController(text: widget.note.content);
     _tagController = TextEditingController();
   }
 
@@ -275,22 +296,34 @@ class _NoteEditorState extends State<_NoteEditor> {
         oldWidget.note.title != widget.note.title) {
       _titleController.text = widget.note.title;
     }
-    if (oldWidget.note.id != widget.note.id ||
-        oldWidget.note.content != widget.note.content) {
-      _contentController.text = widget.note.content;
-    }
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _contentController.dispose();
     _tagController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final appTypography = Theme.of(context).extension<AppTypographyTheme>();
+    final noteStyle = appTypography?.noteBodyStyle;
+    final markdownStyle = MarkdownStyleSheet.fromTheme(
+      Theme.of(context),
+    ).copyWith(
+      p: noteStyle,
+      a: noteStyle?.copyWith(
+        color: Theme.of(context).colorScheme.primary,
+        decoration: TextDecoration.underline,
+      ),
+      em: noteStyle?.copyWith(fontStyle: FontStyle.italic),
+      strong: noteStyle?.copyWith(fontWeight: FontWeight.w700),
+      blockquote: noteStyle,
+      listBullet: noteStyle,
+      tableBody: noteStyle,
+      code: appTypography?.codeStyle,
+    );
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -343,33 +376,34 @@ class _NoteEditorState extends State<_NoteEditor> {
               widget.onPreviewModeChanged(values.first),
         ),
         const SizedBox(height: 12),
+        _NoteSaveStatus(status: widget.saveStatus),
+        const SizedBox(height: 8),
         if (widget.previewMode)
           Container(
             key: const Key('markdown-preview'),
             constraints: const BoxConstraints(minHeight: 280),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
+              color: appTypography?.notePaperColor,
               border: Border.all(color: Theme.of(context).dividerColor),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: MarkdownBody(
-              data: widget.note.content.isEmpty
+            child: EmbeddedMarkdownView(
+              resolveAttachment: widget.resolveAttachment,
+              onDeleteAttachment: widget.onDeleteImage,
+              styleSheet: markdownStyle,
+              markdown: widget.note.content.isEmpty
                   ? '_暂无可预览内容。_'
                   : widget.note.content,
             ),
           )
         else
-          TextField(
+          EmbeddedMarkdownEditor(
             key: const Key('note-content-field'),
-            controller: _contentController,
-            minLines: 12,
-            maxLines: null,
-            decoration: const InputDecoration(
-              labelText: 'Markdown 内容',
-              alignLabelWithHint: true,
-              border: OutlineInputBorder(),
-            ),
+            initialValue: widget.note.content,
+            textStyle: noteStyle ?? Theme.of(context).textTheme.bodyLarge!,
             onChanged: widget.onContentChanged,
+            onInsertImage: widget.onInsertImage,
           ),
         const SizedBox(height: 16),
         Text('标签', style: Theme.of(context).textTheme.titleMedium),
@@ -444,6 +478,27 @@ class _NoteEditorState extends State<_NoteEditor> {
     }
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('笔记已删除')),
+    );
+  }
+}
+
+class _NoteSaveStatus extends StatelessWidget {
+  const _NoteSaveStatus({required this.status});
+
+  final NoteSaveStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = switch (status) {
+      NoteSaveStatus.idle => '',
+      NoteSaveStatus.saving => '保存中',
+      NoteSaveStatus.saved => '已保存',
+      NoteSaveStatus.failed => '保存失败',
+    };
+    return Semantics(
+      key: const Key('note-save-status'),
+      liveRegion: true,
+      child: Text(label, style: Theme.of(context).textTheme.labelMedium),
     );
   }
 }

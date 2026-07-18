@@ -3000,6 +3000,5419 @@ class AppSettingsCompanion extends UpdateCompanion<AppSettingRow> {
   }
 }
 
+class $TaskListsTable extends TaskLists
+    with TableInfo<$TaskListsTable, TaskListRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskListsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<int> color = GeneratedColumn<int>(
+      'color', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _iconKeyMeta =
+      const VerificationMeta('iconKey');
+  @override
+  late final GeneratedColumn<String> iconKey = GeneratedColumn<String>(
+      'icon_key', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _archivedMeta =
+      const VerificationMeta('archived');
+  @override
+  late final GeneratedColumn<bool> archived = GeneratedColumn<bool>(
+      'archived', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("archived" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        color,
+        iconKey,
+        sortOrder,
+        archived,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_lists';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskListRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    } else if (isInserting) {
+      context.missing(_colorMeta);
+    }
+    if (data.containsKey('icon_key')) {
+      context.handle(_iconKeyMeta,
+          iconKey.isAcceptableOrUnknown(data['icon_key']!, _iconKeyMeta));
+    } else if (isInserting) {
+      context.missing(_iconKeyMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    if (data.containsKey('archived')) {
+      context.handle(_archivedMeta,
+          archived.isAcceptableOrUnknown(data['archived']!, _archivedMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskListRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskListRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      color: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
+      iconKey: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}icon_key'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      archived: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}archived'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $TaskListsTable createAlias(String alias) {
+    return $TaskListsTable(attachedDatabase, alias);
+  }
+}
+
+class TaskListRow extends DataClass implements Insertable<TaskListRow> {
+  final String id;
+  final String name;
+  final int color;
+  final String iconKey;
+  final int sortOrder;
+  final bool archived;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const TaskListRow(
+      {required this.id,
+      required this.name,
+      required this.color,
+      required this.iconKey,
+      required this.sortOrder,
+      required this.archived,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['color'] = Variable<int>(color);
+    map['icon_key'] = Variable<String>(iconKey);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['archived'] = Variable<bool>(archived);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  TaskListsCompanion toCompanion(bool nullToAbsent) {
+    return TaskListsCompanion(
+      id: Value(id),
+      name: Value(name),
+      color: Value(color),
+      iconKey: Value(iconKey),
+      sortOrder: Value(sortOrder),
+      archived: Value(archived),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory TaskListRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskListRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      color: serializer.fromJson<int>(json['color']),
+      iconKey: serializer.fromJson<String>(json['iconKey']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      archived: serializer.fromJson<bool>(json['archived']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<int>(color),
+      'iconKey': serializer.toJson<String>(iconKey),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'archived': serializer.toJson<bool>(archived),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  TaskListRow copyWith(
+          {String? id,
+          String? name,
+          int? color,
+          String? iconKey,
+          int? sortOrder,
+          bool? archived,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      TaskListRow(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        color: color ?? this.color,
+        iconKey: iconKey ?? this.iconKey,
+        sortOrder: sortOrder ?? this.sortOrder,
+        archived: archived ?? this.archived,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  TaskListRow copyWithCompanion(TaskListsCompanion data) {
+    return TaskListRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      color: data.color.present ? data.color.value : this.color,
+      iconKey: data.iconKey.present ? data.iconKey.value : this.iconKey,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      archived: data.archived.present ? data.archived.value : this.archived,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskListRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('iconKey: $iconKey, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('archived: $archived, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, color, iconKey, sortOrder, archived,
+      createdAt, updatedAt, deletedAt, deviceId, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskListRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.color == this.color &&
+          other.iconKey == this.iconKey &&
+          other.sortOrder == this.sortOrder &&
+          other.archived == this.archived &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class TaskListsCompanion extends UpdateCompanion<TaskListRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<int> color;
+  final Value<String> iconKey;
+  final Value<int> sortOrder;
+  final Value<bool> archived;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const TaskListsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.color = const Value.absent(),
+    this.iconKey = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.archived = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskListsCompanion.insert({
+    required String id,
+    required String name,
+    required int color,
+    required String iconKey,
+    this.sortOrder = const Value.absent(),
+    this.archived = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        color = Value(color),
+        iconKey = Value(iconKey),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<TaskListRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<int>? color,
+    Expression<String>? iconKey,
+    Expression<int>? sortOrder,
+    Expression<bool>? archived,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (color != null) 'color': color,
+      if (iconKey != null) 'icon_key': iconKey,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (archived != null) 'archived': archived,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskListsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<int>? color,
+      Value<String>? iconKey,
+      Value<int>? sortOrder,
+      Value<bool>? archived,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return TaskListsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      iconKey: iconKey ?? this.iconKey,
+      sortOrder: sortOrder ?? this.sortOrder,
+      archived: archived ?? this.archived,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<int>(color.value);
+    }
+    if (iconKey.present) {
+      map['icon_key'] = Variable<String>(iconKey.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (archived.present) {
+      map['archived'] = Variable<bool>(archived.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskListsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('iconKey: $iconKey, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('archived: $archived, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TasksV2Table extends TasksV2 with TableInfo<$TasksV2Table, TaskV2Row> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TasksV2Table(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _parentIdMeta =
+      const VerificationMeta('parentId');
+  @override
+  late final GeneratedColumn<String> parentId = GeneratedColumn<String>(
+      'parent_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _listIdMeta = const VerificationMeta('listId');
+  @override
+  late final GeneratedColumn<String> listId = GeneratedColumn<String>(
+      'list_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMarkdownMeta =
+      const VerificationMeta('descriptionMarkdown');
+  @override
+  late final GeneratedColumn<String> descriptionMarkdown =
+      GeneratedColumn<String>('description_markdown', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultValue: const Constant(''));
+  static const VerificationMeta _completedMeta =
+      const VerificationMeta('completed');
+  @override
+  late final GeneratedColumn<bool> completed = GeneratedColumn<bool>(
+      'completed', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("completed" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _priorityMeta =
+      const VerificationMeta('priority');
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+      'priority', aliasedName, false,
+      check: () => ComparableExpr(priority).isBetweenValues(0, 3),
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _startAtMeta =
+      const VerificationMeta('startAt');
+  @override
+  late final GeneratedColumn<int> startAt = GeneratedColumn<int>(
+      'start_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _dueAtMeta = const VerificationMeta('dueAt');
+  @override
+  late final GeneratedColumn<int> dueAt = GeneratedColumn<int>(
+      'due_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _allDayMeta = const VerificationMeta('allDay');
+  @override
+  late final GeneratedColumn<bool> allDay = GeneratedColumn<bool>(
+      'all_day', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("all_day" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _recurrenceRuleMeta =
+      const VerificationMeta('recurrenceRule');
+  @override
+  late final GeneratedColumn<String> recurrenceRule = GeneratedColumn<String>(
+      'recurrence_rule', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _recurrenceEndAtMeta =
+      const VerificationMeta('recurrenceEndAt');
+  @override
+  late final GeneratedColumn<int> recurrenceEndAt = GeneratedColumn<int>(
+      'recurrence_end_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _recurrenceCountMeta =
+      const VerificationMeta('recurrenceCount');
+  @override
+  late final GeneratedColumn<int> recurrenceCount = GeneratedColumn<int>(
+      'recurrence_count', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _completedAtMeta =
+      const VerificationMeta('completedAt');
+  @override
+  late final GeneratedColumn<int> completedAt = GeneratedColumn<int>(
+      'completed_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        parentId,
+        listId,
+        title,
+        descriptionMarkdown,
+        completed,
+        priority,
+        startAt,
+        dueAt,
+        allDay,
+        sortOrder,
+        recurrenceRule,
+        recurrenceEndAt,
+        recurrenceCount,
+        completedAt,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tasks_v2';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskV2Row> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('parent_id')) {
+      context.handle(_parentIdMeta,
+          parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta));
+    }
+    if (data.containsKey('list_id')) {
+      context.handle(_listIdMeta,
+          listId.isAcceptableOrUnknown(data['list_id']!, _listIdMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description_markdown')) {
+      context.handle(
+          _descriptionMarkdownMeta,
+          descriptionMarkdown.isAcceptableOrUnknown(
+              data['description_markdown']!, _descriptionMarkdownMeta));
+    }
+    if (data.containsKey('completed')) {
+      context.handle(_completedMeta,
+          completed.isAcceptableOrUnknown(data['completed']!, _completedMeta));
+    }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    }
+    if (data.containsKey('start_at')) {
+      context.handle(_startAtMeta,
+          startAt.isAcceptableOrUnknown(data['start_at']!, _startAtMeta));
+    }
+    if (data.containsKey('due_at')) {
+      context.handle(
+          _dueAtMeta, dueAt.isAcceptableOrUnknown(data['due_at']!, _dueAtMeta));
+    }
+    if (data.containsKey('all_day')) {
+      context.handle(_allDayMeta,
+          allDay.isAcceptableOrUnknown(data['all_day']!, _allDayMeta));
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    if (data.containsKey('recurrence_rule')) {
+      context.handle(
+          _recurrenceRuleMeta,
+          recurrenceRule.isAcceptableOrUnknown(
+              data['recurrence_rule']!, _recurrenceRuleMeta));
+    }
+    if (data.containsKey('recurrence_end_at')) {
+      context.handle(
+          _recurrenceEndAtMeta,
+          recurrenceEndAt.isAcceptableOrUnknown(
+              data['recurrence_end_at']!, _recurrenceEndAtMeta));
+    }
+    if (data.containsKey('recurrence_count')) {
+      context.handle(
+          _recurrenceCountMeta,
+          recurrenceCount.isAcceptableOrUnknown(
+              data['recurrence_count']!, _recurrenceCountMeta));
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+          _completedAtMeta,
+          completedAt.isAcceptableOrUnknown(
+              data['completed_at']!, _completedAtMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskV2Row map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskV2Row(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      parentId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}parent_id']),
+      listId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}list_id']),
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      descriptionMarkdown: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}description_markdown'])!,
+      completed: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}completed'])!,
+      priority: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
+      startAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}start_at']),
+      dueAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}due_at']),
+      allDay: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}all_day'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      recurrenceRule: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}recurrence_rule']),
+      recurrenceEndAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}recurrence_end_at']),
+      recurrenceCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}recurrence_count']),
+      completedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}completed_at']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $TasksV2Table createAlias(String alias) {
+    return $TasksV2Table(attachedDatabase, alias);
+  }
+}
+
+class TaskV2Row extends DataClass implements Insertable<TaskV2Row> {
+  final String id;
+  final String? parentId;
+  final String? listId;
+  final String title;
+  final String descriptionMarkdown;
+  final bool completed;
+  final int priority;
+  final int? startAt;
+  final int? dueAt;
+  final bool allDay;
+  final int sortOrder;
+  final String? recurrenceRule;
+  final int? recurrenceEndAt;
+  final int? recurrenceCount;
+  final int? completedAt;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const TaskV2Row(
+      {required this.id,
+      this.parentId,
+      this.listId,
+      required this.title,
+      required this.descriptionMarkdown,
+      required this.completed,
+      required this.priority,
+      this.startAt,
+      this.dueAt,
+      required this.allDay,
+      required this.sortOrder,
+      this.recurrenceRule,
+      this.recurrenceEndAt,
+      this.recurrenceCount,
+      this.completedAt,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<String>(parentId);
+    }
+    if (!nullToAbsent || listId != null) {
+      map['list_id'] = Variable<String>(listId);
+    }
+    map['title'] = Variable<String>(title);
+    map['description_markdown'] = Variable<String>(descriptionMarkdown);
+    map['completed'] = Variable<bool>(completed);
+    map['priority'] = Variable<int>(priority);
+    if (!nullToAbsent || startAt != null) {
+      map['start_at'] = Variable<int>(startAt);
+    }
+    if (!nullToAbsent || dueAt != null) {
+      map['due_at'] = Variable<int>(dueAt);
+    }
+    map['all_day'] = Variable<bool>(allDay);
+    map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || recurrenceRule != null) {
+      map['recurrence_rule'] = Variable<String>(recurrenceRule);
+    }
+    if (!nullToAbsent || recurrenceEndAt != null) {
+      map['recurrence_end_at'] = Variable<int>(recurrenceEndAt);
+    }
+    if (!nullToAbsent || recurrenceCount != null) {
+      map['recurrence_count'] = Variable<int>(recurrenceCount);
+    }
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<int>(completedAt);
+    }
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  TasksV2Companion toCompanion(bool nullToAbsent) {
+    return TasksV2Companion(
+      id: Value(id),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      listId:
+          listId == null && nullToAbsent ? const Value.absent() : Value(listId),
+      title: Value(title),
+      descriptionMarkdown: Value(descriptionMarkdown),
+      completed: Value(completed),
+      priority: Value(priority),
+      startAt: startAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startAt),
+      dueAt:
+          dueAt == null && nullToAbsent ? const Value.absent() : Value(dueAt),
+      allDay: Value(allDay),
+      sortOrder: Value(sortOrder),
+      recurrenceRule: recurrenceRule == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recurrenceRule),
+      recurrenceEndAt: recurrenceEndAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recurrenceEndAt),
+      recurrenceCount: recurrenceCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recurrenceCount),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory TaskV2Row.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskV2Row(
+      id: serializer.fromJson<String>(json['id']),
+      parentId: serializer.fromJson<String?>(json['parentId']),
+      listId: serializer.fromJson<String?>(json['listId']),
+      title: serializer.fromJson<String>(json['title']),
+      descriptionMarkdown:
+          serializer.fromJson<String>(json['descriptionMarkdown']),
+      completed: serializer.fromJson<bool>(json['completed']),
+      priority: serializer.fromJson<int>(json['priority']),
+      startAt: serializer.fromJson<int?>(json['startAt']),
+      dueAt: serializer.fromJson<int?>(json['dueAt']),
+      allDay: serializer.fromJson<bool>(json['allDay']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      recurrenceRule: serializer.fromJson<String?>(json['recurrenceRule']),
+      recurrenceEndAt: serializer.fromJson<int?>(json['recurrenceEndAt']),
+      recurrenceCount: serializer.fromJson<int?>(json['recurrenceCount']),
+      completedAt: serializer.fromJson<int?>(json['completedAt']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'parentId': serializer.toJson<String?>(parentId),
+      'listId': serializer.toJson<String?>(listId),
+      'title': serializer.toJson<String>(title),
+      'descriptionMarkdown': serializer.toJson<String>(descriptionMarkdown),
+      'completed': serializer.toJson<bool>(completed),
+      'priority': serializer.toJson<int>(priority),
+      'startAt': serializer.toJson<int?>(startAt),
+      'dueAt': serializer.toJson<int?>(dueAt),
+      'allDay': serializer.toJson<bool>(allDay),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'recurrenceRule': serializer.toJson<String?>(recurrenceRule),
+      'recurrenceEndAt': serializer.toJson<int?>(recurrenceEndAt),
+      'recurrenceCount': serializer.toJson<int?>(recurrenceCount),
+      'completedAt': serializer.toJson<int?>(completedAt),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  TaskV2Row copyWith(
+          {String? id,
+          Value<String?> parentId = const Value.absent(),
+          Value<String?> listId = const Value.absent(),
+          String? title,
+          String? descriptionMarkdown,
+          bool? completed,
+          int? priority,
+          Value<int?> startAt = const Value.absent(),
+          Value<int?> dueAt = const Value.absent(),
+          bool? allDay,
+          int? sortOrder,
+          Value<String?> recurrenceRule = const Value.absent(),
+          Value<int?> recurrenceEndAt = const Value.absent(),
+          Value<int?> recurrenceCount = const Value.absent(),
+          Value<int?> completedAt = const Value.absent(),
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      TaskV2Row(
+        id: id ?? this.id,
+        parentId: parentId.present ? parentId.value : this.parentId,
+        listId: listId.present ? listId.value : this.listId,
+        title: title ?? this.title,
+        descriptionMarkdown: descriptionMarkdown ?? this.descriptionMarkdown,
+        completed: completed ?? this.completed,
+        priority: priority ?? this.priority,
+        startAt: startAt.present ? startAt.value : this.startAt,
+        dueAt: dueAt.present ? dueAt.value : this.dueAt,
+        allDay: allDay ?? this.allDay,
+        sortOrder: sortOrder ?? this.sortOrder,
+        recurrenceRule:
+            recurrenceRule.present ? recurrenceRule.value : this.recurrenceRule,
+        recurrenceEndAt: recurrenceEndAt.present
+            ? recurrenceEndAt.value
+            : this.recurrenceEndAt,
+        recurrenceCount: recurrenceCount.present
+            ? recurrenceCount.value
+            : this.recurrenceCount,
+        completedAt: completedAt.present ? completedAt.value : this.completedAt,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  TaskV2Row copyWithCompanion(TasksV2Companion data) {
+    return TaskV2Row(
+      id: data.id.present ? data.id.value : this.id,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
+      listId: data.listId.present ? data.listId.value : this.listId,
+      title: data.title.present ? data.title.value : this.title,
+      descriptionMarkdown: data.descriptionMarkdown.present
+          ? data.descriptionMarkdown.value
+          : this.descriptionMarkdown,
+      completed: data.completed.present ? data.completed.value : this.completed,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      startAt: data.startAt.present ? data.startAt.value : this.startAt,
+      dueAt: data.dueAt.present ? data.dueAt.value : this.dueAt,
+      allDay: data.allDay.present ? data.allDay.value : this.allDay,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      recurrenceRule: data.recurrenceRule.present
+          ? data.recurrenceRule.value
+          : this.recurrenceRule,
+      recurrenceEndAt: data.recurrenceEndAt.present
+          ? data.recurrenceEndAt.value
+          : this.recurrenceEndAt,
+      recurrenceCount: data.recurrenceCount.present
+          ? data.recurrenceCount.value
+          : this.recurrenceCount,
+      completedAt:
+          data.completedAt.present ? data.completedAt.value : this.completedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskV2Row(')
+          ..write('id: $id, ')
+          ..write('parentId: $parentId, ')
+          ..write('listId: $listId, ')
+          ..write('title: $title, ')
+          ..write('descriptionMarkdown: $descriptionMarkdown, ')
+          ..write('completed: $completed, ')
+          ..write('priority: $priority, ')
+          ..write('startAt: $startAt, ')
+          ..write('dueAt: $dueAt, ')
+          ..write('allDay: $allDay, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('recurrenceRule: $recurrenceRule, ')
+          ..write('recurrenceEndAt: $recurrenceEndAt, ')
+          ..write('recurrenceCount: $recurrenceCount, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      parentId,
+      listId,
+      title,
+      descriptionMarkdown,
+      completed,
+      priority,
+      startAt,
+      dueAt,
+      allDay,
+      sortOrder,
+      recurrenceRule,
+      recurrenceEndAt,
+      recurrenceCount,
+      completedAt,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      deviceId,
+      version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskV2Row &&
+          other.id == this.id &&
+          other.parentId == this.parentId &&
+          other.listId == this.listId &&
+          other.title == this.title &&
+          other.descriptionMarkdown == this.descriptionMarkdown &&
+          other.completed == this.completed &&
+          other.priority == this.priority &&
+          other.startAt == this.startAt &&
+          other.dueAt == this.dueAt &&
+          other.allDay == this.allDay &&
+          other.sortOrder == this.sortOrder &&
+          other.recurrenceRule == this.recurrenceRule &&
+          other.recurrenceEndAt == this.recurrenceEndAt &&
+          other.recurrenceCount == this.recurrenceCount &&
+          other.completedAt == this.completedAt &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class TasksV2Companion extends UpdateCompanion<TaskV2Row> {
+  final Value<String> id;
+  final Value<String?> parentId;
+  final Value<String?> listId;
+  final Value<String> title;
+  final Value<String> descriptionMarkdown;
+  final Value<bool> completed;
+  final Value<int> priority;
+  final Value<int?> startAt;
+  final Value<int?> dueAt;
+  final Value<bool> allDay;
+  final Value<int> sortOrder;
+  final Value<String?> recurrenceRule;
+  final Value<int?> recurrenceEndAt;
+  final Value<int?> recurrenceCount;
+  final Value<int?> completedAt;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const TasksV2Companion({
+    this.id = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.listId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.descriptionMarkdown = const Value.absent(),
+    this.completed = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.startAt = const Value.absent(),
+    this.dueAt = const Value.absent(),
+    this.allDay = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.recurrenceRule = const Value.absent(),
+    this.recurrenceEndAt = const Value.absent(),
+    this.recurrenceCount = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TasksV2Companion.insert({
+    required String id,
+    this.parentId = const Value.absent(),
+    this.listId = const Value.absent(),
+    required String title,
+    this.descriptionMarkdown = const Value.absent(),
+    this.completed = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.startAt = const Value.absent(),
+    this.dueAt = const Value.absent(),
+    this.allDay = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.recurrenceRule = const Value.absent(),
+    this.recurrenceEndAt = const Value.absent(),
+    this.recurrenceCount = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        title = Value(title),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<TaskV2Row> custom({
+    Expression<String>? id,
+    Expression<String>? parentId,
+    Expression<String>? listId,
+    Expression<String>? title,
+    Expression<String>? descriptionMarkdown,
+    Expression<bool>? completed,
+    Expression<int>? priority,
+    Expression<int>? startAt,
+    Expression<int>? dueAt,
+    Expression<bool>? allDay,
+    Expression<int>? sortOrder,
+    Expression<String>? recurrenceRule,
+    Expression<int>? recurrenceEndAt,
+    Expression<int>? recurrenceCount,
+    Expression<int>? completedAt,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (parentId != null) 'parent_id': parentId,
+      if (listId != null) 'list_id': listId,
+      if (title != null) 'title': title,
+      if (descriptionMarkdown != null)
+        'description_markdown': descriptionMarkdown,
+      if (completed != null) 'completed': completed,
+      if (priority != null) 'priority': priority,
+      if (startAt != null) 'start_at': startAt,
+      if (dueAt != null) 'due_at': dueAt,
+      if (allDay != null) 'all_day': allDay,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (recurrenceRule != null) 'recurrence_rule': recurrenceRule,
+      if (recurrenceEndAt != null) 'recurrence_end_at': recurrenceEndAt,
+      if (recurrenceCount != null) 'recurrence_count': recurrenceCount,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TasksV2Companion copyWith(
+      {Value<String>? id,
+      Value<String?>? parentId,
+      Value<String?>? listId,
+      Value<String>? title,
+      Value<String>? descriptionMarkdown,
+      Value<bool>? completed,
+      Value<int>? priority,
+      Value<int?>? startAt,
+      Value<int?>? dueAt,
+      Value<bool>? allDay,
+      Value<int>? sortOrder,
+      Value<String?>? recurrenceRule,
+      Value<int?>? recurrenceEndAt,
+      Value<int?>? recurrenceCount,
+      Value<int?>? completedAt,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return TasksV2Companion(
+      id: id ?? this.id,
+      parentId: parentId ?? this.parentId,
+      listId: listId ?? this.listId,
+      title: title ?? this.title,
+      descriptionMarkdown: descriptionMarkdown ?? this.descriptionMarkdown,
+      completed: completed ?? this.completed,
+      priority: priority ?? this.priority,
+      startAt: startAt ?? this.startAt,
+      dueAt: dueAt ?? this.dueAt,
+      allDay: allDay ?? this.allDay,
+      sortOrder: sortOrder ?? this.sortOrder,
+      recurrenceRule: recurrenceRule ?? this.recurrenceRule,
+      recurrenceEndAt: recurrenceEndAt ?? this.recurrenceEndAt,
+      recurrenceCount: recurrenceCount ?? this.recurrenceCount,
+      completedAt: completedAt ?? this.completedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<String>(parentId.value);
+    }
+    if (listId.present) {
+      map['list_id'] = Variable<String>(listId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (descriptionMarkdown.present) {
+      map['description_markdown'] = Variable<String>(descriptionMarkdown.value);
+    }
+    if (completed.present) {
+      map['completed'] = Variable<bool>(completed.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (startAt.present) {
+      map['start_at'] = Variable<int>(startAt.value);
+    }
+    if (dueAt.present) {
+      map['due_at'] = Variable<int>(dueAt.value);
+    }
+    if (allDay.present) {
+      map['all_day'] = Variable<bool>(allDay.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (recurrenceRule.present) {
+      map['recurrence_rule'] = Variable<String>(recurrenceRule.value);
+    }
+    if (recurrenceEndAt.present) {
+      map['recurrence_end_at'] = Variable<int>(recurrenceEndAt.value);
+    }
+    if (recurrenceCount.present) {
+      map['recurrence_count'] = Variable<int>(recurrenceCount.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<int>(completedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TasksV2Companion(')
+          ..write('id: $id, ')
+          ..write('parentId: $parentId, ')
+          ..write('listId: $listId, ')
+          ..write('title: $title, ')
+          ..write('descriptionMarkdown: $descriptionMarkdown, ')
+          ..write('completed: $completed, ')
+          ..write('priority: $priority, ')
+          ..write('startAt: $startAt, ')
+          ..write('dueAt: $dueAt, ')
+          ..write('allDay: $allDay, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('recurrenceRule: $recurrenceRule, ')
+          ..write('recurrenceEndAt: $recurrenceEndAt, ')
+          ..write('recurrenceCount: $recurrenceCount, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TaskTagsTable extends TaskTags
+    with TableInfo<$TaskTagsTable, TaskTagRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskTagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<int> color = GeneratedColumn<int>(
+      'color', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, color, createdAt, updatedAt, deletedAt, deviceId, version];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_tags';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskTagRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    } else if (isInserting) {
+      context.missing(_colorMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskTagRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskTagRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      color: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $TaskTagsTable createAlias(String alias) {
+    return $TaskTagsTable(attachedDatabase, alias);
+  }
+}
+
+class TaskTagRow extends DataClass implements Insertable<TaskTagRow> {
+  final String id;
+  final String name;
+  final int color;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const TaskTagRow(
+      {required this.id,
+      required this.name,
+      required this.color,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['color'] = Variable<int>(color);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  TaskTagsCompanion toCompanion(bool nullToAbsent) {
+    return TaskTagsCompanion(
+      id: Value(id),
+      name: Value(name),
+      color: Value(color),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory TaskTagRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskTagRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      color: serializer.fromJson<int>(json['color']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<int>(color),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  TaskTagRow copyWith(
+          {String? id,
+          String? name,
+          int? color,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      TaskTagRow(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        color: color ?? this.color,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  TaskTagRow copyWithCompanion(TaskTagsCompanion data) {
+    return TaskTagRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      color: data.color.present ? data.color.value : this.color,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskTagRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, name, color, createdAt, updatedAt, deletedAt, deviceId, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskTagRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.color == this.color &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class TaskTagsCompanion extends UpdateCompanion<TaskTagRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<int> color;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const TaskTagsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.color = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskTagsCompanion.insert({
+    required String id,
+    required String name,
+    required int color,
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        color = Value(color),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<TaskTagRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<int>? color,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (color != null) 'color': color,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskTagsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<int>? color,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return TaskTagsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<int>(color.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskTagsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TaskTagLinksTable extends TaskTagLinks
+    with TableInfo<$TaskTagLinksTable, TaskTagLinkRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskTagLinksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+      'task_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<String> tagId = GeneratedColumn<String>(
+      'tag_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [taskId, tagId, createdAt, updatedAt, deletedAt, deviceId, version];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_tag_links';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskTagLinkRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(
+          _tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {taskId, tagId};
+  @override
+  TaskTagLinkRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskTagLinkRow(
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
+      tagId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $TaskTagLinksTable createAlias(String alias) {
+    return $TaskTagLinksTable(attachedDatabase, alias);
+  }
+}
+
+class TaskTagLinkRow extends DataClass implements Insertable<TaskTagLinkRow> {
+  final String taskId;
+  final String tagId;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const TaskTagLinkRow(
+      {required this.taskId,
+      required this.tagId,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['task_id'] = Variable<String>(taskId);
+    map['tag_id'] = Variable<String>(tagId);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  TaskTagLinksCompanion toCompanion(bool nullToAbsent) {
+    return TaskTagLinksCompanion(
+      taskId: Value(taskId),
+      tagId: Value(tagId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory TaskTagLinkRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskTagLinkRow(
+      taskId: serializer.fromJson<String>(json['taskId']),
+      tagId: serializer.fromJson<String>(json['tagId']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'taskId': serializer.toJson<String>(taskId),
+      'tagId': serializer.toJson<String>(tagId),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  TaskTagLinkRow copyWith(
+          {String? taskId,
+          String? tagId,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      TaskTagLinkRow(
+        taskId: taskId ?? this.taskId,
+        tagId: tagId ?? this.tagId,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  TaskTagLinkRow copyWithCompanion(TaskTagLinksCompanion data) {
+    return TaskTagLinkRow(
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      tagId: data.tagId.present ? data.tagId.value : this.tagId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskTagLinkRow(')
+          ..write('taskId: $taskId, ')
+          ..write('tagId: $tagId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      taskId, tagId, createdAt, updatedAt, deletedAt, deviceId, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskTagLinkRow &&
+          other.taskId == this.taskId &&
+          other.tagId == this.tagId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class TaskTagLinksCompanion extends UpdateCompanion<TaskTagLinkRow> {
+  final Value<String> taskId;
+  final Value<String> tagId;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const TaskTagLinksCompanion({
+    this.taskId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskTagLinksCompanion.insert({
+    required String taskId,
+    required String tagId,
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : taskId = Value(taskId),
+        tagId = Value(tagId),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<TaskTagLinkRow> custom({
+    Expression<String>? taskId,
+    Expression<String>? tagId,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (taskId != null) 'task_id': taskId,
+      if (tagId != null) 'tag_id': tagId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskTagLinksCompanion copyWith(
+      {Value<String>? taskId,
+      Value<String>? tagId,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return TaskTagLinksCompanion(
+      taskId: taskId ?? this.taskId,
+      tagId: tagId ?? this.tagId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<String>(tagId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskTagLinksCompanion(')
+          ..write('taskId: $taskId, ')
+          ..write('tagId: $tagId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SmartFiltersTable extends SmartFilters
+    with TableInfo<$SmartFiltersTable, SmartFilterRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SmartFiltersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _rulesJsonMeta =
+      const VerificationMeta('rulesJson');
+  @override
+  late final GeneratedColumn<String> rulesJson = GeneratedColumn<String>(
+      'rules_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sortModeMeta =
+      const VerificationMeta('sortMode');
+  @override
+  late final GeneratedColumn<String> sortMode = GeneratedColumn<String>(
+      'sort_mode', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _pinnedMeta = const VerificationMeta('pinned');
+  @override
+  late final GeneratedColumn<bool> pinned = GeneratedColumn<bool>(
+      'pinned', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("pinned" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        rulesJson,
+        sortMode,
+        sortOrder,
+        pinned,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'smart_filters';
+  @override
+  VerificationContext validateIntegrity(Insertable<SmartFilterRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('rules_json')) {
+      context.handle(_rulesJsonMeta,
+          rulesJson.isAcceptableOrUnknown(data['rules_json']!, _rulesJsonMeta));
+    } else if (isInserting) {
+      context.missing(_rulesJsonMeta);
+    }
+    if (data.containsKey('sort_mode')) {
+      context.handle(_sortModeMeta,
+          sortMode.isAcceptableOrUnknown(data['sort_mode']!, _sortModeMeta));
+    } else if (isInserting) {
+      context.missing(_sortModeMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    if (data.containsKey('pinned')) {
+      context.handle(_pinnedMeta,
+          pinned.isAcceptableOrUnknown(data['pinned']!, _pinnedMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SmartFilterRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SmartFilterRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      rulesJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}rules_json'])!,
+      sortMode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sort_mode'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      pinned: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}pinned'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $SmartFiltersTable createAlias(String alias) {
+    return $SmartFiltersTable(attachedDatabase, alias);
+  }
+}
+
+class SmartFilterRow extends DataClass implements Insertable<SmartFilterRow> {
+  final String id;
+  final String name;
+  final String rulesJson;
+  final String sortMode;
+  final int sortOrder;
+  final bool pinned;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const SmartFilterRow(
+      {required this.id,
+      required this.name,
+      required this.rulesJson,
+      required this.sortMode,
+      required this.sortOrder,
+      required this.pinned,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['rules_json'] = Variable<String>(rulesJson);
+    map['sort_mode'] = Variable<String>(sortMode);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['pinned'] = Variable<bool>(pinned);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  SmartFiltersCompanion toCompanion(bool nullToAbsent) {
+    return SmartFiltersCompanion(
+      id: Value(id),
+      name: Value(name),
+      rulesJson: Value(rulesJson),
+      sortMode: Value(sortMode),
+      sortOrder: Value(sortOrder),
+      pinned: Value(pinned),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory SmartFilterRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SmartFilterRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      rulesJson: serializer.fromJson<String>(json['rulesJson']),
+      sortMode: serializer.fromJson<String>(json['sortMode']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      pinned: serializer.fromJson<bool>(json['pinned']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'rulesJson': serializer.toJson<String>(rulesJson),
+      'sortMode': serializer.toJson<String>(sortMode),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'pinned': serializer.toJson<bool>(pinned),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  SmartFilterRow copyWith(
+          {String? id,
+          String? name,
+          String? rulesJson,
+          String? sortMode,
+          int? sortOrder,
+          bool? pinned,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      SmartFilterRow(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        rulesJson: rulesJson ?? this.rulesJson,
+        sortMode: sortMode ?? this.sortMode,
+        sortOrder: sortOrder ?? this.sortOrder,
+        pinned: pinned ?? this.pinned,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  SmartFilterRow copyWithCompanion(SmartFiltersCompanion data) {
+    return SmartFilterRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      rulesJson: data.rulesJson.present ? data.rulesJson.value : this.rulesJson,
+      sortMode: data.sortMode.present ? data.sortMode.value : this.sortMode,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      pinned: data.pinned.present ? data.pinned.value : this.pinned,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SmartFilterRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rulesJson: $rulesJson, ')
+          ..write('sortMode: $sortMode, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('pinned: $pinned, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, rulesJson, sortMode, sortOrder,
+      pinned, createdAt, updatedAt, deletedAt, deviceId, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SmartFilterRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.rulesJson == this.rulesJson &&
+          other.sortMode == this.sortMode &&
+          other.sortOrder == this.sortOrder &&
+          other.pinned == this.pinned &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class SmartFiltersCompanion extends UpdateCompanion<SmartFilterRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> rulesJson;
+  final Value<String> sortMode;
+  final Value<int> sortOrder;
+  final Value<bool> pinned;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const SmartFiltersCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rulesJson = const Value.absent(),
+    this.sortMode = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.pinned = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SmartFiltersCompanion.insert({
+    required String id,
+    required String name,
+    required String rulesJson,
+    required String sortMode,
+    this.sortOrder = const Value.absent(),
+    this.pinned = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        rulesJson = Value(rulesJson),
+        sortMode = Value(sortMode),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<SmartFilterRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? rulesJson,
+    Expression<String>? sortMode,
+    Expression<int>? sortOrder,
+    Expression<bool>? pinned,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (rulesJson != null) 'rules_json': rulesJson,
+      if (sortMode != null) 'sort_mode': sortMode,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (pinned != null) 'pinned': pinned,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SmartFiltersCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? rulesJson,
+      Value<String>? sortMode,
+      Value<int>? sortOrder,
+      Value<bool>? pinned,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return SmartFiltersCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rulesJson: rulesJson ?? this.rulesJson,
+      sortMode: sortMode ?? this.sortMode,
+      sortOrder: sortOrder ?? this.sortOrder,
+      pinned: pinned ?? this.pinned,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rulesJson.present) {
+      map['rules_json'] = Variable<String>(rulesJson.value);
+    }
+    if (sortMode.present) {
+      map['sort_mode'] = Variable<String>(sortMode.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (pinned.present) {
+      map['pinned'] = Variable<bool>(pinned.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SmartFiltersCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rulesJson: $rulesJson, ')
+          ..write('sortMode: $sortMode, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('pinned: $pinned, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ContentAttachmentsTable extends ContentAttachments
+    with TableInfo<$ContentAttachmentsTable, ContentAttachmentRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ContentAttachmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _ownerTypeMeta =
+      const VerificationMeta('ownerType');
+  @override
+  late final GeneratedColumn<String> ownerType = GeneratedColumn<String>(
+      'owner_type', aliasedName, false,
+      check: () => ownerType.isIn(const ['task', 'note']),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _ownerIdMeta =
+      const VerificationMeta('ownerId');
+  @override
+  late final GeneratedColumn<String> ownerId = GeneratedColumn<String>(
+      'owner_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sha256Meta = const VerificationMeta('sha256');
+  @override
+  late final GeneratedColumn<String> sha256 = GeneratedColumn<String>(
+      'sha256', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _mimeTypeMeta =
+      const VerificationMeta('mimeType');
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+      'mime_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _byteSizeMeta =
+      const VerificationMeta('byteSize');
+  @override
+  late final GeneratedColumn<int> byteSize = GeneratedColumn<int>(
+      'byte_size', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+      'width', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+      'height', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _relativePathMeta =
+      const VerificationMeta('relativePath');
+  @override
+  late final GeneratedColumn<String> relativePath = GeneratedColumn<String>(
+      'relative_path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _thumbnailRelativePathMeta =
+      const VerificationMeta('thumbnailRelativePath');
+  @override
+  late final GeneratedColumn<String> thumbnailRelativePath =
+      GeneratedColumn<String>('thumbnail_relative_path', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        ownerType,
+        ownerId,
+        sha256,
+        mimeType,
+        byteSize,
+        width,
+        height,
+        relativePath,
+        thumbnailRelativePath,
+        sortOrder,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'content_attachments';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<ContentAttachmentRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('owner_type')) {
+      context.handle(_ownerTypeMeta,
+          ownerType.isAcceptableOrUnknown(data['owner_type']!, _ownerTypeMeta));
+    } else if (isInserting) {
+      context.missing(_ownerTypeMeta);
+    }
+    if (data.containsKey('owner_id')) {
+      context.handle(_ownerIdMeta,
+          ownerId.isAcceptableOrUnknown(data['owner_id']!, _ownerIdMeta));
+    } else if (isInserting) {
+      context.missing(_ownerIdMeta);
+    }
+    if (data.containsKey('sha256')) {
+      context.handle(_sha256Meta,
+          sha256.isAcceptableOrUnknown(data['sha256']!, _sha256Meta));
+    } else if (isInserting) {
+      context.missing(_sha256Meta);
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(_mimeTypeMeta,
+          mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta));
+    } else if (isInserting) {
+      context.missing(_mimeTypeMeta);
+    }
+    if (data.containsKey('byte_size')) {
+      context.handle(_byteSizeMeta,
+          byteSize.isAcceptableOrUnknown(data['byte_size']!, _byteSizeMeta));
+    } else if (isInserting) {
+      context.missing(_byteSizeMeta);
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+          _widthMeta, width.isAcceptableOrUnknown(data['width']!, _widthMeta));
+    } else if (isInserting) {
+      context.missing(_widthMeta);
+    }
+    if (data.containsKey('height')) {
+      context.handle(_heightMeta,
+          height.isAcceptableOrUnknown(data['height']!, _heightMeta));
+    } else if (isInserting) {
+      context.missing(_heightMeta);
+    }
+    if (data.containsKey('relative_path')) {
+      context.handle(
+          _relativePathMeta,
+          relativePath.isAcceptableOrUnknown(
+              data['relative_path']!, _relativePathMeta));
+    } else if (isInserting) {
+      context.missing(_relativePathMeta);
+    }
+    if (data.containsKey('thumbnail_relative_path')) {
+      context.handle(
+          _thumbnailRelativePathMeta,
+          thumbnailRelativePath.isAcceptableOrUnknown(
+              data['thumbnail_relative_path']!, _thumbnailRelativePathMeta));
+    } else if (isInserting) {
+      context.missing(_thumbnailRelativePathMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ContentAttachmentRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ContentAttachmentRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      ownerType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}owner_type'])!,
+      ownerId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}owner_id'])!,
+      sha256: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sha256'])!,
+      mimeType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}mime_type'])!,
+      byteSize: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}byte_size'])!,
+      width: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}width'])!,
+      height: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}height'])!,
+      relativePath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}relative_path'])!,
+      thumbnailRelativePath: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}thumbnail_relative_path'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $ContentAttachmentsTable createAlias(String alias) {
+    return $ContentAttachmentsTable(attachedDatabase, alias);
+  }
+}
+
+class ContentAttachmentRow extends DataClass
+    implements Insertable<ContentAttachmentRow> {
+  final String id;
+  final String ownerType;
+  final String ownerId;
+  final String sha256;
+  final String mimeType;
+  final int byteSize;
+  final int width;
+  final int height;
+  final String relativePath;
+  final String thumbnailRelativePath;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const ContentAttachmentRow(
+      {required this.id,
+      required this.ownerType,
+      required this.ownerId,
+      required this.sha256,
+      required this.mimeType,
+      required this.byteSize,
+      required this.width,
+      required this.height,
+      required this.relativePath,
+      required this.thumbnailRelativePath,
+      required this.sortOrder,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['owner_type'] = Variable<String>(ownerType);
+    map['owner_id'] = Variable<String>(ownerId);
+    map['sha256'] = Variable<String>(sha256);
+    map['mime_type'] = Variable<String>(mimeType);
+    map['byte_size'] = Variable<int>(byteSize);
+    map['width'] = Variable<int>(width);
+    map['height'] = Variable<int>(height);
+    map['relative_path'] = Variable<String>(relativePath);
+    map['thumbnail_relative_path'] = Variable<String>(thumbnailRelativePath);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  ContentAttachmentsCompanion toCompanion(bool nullToAbsent) {
+    return ContentAttachmentsCompanion(
+      id: Value(id),
+      ownerType: Value(ownerType),
+      ownerId: Value(ownerId),
+      sha256: Value(sha256),
+      mimeType: Value(mimeType),
+      byteSize: Value(byteSize),
+      width: Value(width),
+      height: Value(height),
+      relativePath: Value(relativePath),
+      thumbnailRelativePath: Value(thumbnailRelativePath),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory ContentAttachmentRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ContentAttachmentRow(
+      id: serializer.fromJson<String>(json['id']),
+      ownerType: serializer.fromJson<String>(json['ownerType']),
+      ownerId: serializer.fromJson<String>(json['ownerId']),
+      sha256: serializer.fromJson<String>(json['sha256']),
+      mimeType: serializer.fromJson<String>(json['mimeType']),
+      byteSize: serializer.fromJson<int>(json['byteSize']),
+      width: serializer.fromJson<int>(json['width']),
+      height: serializer.fromJson<int>(json['height']),
+      relativePath: serializer.fromJson<String>(json['relativePath']),
+      thumbnailRelativePath:
+          serializer.fromJson<String>(json['thumbnailRelativePath']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'ownerType': serializer.toJson<String>(ownerType),
+      'ownerId': serializer.toJson<String>(ownerId),
+      'sha256': serializer.toJson<String>(sha256),
+      'mimeType': serializer.toJson<String>(mimeType),
+      'byteSize': serializer.toJson<int>(byteSize),
+      'width': serializer.toJson<int>(width),
+      'height': serializer.toJson<int>(height),
+      'relativePath': serializer.toJson<String>(relativePath),
+      'thumbnailRelativePath': serializer.toJson<String>(thumbnailRelativePath),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  ContentAttachmentRow copyWith(
+          {String? id,
+          String? ownerType,
+          String? ownerId,
+          String? sha256,
+          String? mimeType,
+          int? byteSize,
+          int? width,
+          int? height,
+          String? relativePath,
+          String? thumbnailRelativePath,
+          int? sortOrder,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      ContentAttachmentRow(
+        id: id ?? this.id,
+        ownerType: ownerType ?? this.ownerType,
+        ownerId: ownerId ?? this.ownerId,
+        sha256: sha256 ?? this.sha256,
+        mimeType: mimeType ?? this.mimeType,
+        byteSize: byteSize ?? this.byteSize,
+        width: width ?? this.width,
+        height: height ?? this.height,
+        relativePath: relativePath ?? this.relativePath,
+        thumbnailRelativePath:
+            thumbnailRelativePath ?? this.thumbnailRelativePath,
+        sortOrder: sortOrder ?? this.sortOrder,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  ContentAttachmentRow copyWithCompanion(ContentAttachmentsCompanion data) {
+    return ContentAttachmentRow(
+      id: data.id.present ? data.id.value : this.id,
+      ownerType: data.ownerType.present ? data.ownerType.value : this.ownerType,
+      ownerId: data.ownerId.present ? data.ownerId.value : this.ownerId,
+      sha256: data.sha256.present ? data.sha256.value : this.sha256,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      byteSize: data.byteSize.present ? data.byteSize.value : this.byteSize,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+      relativePath: data.relativePath.present
+          ? data.relativePath.value
+          : this.relativePath,
+      thumbnailRelativePath: data.thumbnailRelativePath.present
+          ? data.thumbnailRelativePath.value
+          : this.thumbnailRelativePath,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentAttachmentRow(')
+          ..write('id: $id, ')
+          ..write('ownerType: $ownerType, ')
+          ..write('ownerId: $ownerId, ')
+          ..write('sha256: $sha256, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('byteSize: $byteSize, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('thumbnailRelativePath: $thumbnailRelativePath, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      ownerType,
+      ownerId,
+      sha256,
+      mimeType,
+      byteSize,
+      width,
+      height,
+      relativePath,
+      thumbnailRelativePath,
+      sortOrder,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      deviceId,
+      version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ContentAttachmentRow &&
+          other.id == this.id &&
+          other.ownerType == this.ownerType &&
+          other.ownerId == this.ownerId &&
+          other.sha256 == this.sha256 &&
+          other.mimeType == this.mimeType &&
+          other.byteSize == this.byteSize &&
+          other.width == this.width &&
+          other.height == this.height &&
+          other.relativePath == this.relativePath &&
+          other.thumbnailRelativePath == this.thumbnailRelativePath &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class ContentAttachmentsCompanion
+    extends UpdateCompanion<ContentAttachmentRow> {
+  final Value<String> id;
+  final Value<String> ownerType;
+  final Value<String> ownerId;
+  final Value<String> sha256;
+  final Value<String> mimeType;
+  final Value<int> byteSize;
+  final Value<int> width;
+  final Value<int> height;
+  final Value<String> relativePath;
+  final Value<String> thumbnailRelativePath;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const ContentAttachmentsCompanion({
+    this.id = const Value.absent(),
+    this.ownerType = const Value.absent(),
+    this.ownerId = const Value.absent(),
+    this.sha256 = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.byteSize = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.relativePath = const Value.absent(),
+    this.thumbnailRelativePath = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ContentAttachmentsCompanion.insert({
+    required String id,
+    required String ownerType,
+    required String ownerId,
+    required String sha256,
+    required String mimeType,
+    required int byteSize,
+    required int width,
+    required int height,
+    required String relativePath,
+    required String thumbnailRelativePath,
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        ownerType = Value(ownerType),
+        ownerId = Value(ownerId),
+        sha256 = Value(sha256),
+        mimeType = Value(mimeType),
+        byteSize = Value(byteSize),
+        width = Value(width),
+        height = Value(height),
+        relativePath = Value(relativePath),
+        thumbnailRelativePath = Value(thumbnailRelativePath),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<ContentAttachmentRow> custom({
+    Expression<String>? id,
+    Expression<String>? ownerType,
+    Expression<String>? ownerId,
+    Expression<String>? sha256,
+    Expression<String>? mimeType,
+    Expression<int>? byteSize,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<String>? relativePath,
+    Expression<String>? thumbnailRelativePath,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (ownerType != null) 'owner_type': ownerType,
+      if (ownerId != null) 'owner_id': ownerId,
+      if (sha256 != null) 'sha256': sha256,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (byteSize != null) 'byte_size': byteSize,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (relativePath != null) 'relative_path': relativePath,
+      if (thumbnailRelativePath != null)
+        'thumbnail_relative_path': thumbnailRelativePath,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ContentAttachmentsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? ownerType,
+      Value<String>? ownerId,
+      Value<String>? sha256,
+      Value<String>? mimeType,
+      Value<int>? byteSize,
+      Value<int>? width,
+      Value<int>? height,
+      Value<String>? relativePath,
+      Value<String>? thumbnailRelativePath,
+      Value<int>? sortOrder,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return ContentAttachmentsCompanion(
+      id: id ?? this.id,
+      ownerType: ownerType ?? this.ownerType,
+      ownerId: ownerId ?? this.ownerId,
+      sha256: sha256 ?? this.sha256,
+      mimeType: mimeType ?? this.mimeType,
+      byteSize: byteSize ?? this.byteSize,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      relativePath: relativePath ?? this.relativePath,
+      thumbnailRelativePath:
+          thumbnailRelativePath ?? this.thumbnailRelativePath,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (ownerType.present) {
+      map['owner_type'] = Variable<String>(ownerType.value);
+    }
+    if (ownerId.present) {
+      map['owner_id'] = Variable<String>(ownerId.value);
+    }
+    if (sha256.present) {
+      map['sha256'] = Variable<String>(sha256.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (byteSize.present) {
+      map['byte_size'] = Variable<int>(byteSize.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (relativePath.present) {
+      map['relative_path'] = Variable<String>(relativePath.value);
+    }
+    if (thumbnailRelativePath.present) {
+      map['thumbnail_relative_path'] =
+          Variable<String>(thumbnailRelativePath.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentAttachmentsCompanion(')
+          ..write('id: $id, ')
+          ..write('ownerType: $ownerType, ')
+          ..write('ownerId: $ownerId, ')
+          ..write('sha256: $sha256, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('byteSize: $byteSize, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('thumbnailRelativePath: $thumbnailRelativePath, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CustomColorsTable extends CustomColors
+    with TableInfo<$CustomColorsTable, CustomColorRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CustomColorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _rgbMeta = const VerificationMeta('rgb');
+  @override
+  late final GeneratedColumn<int> rgb = GeneratedColumn<int>(
+      'rgb', aliasedName, false,
+      check: () => ComparableExpr(rgb).isBetweenValues(0, 0xFFFFFF),
+      type: DriftSqlType.int,
+      requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        rgb,
+        sortOrder,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'custom_colors';
+  @override
+  VerificationContext validateIntegrity(Insertable<CustomColorRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('rgb')) {
+      context.handle(
+          _rgbMeta, rgb.isAcceptableOrUnknown(data['rgb']!, _rgbMeta));
+    } else if (isInserting) {
+      context.missing(_rgbMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CustomColorRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CustomColorRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      rgb: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}rgb'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $CustomColorsTable createAlias(String alias) {
+    return $CustomColorsTable(attachedDatabase, alias);
+  }
+}
+
+class CustomColorRow extends DataClass implements Insertable<CustomColorRow> {
+  final String id;
+  final String name;
+  final int rgb;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const CustomColorRow(
+      {required this.id,
+      required this.name,
+      required this.rgb,
+      required this.sortOrder,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['rgb'] = Variable<int>(rgb);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  CustomColorsCompanion toCompanion(bool nullToAbsent) {
+    return CustomColorsCompanion(
+      id: Value(id),
+      name: Value(name),
+      rgb: Value(rgb),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory CustomColorRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CustomColorRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      rgb: serializer.fromJson<int>(json['rgb']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'rgb': serializer.toJson<int>(rgb),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  CustomColorRow copyWith(
+          {String? id,
+          String? name,
+          int? rgb,
+          int? sortOrder,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      CustomColorRow(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        rgb: rgb ?? this.rgb,
+        sortOrder: sortOrder ?? this.sortOrder,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  CustomColorRow copyWithCompanion(CustomColorsCompanion data) {
+    return CustomColorRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      rgb: data.rgb.present ? data.rgb.value : this.rgb,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomColorRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rgb: $rgb, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, rgb, sortOrder, createdAt,
+      updatedAt, deletedAt, deviceId, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CustomColorRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.rgb == this.rgb &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class CustomColorsCompanion extends UpdateCompanion<CustomColorRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<int> rgb;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const CustomColorsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rgb = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CustomColorsCompanion.insert({
+    required String id,
+    required String name,
+    required int rgb,
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        rgb = Value(rgb),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<CustomColorRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<int>? rgb,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (rgb != null) 'rgb': rgb,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CustomColorsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<int>? rgb,
+      Value<int>? sortOrder,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return CustomColorsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rgb: rgb ?? this.rgb,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rgb.present) {
+      map['rgb'] = Variable<int>(rgb.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomColorsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rgb: $rgb, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BackgroundImagesTable extends BackgroundImages
+    with TableInfo<$BackgroundImagesTable, BackgroundImageRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BackgroundImagesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sha256Meta = const VerificationMeta('sha256');
+  @override
+  late final GeneratedColumn<String> sha256 = GeneratedColumn<String>(
+      'sha256', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _mimeTypeMeta =
+      const VerificationMeta('mimeType');
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+      'mime_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _byteSizeMeta =
+      const VerificationMeta('byteSize');
+  @override
+  late final GeneratedColumn<int> byteSize = GeneratedColumn<int>(
+      'byte_size', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+      'width', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+      'height', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _relativePathMeta =
+      const VerificationMeta('relativePath');
+  @override
+  late final GeneratedColumn<String> relativePath = GeneratedColumn<String>(
+      'relative_path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _syncEnabledMeta =
+      const VerificationMeta('syncEnabled');
+  @override
+  late final GeneratedColumn<bool> syncEnabled = GeneratedColumn<bool>(
+      'sync_enabled', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("sync_enabled" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        sha256,
+        mimeType,
+        byteSize,
+        width,
+        height,
+        relativePath,
+        syncEnabled,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'background_images';
+  @override
+  VerificationContext validateIntegrity(Insertable<BackgroundImageRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('sha256')) {
+      context.handle(_sha256Meta,
+          sha256.isAcceptableOrUnknown(data['sha256']!, _sha256Meta));
+    } else if (isInserting) {
+      context.missing(_sha256Meta);
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(_mimeTypeMeta,
+          mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta));
+    } else if (isInserting) {
+      context.missing(_mimeTypeMeta);
+    }
+    if (data.containsKey('byte_size')) {
+      context.handle(_byteSizeMeta,
+          byteSize.isAcceptableOrUnknown(data['byte_size']!, _byteSizeMeta));
+    } else if (isInserting) {
+      context.missing(_byteSizeMeta);
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+          _widthMeta, width.isAcceptableOrUnknown(data['width']!, _widthMeta));
+    } else if (isInserting) {
+      context.missing(_widthMeta);
+    }
+    if (data.containsKey('height')) {
+      context.handle(_heightMeta,
+          height.isAcceptableOrUnknown(data['height']!, _heightMeta));
+    } else if (isInserting) {
+      context.missing(_heightMeta);
+    }
+    if (data.containsKey('relative_path')) {
+      context.handle(
+          _relativePathMeta,
+          relativePath.isAcceptableOrUnknown(
+              data['relative_path']!, _relativePathMeta));
+    } else if (isInserting) {
+      context.missing(_relativePathMeta);
+    }
+    if (data.containsKey('sync_enabled')) {
+      context.handle(
+          _syncEnabledMeta,
+          syncEnabled.isAcceptableOrUnknown(
+              data['sync_enabled']!, _syncEnabledMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BackgroundImageRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BackgroundImageRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      sha256: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sha256'])!,
+      mimeType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}mime_type'])!,
+      byteSize: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}byte_size'])!,
+      width: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}width'])!,
+      height: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}height'])!,
+      relativePath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}relative_path'])!,
+      syncEnabled: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}sync_enabled'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $BackgroundImagesTable createAlias(String alias) {
+    return $BackgroundImagesTable(attachedDatabase, alias);
+  }
+}
+
+class BackgroundImageRow extends DataClass
+    implements Insertable<BackgroundImageRow> {
+  final String id;
+  final String sha256;
+  final String mimeType;
+  final int byteSize;
+  final int width;
+  final int height;
+  final String relativePath;
+  final bool syncEnabled;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const BackgroundImageRow(
+      {required this.id,
+      required this.sha256,
+      required this.mimeType,
+      required this.byteSize,
+      required this.width,
+      required this.height,
+      required this.relativePath,
+      required this.syncEnabled,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['sha256'] = Variable<String>(sha256);
+    map['mime_type'] = Variable<String>(mimeType);
+    map['byte_size'] = Variable<int>(byteSize);
+    map['width'] = Variable<int>(width);
+    map['height'] = Variable<int>(height);
+    map['relative_path'] = Variable<String>(relativePath);
+    map['sync_enabled'] = Variable<bool>(syncEnabled);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  BackgroundImagesCompanion toCompanion(bool nullToAbsent) {
+    return BackgroundImagesCompanion(
+      id: Value(id),
+      sha256: Value(sha256),
+      mimeType: Value(mimeType),
+      byteSize: Value(byteSize),
+      width: Value(width),
+      height: Value(height),
+      relativePath: Value(relativePath),
+      syncEnabled: Value(syncEnabled),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory BackgroundImageRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BackgroundImageRow(
+      id: serializer.fromJson<String>(json['id']),
+      sha256: serializer.fromJson<String>(json['sha256']),
+      mimeType: serializer.fromJson<String>(json['mimeType']),
+      byteSize: serializer.fromJson<int>(json['byteSize']),
+      width: serializer.fromJson<int>(json['width']),
+      height: serializer.fromJson<int>(json['height']),
+      relativePath: serializer.fromJson<String>(json['relativePath']),
+      syncEnabled: serializer.fromJson<bool>(json['syncEnabled']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sha256': serializer.toJson<String>(sha256),
+      'mimeType': serializer.toJson<String>(mimeType),
+      'byteSize': serializer.toJson<int>(byteSize),
+      'width': serializer.toJson<int>(width),
+      'height': serializer.toJson<int>(height),
+      'relativePath': serializer.toJson<String>(relativePath),
+      'syncEnabled': serializer.toJson<bool>(syncEnabled),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  BackgroundImageRow copyWith(
+          {String? id,
+          String? sha256,
+          String? mimeType,
+          int? byteSize,
+          int? width,
+          int? height,
+          String? relativePath,
+          bool? syncEnabled,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      BackgroundImageRow(
+        id: id ?? this.id,
+        sha256: sha256 ?? this.sha256,
+        mimeType: mimeType ?? this.mimeType,
+        byteSize: byteSize ?? this.byteSize,
+        width: width ?? this.width,
+        height: height ?? this.height,
+        relativePath: relativePath ?? this.relativePath,
+        syncEnabled: syncEnabled ?? this.syncEnabled,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  BackgroundImageRow copyWithCompanion(BackgroundImagesCompanion data) {
+    return BackgroundImageRow(
+      id: data.id.present ? data.id.value : this.id,
+      sha256: data.sha256.present ? data.sha256.value : this.sha256,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      byteSize: data.byteSize.present ? data.byteSize.value : this.byteSize,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+      relativePath: data.relativePath.present
+          ? data.relativePath.value
+          : this.relativePath,
+      syncEnabled:
+          data.syncEnabled.present ? data.syncEnabled.value : this.syncEnabled,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BackgroundImageRow(')
+          ..write('id: $id, ')
+          ..write('sha256: $sha256, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('byteSize: $byteSize, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('syncEnabled: $syncEnabled, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      sha256,
+      mimeType,
+      byteSize,
+      width,
+      height,
+      relativePath,
+      syncEnabled,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      deviceId,
+      version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BackgroundImageRow &&
+          other.id == this.id &&
+          other.sha256 == this.sha256 &&
+          other.mimeType == this.mimeType &&
+          other.byteSize == this.byteSize &&
+          other.width == this.width &&
+          other.height == this.height &&
+          other.relativePath == this.relativePath &&
+          other.syncEnabled == this.syncEnabled &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class BackgroundImagesCompanion extends UpdateCompanion<BackgroundImageRow> {
+  final Value<String> id;
+  final Value<String> sha256;
+  final Value<String> mimeType;
+  final Value<int> byteSize;
+  final Value<int> width;
+  final Value<int> height;
+  final Value<String> relativePath;
+  final Value<bool> syncEnabled;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const BackgroundImagesCompanion({
+    this.id = const Value.absent(),
+    this.sha256 = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.byteSize = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.relativePath = const Value.absent(),
+    this.syncEnabled = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BackgroundImagesCompanion.insert({
+    required String id,
+    required String sha256,
+    required String mimeType,
+    required int byteSize,
+    required int width,
+    required int height,
+    required String relativePath,
+    this.syncEnabled = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        sha256 = Value(sha256),
+        mimeType = Value(mimeType),
+        byteSize = Value(byteSize),
+        width = Value(width),
+        height = Value(height),
+        relativePath = Value(relativePath),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<BackgroundImageRow> custom({
+    Expression<String>? id,
+    Expression<String>? sha256,
+    Expression<String>? mimeType,
+    Expression<int>? byteSize,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<String>? relativePath,
+    Expression<bool>? syncEnabled,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sha256 != null) 'sha256': sha256,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (byteSize != null) 'byte_size': byteSize,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (relativePath != null) 'relative_path': relativePath,
+      if (syncEnabled != null) 'sync_enabled': syncEnabled,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BackgroundImagesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? sha256,
+      Value<String>? mimeType,
+      Value<int>? byteSize,
+      Value<int>? width,
+      Value<int>? height,
+      Value<String>? relativePath,
+      Value<bool>? syncEnabled,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return BackgroundImagesCompanion(
+      id: id ?? this.id,
+      sha256: sha256 ?? this.sha256,
+      mimeType: mimeType ?? this.mimeType,
+      byteSize: byteSize ?? this.byteSize,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      relativePath: relativePath ?? this.relativePath,
+      syncEnabled: syncEnabled ?? this.syncEnabled,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sha256.present) {
+      map['sha256'] = Variable<String>(sha256.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (byteSize.present) {
+      map['byte_size'] = Variable<int>(byteSize.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (relativePath.present) {
+      map['relative_path'] = Variable<String>(relativePath.value);
+    }
+    if (syncEnabled.present) {
+      map['sync_enabled'] = Variable<bool>(syncEnabled.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BackgroundImagesCompanion(')
+          ..write('id: $id, ')
+          ..write('sha256: $sha256, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('byteSize: $byteSize, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('syncEnabled: $syncEnabled, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DeviceAppearanceProfilesTable extends DeviceAppearanceProfiles
+    with TableInfo<$DeviceAppearanceProfilesTable, DeviceAppearanceProfileRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DeviceAppearanceProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _platformMeta =
+      const VerificationMeta('platform');
+  @override
+  late final GeneratedColumn<String> platform = GeneratedColumn<String>(
+      'platform', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _densityMeta =
+      const VerificationMeta('density');
+  @override
+  late final GeneratedColumn<String> density = GeneratedColumn<String>(
+      'density', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _navOrderJsonMeta =
+      const VerificationMeta('navOrderJson');
+  @override
+  late final GeneratedColumn<String> navOrderJson = GeneratedColumn<String>(
+      'nav_order_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _hiddenNavJsonMeta =
+      const VerificationMeta('hiddenNavJson');
+  @override
+  late final GeneratedColumn<String> hiddenNavJson = GeneratedColumn<String>(
+      'hidden_nav_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _startModuleMeta =
+      const VerificationMeta('startModule');
+  @override
+  late final GeneratedColumn<String> startModule = GeneratedColumn<String>(
+      'start_module', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _localBackgroundImageIdMeta =
+      const VerificationMeta('localBackgroundImageId');
+  @override
+  late final GeneratedColumn<String> localBackgroundImageId =
+      GeneratedColumn<String>('local_background_image_id', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _backgroundFocusXMeta =
+      const VerificationMeta('backgroundFocusX');
+  @override
+  late final GeneratedColumn<double> backgroundFocusX = GeneratedColumn<double>(
+      'background_focus_x', aliasedName, false,
+      check: () => ComparableExpr(backgroundFocusX).isBetweenValues(0, 1),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
+  static const VerificationMeta _backgroundFocusYMeta =
+      const VerificationMeta('backgroundFocusY');
+  @override
+  late final GeneratedColumn<double> backgroundFocusY = GeneratedColumn<double>(
+      'background_focus_y', aliasedName, false,
+      check: () => ComparableExpr(backgroundFocusY).isBetweenValues(0, 1),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
+  static const VerificationMeta _backgroundZoomMeta =
+      const VerificationMeta('backgroundZoom');
+  @override
+  late final GeneratedColumn<double> backgroundZoom = GeneratedColumn<double>(
+      'background_zoom', aliasedName, false,
+      check: () => ComparableExpr(backgroundZoom).isBiggerThanValue(0),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
+  static const VerificationMeta _backgroundBlurMeta =
+      const VerificationMeta('backgroundBlur');
+  @override
+  late final GeneratedColumn<double> backgroundBlur = GeneratedColumn<double>(
+      'background_blur', aliasedName, false,
+      check: () => ComparableExpr(backgroundBlur).isBiggerOrEqualValue(0),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
+  static const VerificationMeta _backgroundOverlayMeta =
+      const VerificationMeta('backgroundOverlay');
+  @override
+  late final GeneratedColumn<double> backgroundOverlay =
+      GeneratedColumn<double>('background_overlay', aliasedName, false,
+          type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _hapticsModeMeta =
+      const VerificationMeta('hapticsMode');
+  @override
+  late final GeneratedColumn<String> hapticsMode = GeneratedColumn<String>(
+      'haptics_mode', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        platform,
+        density,
+        navOrderJson,
+        hiddenNavJson,
+        startModule,
+        localBackgroundImageId,
+        backgroundFocusX,
+        backgroundFocusY,
+        backgroundZoom,
+        backgroundBlur,
+        backgroundOverlay,
+        hapticsMode,
+        updatedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'device_appearance_profiles';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<DeviceAppearanceProfileRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('platform')) {
+      context.handle(_platformMeta,
+          platform.isAcceptableOrUnknown(data['platform']!, _platformMeta));
+    } else if (isInserting) {
+      context.missing(_platformMeta);
+    }
+    if (data.containsKey('density')) {
+      context.handle(_densityMeta,
+          density.isAcceptableOrUnknown(data['density']!, _densityMeta));
+    } else if (isInserting) {
+      context.missing(_densityMeta);
+    }
+    if (data.containsKey('nav_order_json')) {
+      context.handle(
+          _navOrderJsonMeta,
+          navOrderJson.isAcceptableOrUnknown(
+              data['nav_order_json']!, _navOrderJsonMeta));
+    } else if (isInserting) {
+      context.missing(_navOrderJsonMeta);
+    }
+    if (data.containsKey('hidden_nav_json')) {
+      context.handle(
+          _hiddenNavJsonMeta,
+          hiddenNavJson.isAcceptableOrUnknown(
+              data['hidden_nav_json']!, _hiddenNavJsonMeta));
+    } else if (isInserting) {
+      context.missing(_hiddenNavJsonMeta);
+    }
+    if (data.containsKey('start_module')) {
+      context.handle(
+          _startModuleMeta,
+          startModule.isAcceptableOrUnknown(
+              data['start_module']!, _startModuleMeta));
+    } else if (isInserting) {
+      context.missing(_startModuleMeta);
+    }
+    if (data.containsKey('local_background_image_id')) {
+      context.handle(
+          _localBackgroundImageIdMeta,
+          localBackgroundImageId.isAcceptableOrUnknown(
+              data['local_background_image_id']!, _localBackgroundImageIdMeta));
+    }
+    if (data.containsKey('background_focus_x')) {
+      context.handle(
+          _backgroundFocusXMeta,
+          backgroundFocusX.isAcceptableOrUnknown(
+              data['background_focus_x']!, _backgroundFocusXMeta));
+    } else if (isInserting) {
+      context.missing(_backgroundFocusXMeta);
+    }
+    if (data.containsKey('background_focus_y')) {
+      context.handle(
+          _backgroundFocusYMeta,
+          backgroundFocusY.isAcceptableOrUnknown(
+              data['background_focus_y']!, _backgroundFocusYMeta));
+    } else if (isInserting) {
+      context.missing(_backgroundFocusYMeta);
+    }
+    if (data.containsKey('background_zoom')) {
+      context.handle(
+          _backgroundZoomMeta,
+          backgroundZoom.isAcceptableOrUnknown(
+              data['background_zoom']!, _backgroundZoomMeta));
+    } else if (isInserting) {
+      context.missing(_backgroundZoomMeta);
+    }
+    if (data.containsKey('background_blur')) {
+      context.handle(
+          _backgroundBlurMeta,
+          backgroundBlur.isAcceptableOrUnknown(
+              data['background_blur']!, _backgroundBlurMeta));
+    } else if (isInserting) {
+      context.missing(_backgroundBlurMeta);
+    }
+    if (data.containsKey('background_overlay')) {
+      context.handle(
+          _backgroundOverlayMeta,
+          backgroundOverlay.isAcceptableOrUnknown(
+              data['background_overlay']!, _backgroundOverlayMeta));
+    } else if (isInserting) {
+      context.missing(_backgroundOverlayMeta);
+    }
+    if (data.containsKey('haptics_mode')) {
+      context.handle(
+          _hapticsModeMeta,
+          hapticsMode.isAcceptableOrUnknown(
+              data['haptics_mode']!, _hapticsModeMeta));
+    } else if (isInserting) {
+      context.missing(_hapticsModeMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DeviceAppearanceProfileRow map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DeviceAppearanceProfileRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      platform: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}platform'])!,
+      density: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}density'])!,
+      navOrderJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}nav_order_json'])!,
+      hiddenNavJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}hidden_nav_json'])!,
+      startModule: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}start_module'])!,
+      localBackgroundImageId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}local_background_image_id']),
+      backgroundFocusX: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}background_focus_x'])!,
+      backgroundFocusY: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}background_focus_y'])!,
+      backgroundZoom: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}background_zoom'])!,
+      backgroundBlur: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}background_blur'])!,
+      backgroundOverlay: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}background_overlay'])!,
+      hapticsMode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}haptics_mode'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $DeviceAppearanceProfilesTable createAlias(String alias) {
+    return $DeviceAppearanceProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class DeviceAppearanceProfileRow extends DataClass
+    implements Insertable<DeviceAppearanceProfileRow> {
+  final String id;
+  final String platform;
+  final String density;
+  final String navOrderJson;
+  final String hiddenNavJson;
+  final String startModule;
+  final String? localBackgroundImageId;
+  final double backgroundFocusX;
+  final double backgroundFocusY;
+  final double backgroundZoom;
+  final double backgroundBlur;
+  final double backgroundOverlay;
+  final String hapticsMode;
+  final int updatedAt;
+  const DeviceAppearanceProfileRow(
+      {required this.id,
+      required this.platform,
+      required this.density,
+      required this.navOrderJson,
+      required this.hiddenNavJson,
+      required this.startModule,
+      this.localBackgroundImageId,
+      required this.backgroundFocusX,
+      required this.backgroundFocusY,
+      required this.backgroundZoom,
+      required this.backgroundBlur,
+      required this.backgroundOverlay,
+      required this.hapticsMode,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['platform'] = Variable<String>(platform);
+    map['density'] = Variable<String>(density);
+    map['nav_order_json'] = Variable<String>(navOrderJson);
+    map['hidden_nav_json'] = Variable<String>(hiddenNavJson);
+    map['start_module'] = Variable<String>(startModule);
+    if (!nullToAbsent || localBackgroundImageId != null) {
+      map['local_background_image_id'] =
+          Variable<String>(localBackgroundImageId);
+    }
+    map['background_focus_x'] = Variable<double>(backgroundFocusX);
+    map['background_focus_y'] = Variable<double>(backgroundFocusY);
+    map['background_zoom'] = Variable<double>(backgroundZoom);
+    map['background_blur'] = Variable<double>(backgroundBlur);
+    map['background_overlay'] = Variable<double>(backgroundOverlay);
+    map['haptics_mode'] = Variable<String>(hapticsMode);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  DeviceAppearanceProfilesCompanion toCompanion(bool nullToAbsent) {
+    return DeviceAppearanceProfilesCompanion(
+      id: Value(id),
+      platform: Value(platform),
+      density: Value(density),
+      navOrderJson: Value(navOrderJson),
+      hiddenNavJson: Value(hiddenNavJson),
+      startModule: Value(startModule),
+      localBackgroundImageId: localBackgroundImageId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localBackgroundImageId),
+      backgroundFocusX: Value(backgroundFocusX),
+      backgroundFocusY: Value(backgroundFocusY),
+      backgroundZoom: Value(backgroundZoom),
+      backgroundBlur: Value(backgroundBlur),
+      backgroundOverlay: Value(backgroundOverlay),
+      hapticsMode: Value(hapticsMode),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DeviceAppearanceProfileRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DeviceAppearanceProfileRow(
+      id: serializer.fromJson<String>(json['id']),
+      platform: serializer.fromJson<String>(json['platform']),
+      density: serializer.fromJson<String>(json['density']),
+      navOrderJson: serializer.fromJson<String>(json['navOrderJson']),
+      hiddenNavJson: serializer.fromJson<String>(json['hiddenNavJson']),
+      startModule: serializer.fromJson<String>(json['startModule']),
+      localBackgroundImageId:
+          serializer.fromJson<String?>(json['localBackgroundImageId']),
+      backgroundFocusX: serializer.fromJson<double>(json['backgroundFocusX']),
+      backgroundFocusY: serializer.fromJson<double>(json['backgroundFocusY']),
+      backgroundZoom: serializer.fromJson<double>(json['backgroundZoom']),
+      backgroundBlur: serializer.fromJson<double>(json['backgroundBlur']),
+      backgroundOverlay: serializer.fromJson<double>(json['backgroundOverlay']),
+      hapticsMode: serializer.fromJson<String>(json['hapticsMode']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'platform': serializer.toJson<String>(platform),
+      'density': serializer.toJson<String>(density),
+      'navOrderJson': serializer.toJson<String>(navOrderJson),
+      'hiddenNavJson': serializer.toJson<String>(hiddenNavJson),
+      'startModule': serializer.toJson<String>(startModule),
+      'localBackgroundImageId':
+          serializer.toJson<String?>(localBackgroundImageId),
+      'backgroundFocusX': serializer.toJson<double>(backgroundFocusX),
+      'backgroundFocusY': serializer.toJson<double>(backgroundFocusY),
+      'backgroundZoom': serializer.toJson<double>(backgroundZoom),
+      'backgroundBlur': serializer.toJson<double>(backgroundBlur),
+      'backgroundOverlay': serializer.toJson<double>(backgroundOverlay),
+      'hapticsMode': serializer.toJson<String>(hapticsMode),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  DeviceAppearanceProfileRow copyWith(
+          {String? id,
+          String? platform,
+          String? density,
+          String? navOrderJson,
+          String? hiddenNavJson,
+          String? startModule,
+          Value<String?> localBackgroundImageId = const Value.absent(),
+          double? backgroundFocusX,
+          double? backgroundFocusY,
+          double? backgroundZoom,
+          double? backgroundBlur,
+          double? backgroundOverlay,
+          String? hapticsMode,
+          int? updatedAt}) =>
+      DeviceAppearanceProfileRow(
+        id: id ?? this.id,
+        platform: platform ?? this.platform,
+        density: density ?? this.density,
+        navOrderJson: navOrderJson ?? this.navOrderJson,
+        hiddenNavJson: hiddenNavJson ?? this.hiddenNavJson,
+        startModule: startModule ?? this.startModule,
+        localBackgroundImageId: localBackgroundImageId.present
+            ? localBackgroundImageId.value
+            : this.localBackgroundImageId,
+        backgroundFocusX: backgroundFocusX ?? this.backgroundFocusX,
+        backgroundFocusY: backgroundFocusY ?? this.backgroundFocusY,
+        backgroundZoom: backgroundZoom ?? this.backgroundZoom,
+        backgroundBlur: backgroundBlur ?? this.backgroundBlur,
+        backgroundOverlay: backgroundOverlay ?? this.backgroundOverlay,
+        hapticsMode: hapticsMode ?? this.hapticsMode,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  DeviceAppearanceProfileRow copyWithCompanion(
+      DeviceAppearanceProfilesCompanion data) {
+    return DeviceAppearanceProfileRow(
+      id: data.id.present ? data.id.value : this.id,
+      platform: data.platform.present ? data.platform.value : this.platform,
+      density: data.density.present ? data.density.value : this.density,
+      navOrderJson: data.navOrderJson.present
+          ? data.navOrderJson.value
+          : this.navOrderJson,
+      hiddenNavJson: data.hiddenNavJson.present
+          ? data.hiddenNavJson.value
+          : this.hiddenNavJson,
+      startModule:
+          data.startModule.present ? data.startModule.value : this.startModule,
+      localBackgroundImageId: data.localBackgroundImageId.present
+          ? data.localBackgroundImageId.value
+          : this.localBackgroundImageId,
+      backgroundFocusX: data.backgroundFocusX.present
+          ? data.backgroundFocusX.value
+          : this.backgroundFocusX,
+      backgroundFocusY: data.backgroundFocusY.present
+          ? data.backgroundFocusY.value
+          : this.backgroundFocusY,
+      backgroundZoom: data.backgroundZoom.present
+          ? data.backgroundZoom.value
+          : this.backgroundZoom,
+      backgroundBlur: data.backgroundBlur.present
+          ? data.backgroundBlur.value
+          : this.backgroundBlur,
+      backgroundOverlay: data.backgroundOverlay.present
+          ? data.backgroundOverlay.value
+          : this.backgroundOverlay,
+      hapticsMode:
+          data.hapticsMode.present ? data.hapticsMode.value : this.hapticsMode,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DeviceAppearanceProfileRow(')
+          ..write('id: $id, ')
+          ..write('platform: $platform, ')
+          ..write('density: $density, ')
+          ..write('navOrderJson: $navOrderJson, ')
+          ..write('hiddenNavJson: $hiddenNavJson, ')
+          ..write('startModule: $startModule, ')
+          ..write('localBackgroundImageId: $localBackgroundImageId, ')
+          ..write('backgroundFocusX: $backgroundFocusX, ')
+          ..write('backgroundFocusY: $backgroundFocusY, ')
+          ..write('backgroundZoom: $backgroundZoom, ')
+          ..write('backgroundBlur: $backgroundBlur, ')
+          ..write('backgroundOverlay: $backgroundOverlay, ')
+          ..write('hapticsMode: $hapticsMode, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      platform,
+      density,
+      navOrderJson,
+      hiddenNavJson,
+      startModule,
+      localBackgroundImageId,
+      backgroundFocusX,
+      backgroundFocusY,
+      backgroundZoom,
+      backgroundBlur,
+      backgroundOverlay,
+      hapticsMode,
+      updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DeviceAppearanceProfileRow &&
+          other.id == this.id &&
+          other.platform == this.platform &&
+          other.density == this.density &&
+          other.navOrderJson == this.navOrderJson &&
+          other.hiddenNavJson == this.hiddenNavJson &&
+          other.startModule == this.startModule &&
+          other.localBackgroundImageId == this.localBackgroundImageId &&
+          other.backgroundFocusX == this.backgroundFocusX &&
+          other.backgroundFocusY == this.backgroundFocusY &&
+          other.backgroundZoom == this.backgroundZoom &&
+          other.backgroundBlur == this.backgroundBlur &&
+          other.backgroundOverlay == this.backgroundOverlay &&
+          other.hapticsMode == this.hapticsMode &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DeviceAppearanceProfilesCompanion
+    extends UpdateCompanion<DeviceAppearanceProfileRow> {
+  final Value<String> id;
+  final Value<String> platform;
+  final Value<String> density;
+  final Value<String> navOrderJson;
+  final Value<String> hiddenNavJson;
+  final Value<String> startModule;
+  final Value<String?> localBackgroundImageId;
+  final Value<double> backgroundFocusX;
+  final Value<double> backgroundFocusY;
+  final Value<double> backgroundZoom;
+  final Value<double> backgroundBlur;
+  final Value<double> backgroundOverlay;
+  final Value<String> hapticsMode;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const DeviceAppearanceProfilesCompanion({
+    this.id = const Value.absent(),
+    this.platform = const Value.absent(),
+    this.density = const Value.absent(),
+    this.navOrderJson = const Value.absent(),
+    this.hiddenNavJson = const Value.absent(),
+    this.startModule = const Value.absent(),
+    this.localBackgroundImageId = const Value.absent(),
+    this.backgroundFocusX = const Value.absent(),
+    this.backgroundFocusY = const Value.absent(),
+    this.backgroundZoom = const Value.absent(),
+    this.backgroundBlur = const Value.absent(),
+    this.backgroundOverlay = const Value.absent(),
+    this.hapticsMode = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DeviceAppearanceProfilesCompanion.insert({
+    required String id,
+    required String platform,
+    required String density,
+    required String navOrderJson,
+    required String hiddenNavJson,
+    required String startModule,
+    this.localBackgroundImageId = const Value.absent(),
+    required double backgroundFocusX,
+    required double backgroundFocusY,
+    required double backgroundZoom,
+    required double backgroundBlur,
+    required double backgroundOverlay,
+    required String hapticsMode,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        platform = Value(platform),
+        density = Value(density),
+        navOrderJson = Value(navOrderJson),
+        hiddenNavJson = Value(hiddenNavJson),
+        startModule = Value(startModule),
+        backgroundFocusX = Value(backgroundFocusX),
+        backgroundFocusY = Value(backgroundFocusY),
+        backgroundZoom = Value(backgroundZoom),
+        backgroundBlur = Value(backgroundBlur),
+        backgroundOverlay = Value(backgroundOverlay),
+        hapticsMode = Value(hapticsMode),
+        updatedAt = Value(updatedAt);
+  static Insertable<DeviceAppearanceProfileRow> custom({
+    Expression<String>? id,
+    Expression<String>? platform,
+    Expression<String>? density,
+    Expression<String>? navOrderJson,
+    Expression<String>? hiddenNavJson,
+    Expression<String>? startModule,
+    Expression<String>? localBackgroundImageId,
+    Expression<double>? backgroundFocusX,
+    Expression<double>? backgroundFocusY,
+    Expression<double>? backgroundZoom,
+    Expression<double>? backgroundBlur,
+    Expression<double>? backgroundOverlay,
+    Expression<String>? hapticsMode,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (platform != null) 'platform': platform,
+      if (density != null) 'density': density,
+      if (navOrderJson != null) 'nav_order_json': navOrderJson,
+      if (hiddenNavJson != null) 'hidden_nav_json': hiddenNavJson,
+      if (startModule != null) 'start_module': startModule,
+      if (localBackgroundImageId != null)
+        'local_background_image_id': localBackgroundImageId,
+      if (backgroundFocusX != null) 'background_focus_x': backgroundFocusX,
+      if (backgroundFocusY != null) 'background_focus_y': backgroundFocusY,
+      if (backgroundZoom != null) 'background_zoom': backgroundZoom,
+      if (backgroundBlur != null) 'background_blur': backgroundBlur,
+      if (backgroundOverlay != null) 'background_overlay': backgroundOverlay,
+      if (hapticsMode != null) 'haptics_mode': hapticsMode,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DeviceAppearanceProfilesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? platform,
+      Value<String>? density,
+      Value<String>? navOrderJson,
+      Value<String>? hiddenNavJson,
+      Value<String>? startModule,
+      Value<String?>? localBackgroundImageId,
+      Value<double>? backgroundFocusX,
+      Value<double>? backgroundFocusY,
+      Value<double>? backgroundZoom,
+      Value<double>? backgroundBlur,
+      Value<double>? backgroundOverlay,
+      Value<String>? hapticsMode,
+      Value<int>? updatedAt,
+      Value<int>? rowid}) {
+    return DeviceAppearanceProfilesCompanion(
+      id: id ?? this.id,
+      platform: platform ?? this.platform,
+      density: density ?? this.density,
+      navOrderJson: navOrderJson ?? this.navOrderJson,
+      hiddenNavJson: hiddenNavJson ?? this.hiddenNavJson,
+      startModule: startModule ?? this.startModule,
+      localBackgroundImageId:
+          localBackgroundImageId ?? this.localBackgroundImageId,
+      backgroundFocusX: backgroundFocusX ?? this.backgroundFocusX,
+      backgroundFocusY: backgroundFocusY ?? this.backgroundFocusY,
+      backgroundZoom: backgroundZoom ?? this.backgroundZoom,
+      backgroundBlur: backgroundBlur ?? this.backgroundBlur,
+      backgroundOverlay: backgroundOverlay ?? this.backgroundOverlay,
+      hapticsMode: hapticsMode ?? this.hapticsMode,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (platform.present) {
+      map['platform'] = Variable<String>(platform.value);
+    }
+    if (density.present) {
+      map['density'] = Variable<String>(density.value);
+    }
+    if (navOrderJson.present) {
+      map['nav_order_json'] = Variable<String>(navOrderJson.value);
+    }
+    if (hiddenNavJson.present) {
+      map['hidden_nav_json'] = Variable<String>(hiddenNavJson.value);
+    }
+    if (startModule.present) {
+      map['start_module'] = Variable<String>(startModule.value);
+    }
+    if (localBackgroundImageId.present) {
+      map['local_background_image_id'] =
+          Variable<String>(localBackgroundImageId.value);
+    }
+    if (backgroundFocusX.present) {
+      map['background_focus_x'] = Variable<double>(backgroundFocusX.value);
+    }
+    if (backgroundFocusY.present) {
+      map['background_focus_y'] = Variable<double>(backgroundFocusY.value);
+    }
+    if (backgroundZoom.present) {
+      map['background_zoom'] = Variable<double>(backgroundZoom.value);
+    }
+    if (backgroundBlur.present) {
+      map['background_blur'] = Variable<double>(backgroundBlur.value);
+    }
+    if (backgroundOverlay.present) {
+      map['background_overlay'] = Variable<double>(backgroundOverlay.value);
+    }
+    if (hapticsMode.present) {
+      map['haptics_mode'] = Variable<String>(hapticsMode.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DeviceAppearanceProfilesCompanion(')
+          ..write('id: $id, ')
+          ..write('platform: $platform, ')
+          ..write('density: $density, ')
+          ..write('navOrderJson: $navOrderJson, ')
+          ..write('hiddenNavJson: $hiddenNavJson, ')
+          ..write('startModule: $startModule, ')
+          ..write('localBackgroundImageId: $localBackgroundImageId, ')
+          ..write('backgroundFocusX: $backgroundFocusX, ')
+          ..write('backgroundFocusY: $backgroundFocusY, ')
+          ..write('backgroundZoom: $backgroundZoom, ')
+          ..write('backgroundBlur: $backgroundBlur, ')
+          ..write('backgroundOverlay: $backgroundOverlay, ')
+          ..write('hapticsMode: $hapticsMode, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3010,6 +8423,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ThemeSchemesTable themeSchemes = $ThemeSchemesTable(this);
   late final $SyncLogsTable syncLogs = $SyncLogsTable(this);
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
+  late final $TaskListsTable taskLists = $TaskListsTable(this);
+  late final $TasksV2Table tasksV2 = $TasksV2Table(this);
+  late final $TaskTagsTable taskTags = $TaskTagsTable(this);
+  late final $TaskTagLinksTable taskTagLinks = $TaskTagLinksTable(this);
+  late final $SmartFiltersTable smartFilters = $SmartFiltersTable(this);
+  late final $ContentAttachmentsTable contentAttachments =
+      $ContentAttachmentsTable(this);
+  late final $CustomColorsTable customColors = $CustomColorsTable(this);
+  late final $BackgroundImagesTable backgroundImages =
+      $BackgroundImagesTable(this);
+  late final $DeviceAppearanceProfilesTable deviceAppearanceProfiles =
+      $DeviceAppearanceProfilesTable(this);
   late final NotesDao notesDao = NotesDao(this as AppDatabase);
   late final TodosDao todosDao = TodosDao(this as AppDatabase);
   late final TagsDao tagsDao = TagsDao(this as AppDatabase);
@@ -3019,12 +8444,34 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final SyncLogsDao syncLogsDao = SyncLogsDao(this as AppDatabase);
   late final AppSettingsDao appSettingsDao =
       AppSettingsDao(this as AppDatabase);
+  late final TasksV2Dao tasksV2Dao = TasksV2Dao(this as AppDatabase);
+  late final TaskTaxonomyDao taskTaxonomyDao =
+      TaskTaxonomyDao(this as AppDatabase);
+  late final AttachmentsDao attachmentsDao =
+      AttachmentsDao(this as AppDatabase);
+  late final AppearanceDao appearanceDao = AppearanceDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [notes, todos, tags, noteTags, themeSchemes, syncLogs, appSettings];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        notes,
+        todos,
+        tags,
+        noteTags,
+        themeSchemes,
+        syncLogs,
+        appSettings,
+        taskLists,
+        tasksV2,
+        taskTags,
+        taskTagLinks,
+        smartFilters,
+        contentAttachments,
+        customColors,
+        backgroundImages,
+        deviceAppearanceProfiles
+      ];
 }
 
 typedef $$NotesTableCreateCompanionBuilder = NotesCompanion Function({
@@ -4508,6 +9955,2537 @@ typedef $$AppSettingsTableProcessedTableManager = ProcessedTableManager<
     ),
     AppSettingRow,
     PrefetchHooks Function()>;
+typedef $$TaskListsTableCreateCompanionBuilder = TaskListsCompanion Function({
+  required String id,
+  required String name,
+  required int color,
+  required String iconKey,
+  Value<int> sortOrder,
+  Value<bool> archived,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$TaskListsTableUpdateCompanionBuilder = TaskListsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<int> color,
+  Value<String> iconKey,
+  Value<int> sortOrder,
+  Value<bool> archived,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$TaskListsTableFilterComposer
+    extends Composer<_$AppDatabase, $TaskListsTable> {
+  $$TaskListsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get iconKey => $composableBuilder(
+      column: $table.iconKey, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get archived => $composableBuilder(
+      column: $table.archived, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$TaskListsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TaskListsTable> {
+  $$TaskListsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get iconKey => $composableBuilder(
+      column: $table.iconKey, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get archived => $composableBuilder(
+      column: $table.archived, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TaskListsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TaskListsTable> {
+  $$TaskListsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<String> get iconKey =>
+      $composableBuilder(column: $table.iconKey, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<bool> get archived =>
+      $composableBuilder(column: $table.archived, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$TaskListsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskListsTable,
+    TaskListRow,
+    $$TaskListsTableFilterComposer,
+    $$TaskListsTableOrderingComposer,
+    $$TaskListsTableAnnotationComposer,
+    $$TaskListsTableCreateCompanionBuilder,
+    $$TaskListsTableUpdateCompanionBuilder,
+    (TaskListRow, BaseReferences<_$AppDatabase, $TaskListsTable, TaskListRow>),
+    TaskListRow,
+    PrefetchHooks Function()> {
+  $$TaskListsTableTableManager(_$AppDatabase db, $TaskListsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskListsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskListsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskListsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<int> color = const Value.absent(),
+            Value<String> iconKey = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<bool> archived = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskListsCompanion(
+            id: id,
+            name: name,
+            color: color,
+            iconKey: iconKey,
+            sortOrder: sortOrder,
+            archived: archived,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required int color,
+            required String iconKey,
+            Value<int> sortOrder = const Value.absent(),
+            Value<bool> archived = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskListsCompanion.insert(
+            id: id,
+            name: name,
+            color: color,
+            iconKey: iconKey,
+            sortOrder: sortOrder,
+            archived: archived,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TaskListsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskListsTable,
+    TaskListRow,
+    $$TaskListsTableFilterComposer,
+    $$TaskListsTableOrderingComposer,
+    $$TaskListsTableAnnotationComposer,
+    $$TaskListsTableCreateCompanionBuilder,
+    $$TaskListsTableUpdateCompanionBuilder,
+    (TaskListRow, BaseReferences<_$AppDatabase, $TaskListsTable, TaskListRow>),
+    TaskListRow,
+    PrefetchHooks Function()>;
+typedef $$TasksV2TableCreateCompanionBuilder = TasksV2Companion Function({
+  required String id,
+  Value<String?> parentId,
+  Value<String?> listId,
+  required String title,
+  Value<String> descriptionMarkdown,
+  Value<bool> completed,
+  Value<int> priority,
+  Value<int?> startAt,
+  Value<int?> dueAt,
+  Value<bool> allDay,
+  Value<int> sortOrder,
+  Value<String?> recurrenceRule,
+  Value<int?> recurrenceEndAt,
+  Value<int?> recurrenceCount,
+  Value<int?> completedAt,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$TasksV2TableUpdateCompanionBuilder = TasksV2Companion Function({
+  Value<String> id,
+  Value<String?> parentId,
+  Value<String?> listId,
+  Value<String> title,
+  Value<String> descriptionMarkdown,
+  Value<bool> completed,
+  Value<int> priority,
+  Value<int?> startAt,
+  Value<int?> dueAt,
+  Value<bool> allDay,
+  Value<int> sortOrder,
+  Value<String?> recurrenceRule,
+  Value<int?> recurrenceEndAt,
+  Value<int?> recurrenceCount,
+  Value<int?> completedAt,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$TasksV2TableFilterComposer
+    extends Composer<_$AppDatabase, $TasksV2Table> {
+  $$TasksV2TableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get parentId => $composableBuilder(
+      column: $table.parentId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get listId => $composableBuilder(
+      column: $table.listId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get descriptionMarkdown => $composableBuilder(
+      column: $table.descriptionMarkdown,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get completed => $composableBuilder(
+      column: $table.completed, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get startAt => $composableBuilder(
+      column: $table.startAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get dueAt => $composableBuilder(
+      column: $table.dueAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get allDay => $composableBuilder(
+      column: $table.allDay, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get recurrenceRule => $composableBuilder(
+      column: $table.recurrenceRule,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get recurrenceEndAt => $composableBuilder(
+      column: $table.recurrenceEndAt,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get recurrenceCount => $composableBuilder(
+      column: $table.recurrenceCount,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get completedAt => $composableBuilder(
+      column: $table.completedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$TasksV2TableOrderingComposer
+    extends Composer<_$AppDatabase, $TasksV2Table> {
+  $$TasksV2TableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get parentId => $composableBuilder(
+      column: $table.parentId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get listId => $composableBuilder(
+      column: $table.listId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get descriptionMarkdown => $composableBuilder(
+      column: $table.descriptionMarkdown,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get completed => $composableBuilder(
+      column: $table.completed, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get startAt => $composableBuilder(
+      column: $table.startAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get dueAt => $composableBuilder(
+      column: $table.dueAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get allDay => $composableBuilder(
+      column: $table.allDay, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get recurrenceRule => $composableBuilder(
+      column: $table.recurrenceRule,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get recurrenceEndAt => $composableBuilder(
+      column: $table.recurrenceEndAt,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get recurrenceCount => $composableBuilder(
+      column: $table.recurrenceCount,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get completedAt => $composableBuilder(
+      column: $table.completedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TasksV2TableAnnotationComposer
+    extends Composer<_$AppDatabase, $TasksV2Table> {
+  $$TasksV2TableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get parentId =>
+      $composableBuilder(column: $table.parentId, builder: (column) => column);
+
+  GeneratedColumn<String> get listId =>
+      $composableBuilder(column: $table.listId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get descriptionMarkdown => $composableBuilder(
+      column: $table.descriptionMarkdown, builder: (column) => column);
+
+  GeneratedColumn<bool> get completed =>
+      $composableBuilder(column: $table.completed, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<int> get startAt =>
+      $composableBuilder(column: $table.startAt, builder: (column) => column);
+
+  GeneratedColumn<int> get dueAt =>
+      $composableBuilder(column: $table.dueAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get allDay =>
+      $composableBuilder(column: $table.allDay, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get recurrenceRule => $composableBuilder(
+      column: $table.recurrenceRule, builder: (column) => column);
+
+  GeneratedColumn<int> get recurrenceEndAt => $composableBuilder(
+      column: $table.recurrenceEndAt, builder: (column) => column);
+
+  GeneratedColumn<int> get recurrenceCount => $composableBuilder(
+      column: $table.recurrenceCount, builder: (column) => column);
+
+  GeneratedColumn<int> get completedAt => $composableBuilder(
+      column: $table.completedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$TasksV2TableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TasksV2Table,
+    TaskV2Row,
+    $$TasksV2TableFilterComposer,
+    $$TasksV2TableOrderingComposer,
+    $$TasksV2TableAnnotationComposer,
+    $$TasksV2TableCreateCompanionBuilder,
+    $$TasksV2TableUpdateCompanionBuilder,
+    (TaskV2Row, BaseReferences<_$AppDatabase, $TasksV2Table, TaskV2Row>),
+    TaskV2Row,
+    PrefetchHooks Function()> {
+  $$TasksV2TableTableManager(_$AppDatabase db, $TasksV2Table table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TasksV2TableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TasksV2TableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TasksV2TableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String?> parentId = const Value.absent(),
+            Value<String?> listId = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String> descriptionMarkdown = const Value.absent(),
+            Value<bool> completed = const Value.absent(),
+            Value<int> priority = const Value.absent(),
+            Value<int?> startAt = const Value.absent(),
+            Value<int?> dueAt = const Value.absent(),
+            Value<bool> allDay = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<String?> recurrenceRule = const Value.absent(),
+            Value<int?> recurrenceEndAt = const Value.absent(),
+            Value<int?> recurrenceCount = const Value.absent(),
+            Value<int?> completedAt = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TasksV2Companion(
+            id: id,
+            parentId: parentId,
+            listId: listId,
+            title: title,
+            descriptionMarkdown: descriptionMarkdown,
+            completed: completed,
+            priority: priority,
+            startAt: startAt,
+            dueAt: dueAt,
+            allDay: allDay,
+            sortOrder: sortOrder,
+            recurrenceRule: recurrenceRule,
+            recurrenceEndAt: recurrenceEndAt,
+            recurrenceCount: recurrenceCount,
+            completedAt: completedAt,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            Value<String?> parentId = const Value.absent(),
+            Value<String?> listId = const Value.absent(),
+            required String title,
+            Value<String> descriptionMarkdown = const Value.absent(),
+            Value<bool> completed = const Value.absent(),
+            Value<int> priority = const Value.absent(),
+            Value<int?> startAt = const Value.absent(),
+            Value<int?> dueAt = const Value.absent(),
+            Value<bool> allDay = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<String?> recurrenceRule = const Value.absent(),
+            Value<int?> recurrenceEndAt = const Value.absent(),
+            Value<int?> recurrenceCount = const Value.absent(),
+            Value<int?> completedAt = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TasksV2Companion.insert(
+            id: id,
+            parentId: parentId,
+            listId: listId,
+            title: title,
+            descriptionMarkdown: descriptionMarkdown,
+            completed: completed,
+            priority: priority,
+            startAt: startAt,
+            dueAt: dueAt,
+            allDay: allDay,
+            sortOrder: sortOrder,
+            recurrenceRule: recurrenceRule,
+            recurrenceEndAt: recurrenceEndAt,
+            recurrenceCount: recurrenceCount,
+            completedAt: completedAt,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TasksV2TableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TasksV2Table,
+    TaskV2Row,
+    $$TasksV2TableFilterComposer,
+    $$TasksV2TableOrderingComposer,
+    $$TasksV2TableAnnotationComposer,
+    $$TasksV2TableCreateCompanionBuilder,
+    $$TasksV2TableUpdateCompanionBuilder,
+    (TaskV2Row, BaseReferences<_$AppDatabase, $TasksV2Table, TaskV2Row>),
+    TaskV2Row,
+    PrefetchHooks Function()>;
+typedef $$TaskTagsTableCreateCompanionBuilder = TaskTagsCompanion Function({
+  required String id,
+  required String name,
+  required int color,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$TaskTagsTableUpdateCompanionBuilder = TaskTagsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<int> color,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$TaskTagsTableFilterComposer
+    extends Composer<_$AppDatabase, $TaskTagsTable> {
+  $$TaskTagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$TaskTagsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TaskTagsTable> {
+  $$TaskTagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TaskTagsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TaskTagsTable> {
+  $$TaskTagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$TaskTagsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskTagsTable,
+    TaskTagRow,
+    $$TaskTagsTableFilterComposer,
+    $$TaskTagsTableOrderingComposer,
+    $$TaskTagsTableAnnotationComposer,
+    $$TaskTagsTableCreateCompanionBuilder,
+    $$TaskTagsTableUpdateCompanionBuilder,
+    (TaskTagRow, BaseReferences<_$AppDatabase, $TaskTagsTable, TaskTagRow>),
+    TaskTagRow,
+    PrefetchHooks Function()> {
+  $$TaskTagsTableTableManager(_$AppDatabase db, $TaskTagsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskTagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskTagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskTagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<int> color = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskTagsCompanion(
+            id: id,
+            name: name,
+            color: color,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required int color,
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskTagsCompanion.insert(
+            id: id,
+            name: name,
+            color: color,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TaskTagsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskTagsTable,
+    TaskTagRow,
+    $$TaskTagsTableFilterComposer,
+    $$TaskTagsTableOrderingComposer,
+    $$TaskTagsTableAnnotationComposer,
+    $$TaskTagsTableCreateCompanionBuilder,
+    $$TaskTagsTableUpdateCompanionBuilder,
+    (TaskTagRow, BaseReferences<_$AppDatabase, $TaskTagsTable, TaskTagRow>),
+    TaskTagRow,
+    PrefetchHooks Function()>;
+typedef $$TaskTagLinksTableCreateCompanionBuilder = TaskTagLinksCompanion
+    Function({
+  required String taskId,
+  required String tagId,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$TaskTagLinksTableUpdateCompanionBuilder = TaskTagLinksCompanion
+    Function({
+  Value<String> taskId,
+  Value<String> tagId,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$TaskTagLinksTableFilterComposer
+    extends Composer<_$AppDatabase, $TaskTagLinksTable> {
+  $$TaskTagLinksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get tagId => $composableBuilder(
+      column: $table.tagId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$TaskTagLinksTableOrderingComposer
+    extends Composer<_$AppDatabase, $TaskTagLinksTable> {
+  $$TaskTagLinksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get tagId => $composableBuilder(
+      column: $table.tagId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TaskTagLinksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TaskTagLinksTable> {
+  $$TaskTagLinksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => column);
+
+  GeneratedColumn<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$TaskTagLinksTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskTagLinksTable,
+    TaskTagLinkRow,
+    $$TaskTagLinksTableFilterComposer,
+    $$TaskTagLinksTableOrderingComposer,
+    $$TaskTagLinksTableAnnotationComposer,
+    $$TaskTagLinksTableCreateCompanionBuilder,
+    $$TaskTagLinksTableUpdateCompanionBuilder,
+    (
+      TaskTagLinkRow,
+      BaseReferences<_$AppDatabase, $TaskTagLinksTable, TaskTagLinkRow>
+    ),
+    TaskTagLinkRow,
+    PrefetchHooks Function()> {
+  $$TaskTagLinksTableTableManager(_$AppDatabase db, $TaskTagLinksTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskTagLinksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskTagLinksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskTagLinksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> taskId = const Value.absent(),
+            Value<String> tagId = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskTagLinksCompanion(
+            taskId: taskId,
+            tagId: tagId,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String taskId,
+            required String tagId,
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskTagLinksCompanion.insert(
+            taskId: taskId,
+            tagId: tagId,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TaskTagLinksTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskTagLinksTable,
+    TaskTagLinkRow,
+    $$TaskTagLinksTableFilterComposer,
+    $$TaskTagLinksTableOrderingComposer,
+    $$TaskTagLinksTableAnnotationComposer,
+    $$TaskTagLinksTableCreateCompanionBuilder,
+    $$TaskTagLinksTableUpdateCompanionBuilder,
+    (
+      TaskTagLinkRow,
+      BaseReferences<_$AppDatabase, $TaskTagLinksTable, TaskTagLinkRow>
+    ),
+    TaskTagLinkRow,
+    PrefetchHooks Function()>;
+typedef $$SmartFiltersTableCreateCompanionBuilder = SmartFiltersCompanion
+    Function({
+  required String id,
+  required String name,
+  required String rulesJson,
+  required String sortMode,
+  Value<int> sortOrder,
+  Value<bool> pinned,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$SmartFiltersTableUpdateCompanionBuilder = SmartFiltersCompanion
+    Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> rulesJson,
+  Value<String> sortMode,
+  Value<int> sortOrder,
+  Value<bool> pinned,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$SmartFiltersTableFilterComposer
+    extends Composer<_$AppDatabase, $SmartFiltersTable> {
+  $$SmartFiltersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get rulesJson => $composableBuilder(
+      column: $table.rulesJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get sortMode => $composableBuilder(
+      column: $table.sortMode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get pinned => $composableBuilder(
+      column: $table.pinned, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$SmartFiltersTableOrderingComposer
+    extends Composer<_$AppDatabase, $SmartFiltersTable> {
+  $$SmartFiltersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get rulesJson => $composableBuilder(
+      column: $table.rulesJson, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get sortMode => $composableBuilder(
+      column: $table.sortMode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get pinned => $composableBuilder(
+      column: $table.pinned, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SmartFiltersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SmartFiltersTable> {
+  $$SmartFiltersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get rulesJson =>
+      $composableBuilder(column: $table.rulesJson, builder: (column) => column);
+
+  GeneratedColumn<String> get sortMode =>
+      $composableBuilder(column: $table.sortMode, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<bool> get pinned =>
+      $composableBuilder(column: $table.pinned, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$SmartFiltersTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SmartFiltersTable,
+    SmartFilterRow,
+    $$SmartFiltersTableFilterComposer,
+    $$SmartFiltersTableOrderingComposer,
+    $$SmartFiltersTableAnnotationComposer,
+    $$SmartFiltersTableCreateCompanionBuilder,
+    $$SmartFiltersTableUpdateCompanionBuilder,
+    (
+      SmartFilterRow,
+      BaseReferences<_$AppDatabase, $SmartFiltersTable, SmartFilterRow>
+    ),
+    SmartFilterRow,
+    PrefetchHooks Function()> {
+  $$SmartFiltersTableTableManager(_$AppDatabase db, $SmartFiltersTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SmartFiltersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SmartFiltersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SmartFiltersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> rulesJson = const Value.absent(),
+            Value<String> sortMode = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<bool> pinned = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SmartFiltersCompanion(
+            id: id,
+            name: name,
+            rulesJson: rulesJson,
+            sortMode: sortMode,
+            sortOrder: sortOrder,
+            pinned: pinned,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required String rulesJson,
+            required String sortMode,
+            Value<int> sortOrder = const Value.absent(),
+            Value<bool> pinned = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SmartFiltersCompanion.insert(
+            id: id,
+            name: name,
+            rulesJson: rulesJson,
+            sortMode: sortMode,
+            sortOrder: sortOrder,
+            pinned: pinned,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SmartFiltersTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SmartFiltersTable,
+    SmartFilterRow,
+    $$SmartFiltersTableFilterComposer,
+    $$SmartFiltersTableOrderingComposer,
+    $$SmartFiltersTableAnnotationComposer,
+    $$SmartFiltersTableCreateCompanionBuilder,
+    $$SmartFiltersTableUpdateCompanionBuilder,
+    (
+      SmartFilterRow,
+      BaseReferences<_$AppDatabase, $SmartFiltersTable, SmartFilterRow>
+    ),
+    SmartFilterRow,
+    PrefetchHooks Function()>;
+typedef $$ContentAttachmentsTableCreateCompanionBuilder
+    = ContentAttachmentsCompanion Function({
+  required String id,
+  required String ownerType,
+  required String ownerId,
+  required String sha256,
+  required String mimeType,
+  required int byteSize,
+  required int width,
+  required int height,
+  required String relativePath,
+  required String thumbnailRelativePath,
+  Value<int> sortOrder,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$ContentAttachmentsTableUpdateCompanionBuilder
+    = ContentAttachmentsCompanion Function({
+  Value<String> id,
+  Value<String> ownerType,
+  Value<String> ownerId,
+  Value<String> sha256,
+  Value<String> mimeType,
+  Value<int> byteSize,
+  Value<int> width,
+  Value<int> height,
+  Value<String> relativePath,
+  Value<String> thumbnailRelativePath,
+  Value<int> sortOrder,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$ContentAttachmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $ContentAttachmentsTable> {
+  $$ContentAttachmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get ownerType => $composableBuilder(
+      column: $table.ownerType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get ownerId => $composableBuilder(
+      column: $table.ownerId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get sha256 => $composableBuilder(
+      column: $table.sha256, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+      column: $table.mimeType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get byteSize => $composableBuilder(
+      column: $table.byteSize, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get width => $composableBuilder(
+      column: $table.width, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get height => $composableBuilder(
+      column: $table.height, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get relativePath => $composableBuilder(
+      column: $table.relativePath, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get thumbnailRelativePath => $composableBuilder(
+      column: $table.thumbnailRelativePath,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$ContentAttachmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ContentAttachmentsTable> {
+  $$ContentAttachmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get ownerType => $composableBuilder(
+      column: $table.ownerType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get ownerId => $composableBuilder(
+      column: $table.ownerId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get sha256 => $composableBuilder(
+      column: $table.sha256, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+      column: $table.mimeType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get byteSize => $composableBuilder(
+      column: $table.byteSize, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get width => $composableBuilder(
+      column: $table.width, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get height => $composableBuilder(
+      column: $table.height, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get relativePath => $composableBuilder(
+      column: $table.relativePath,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get thumbnailRelativePath => $composableBuilder(
+      column: $table.thumbnailRelativePath,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ContentAttachmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ContentAttachmentsTable> {
+  $$ContentAttachmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get ownerType =>
+      $composableBuilder(column: $table.ownerType, builder: (column) => column);
+
+  GeneratedColumn<String> get ownerId =>
+      $composableBuilder(column: $table.ownerId, builder: (column) => column);
+
+  GeneratedColumn<String> get sha256 =>
+      $composableBuilder(column: $table.sha256, builder: (column) => column);
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get byteSize =>
+      $composableBuilder(column: $table.byteSize, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<String> get relativePath => $composableBuilder(
+      column: $table.relativePath, builder: (column) => column);
+
+  GeneratedColumn<String> get thumbnailRelativePath => $composableBuilder(
+      column: $table.thumbnailRelativePath, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$ContentAttachmentsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ContentAttachmentsTable,
+    ContentAttachmentRow,
+    $$ContentAttachmentsTableFilterComposer,
+    $$ContentAttachmentsTableOrderingComposer,
+    $$ContentAttachmentsTableAnnotationComposer,
+    $$ContentAttachmentsTableCreateCompanionBuilder,
+    $$ContentAttachmentsTableUpdateCompanionBuilder,
+    (
+      ContentAttachmentRow,
+      BaseReferences<_$AppDatabase, $ContentAttachmentsTable,
+          ContentAttachmentRow>
+    ),
+    ContentAttachmentRow,
+    PrefetchHooks Function()> {
+  $$ContentAttachmentsTableTableManager(
+      _$AppDatabase db, $ContentAttachmentsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ContentAttachmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ContentAttachmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ContentAttachmentsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> ownerType = const Value.absent(),
+            Value<String> ownerId = const Value.absent(),
+            Value<String> sha256 = const Value.absent(),
+            Value<String> mimeType = const Value.absent(),
+            Value<int> byteSize = const Value.absent(),
+            Value<int> width = const Value.absent(),
+            Value<int> height = const Value.absent(),
+            Value<String> relativePath = const Value.absent(),
+            Value<String> thumbnailRelativePath = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ContentAttachmentsCompanion(
+            id: id,
+            ownerType: ownerType,
+            ownerId: ownerId,
+            sha256: sha256,
+            mimeType: mimeType,
+            byteSize: byteSize,
+            width: width,
+            height: height,
+            relativePath: relativePath,
+            thumbnailRelativePath: thumbnailRelativePath,
+            sortOrder: sortOrder,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String ownerType,
+            required String ownerId,
+            required String sha256,
+            required String mimeType,
+            required int byteSize,
+            required int width,
+            required int height,
+            required String relativePath,
+            required String thumbnailRelativePath,
+            Value<int> sortOrder = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ContentAttachmentsCompanion.insert(
+            id: id,
+            ownerType: ownerType,
+            ownerId: ownerId,
+            sha256: sha256,
+            mimeType: mimeType,
+            byteSize: byteSize,
+            width: width,
+            height: height,
+            relativePath: relativePath,
+            thumbnailRelativePath: thumbnailRelativePath,
+            sortOrder: sortOrder,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ContentAttachmentsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ContentAttachmentsTable,
+    ContentAttachmentRow,
+    $$ContentAttachmentsTableFilterComposer,
+    $$ContentAttachmentsTableOrderingComposer,
+    $$ContentAttachmentsTableAnnotationComposer,
+    $$ContentAttachmentsTableCreateCompanionBuilder,
+    $$ContentAttachmentsTableUpdateCompanionBuilder,
+    (
+      ContentAttachmentRow,
+      BaseReferences<_$AppDatabase, $ContentAttachmentsTable,
+          ContentAttachmentRow>
+    ),
+    ContentAttachmentRow,
+    PrefetchHooks Function()>;
+typedef $$CustomColorsTableCreateCompanionBuilder = CustomColorsCompanion
+    Function({
+  required String id,
+  required String name,
+  required int rgb,
+  Value<int> sortOrder,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$CustomColorsTableUpdateCompanionBuilder = CustomColorsCompanion
+    Function({
+  Value<String> id,
+  Value<String> name,
+  Value<int> rgb,
+  Value<int> sortOrder,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$CustomColorsTableFilterComposer
+    extends Composer<_$AppDatabase, $CustomColorsTable> {
+  $$CustomColorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get rgb => $composableBuilder(
+      column: $table.rgb, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$CustomColorsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CustomColorsTable> {
+  $$CustomColorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get rgb => $composableBuilder(
+      column: $table.rgb, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$CustomColorsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CustomColorsTable> {
+  $$CustomColorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get rgb =>
+      $composableBuilder(column: $table.rgb, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$CustomColorsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CustomColorsTable,
+    CustomColorRow,
+    $$CustomColorsTableFilterComposer,
+    $$CustomColorsTableOrderingComposer,
+    $$CustomColorsTableAnnotationComposer,
+    $$CustomColorsTableCreateCompanionBuilder,
+    $$CustomColorsTableUpdateCompanionBuilder,
+    (
+      CustomColorRow,
+      BaseReferences<_$AppDatabase, $CustomColorsTable, CustomColorRow>
+    ),
+    CustomColorRow,
+    PrefetchHooks Function()> {
+  $$CustomColorsTableTableManager(_$AppDatabase db, $CustomColorsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CustomColorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CustomColorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CustomColorsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<int> rgb = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CustomColorsCompanion(
+            id: id,
+            name: name,
+            rgb: rgb,
+            sortOrder: sortOrder,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required int rgb,
+            Value<int> sortOrder = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CustomColorsCompanion.insert(
+            id: id,
+            name: name,
+            rgb: rgb,
+            sortOrder: sortOrder,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$CustomColorsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $CustomColorsTable,
+    CustomColorRow,
+    $$CustomColorsTableFilterComposer,
+    $$CustomColorsTableOrderingComposer,
+    $$CustomColorsTableAnnotationComposer,
+    $$CustomColorsTableCreateCompanionBuilder,
+    $$CustomColorsTableUpdateCompanionBuilder,
+    (
+      CustomColorRow,
+      BaseReferences<_$AppDatabase, $CustomColorsTable, CustomColorRow>
+    ),
+    CustomColorRow,
+    PrefetchHooks Function()>;
+typedef $$BackgroundImagesTableCreateCompanionBuilder
+    = BackgroundImagesCompanion Function({
+  required String id,
+  required String sha256,
+  required String mimeType,
+  required int byteSize,
+  required int width,
+  required int height,
+  required String relativePath,
+  Value<bool> syncEnabled,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$BackgroundImagesTableUpdateCompanionBuilder
+    = BackgroundImagesCompanion Function({
+  Value<String> id,
+  Value<String> sha256,
+  Value<String> mimeType,
+  Value<int> byteSize,
+  Value<int> width,
+  Value<int> height,
+  Value<String> relativePath,
+  Value<bool> syncEnabled,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$BackgroundImagesTableFilterComposer
+    extends Composer<_$AppDatabase, $BackgroundImagesTable> {
+  $$BackgroundImagesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get sha256 => $composableBuilder(
+      column: $table.sha256, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+      column: $table.mimeType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get byteSize => $composableBuilder(
+      column: $table.byteSize, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get width => $composableBuilder(
+      column: $table.width, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get height => $composableBuilder(
+      column: $table.height, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get relativePath => $composableBuilder(
+      column: $table.relativePath, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get syncEnabled => $composableBuilder(
+      column: $table.syncEnabled, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$BackgroundImagesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BackgroundImagesTable> {
+  $$BackgroundImagesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get sha256 => $composableBuilder(
+      column: $table.sha256, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+      column: $table.mimeType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get byteSize => $composableBuilder(
+      column: $table.byteSize, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get width => $composableBuilder(
+      column: $table.width, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get height => $composableBuilder(
+      column: $table.height, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get relativePath => $composableBuilder(
+      column: $table.relativePath,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get syncEnabled => $composableBuilder(
+      column: $table.syncEnabled, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$BackgroundImagesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BackgroundImagesTable> {
+  $$BackgroundImagesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sha256 =>
+      $composableBuilder(column: $table.sha256, builder: (column) => column);
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get byteSize =>
+      $composableBuilder(column: $table.byteSize, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<String> get relativePath => $composableBuilder(
+      column: $table.relativePath, builder: (column) => column);
+
+  GeneratedColumn<bool> get syncEnabled => $composableBuilder(
+      column: $table.syncEnabled, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$BackgroundImagesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $BackgroundImagesTable,
+    BackgroundImageRow,
+    $$BackgroundImagesTableFilterComposer,
+    $$BackgroundImagesTableOrderingComposer,
+    $$BackgroundImagesTableAnnotationComposer,
+    $$BackgroundImagesTableCreateCompanionBuilder,
+    $$BackgroundImagesTableUpdateCompanionBuilder,
+    (
+      BackgroundImageRow,
+      BaseReferences<_$AppDatabase, $BackgroundImagesTable, BackgroundImageRow>
+    ),
+    BackgroundImageRow,
+    PrefetchHooks Function()> {
+  $$BackgroundImagesTableTableManager(
+      _$AppDatabase db, $BackgroundImagesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BackgroundImagesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BackgroundImagesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BackgroundImagesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> sha256 = const Value.absent(),
+            Value<String> mimeType = const Value.absent(),
+            Value<int> byteSize = const Value.absent(),
+            Value<int> width = const Value.absent(),
+            Value<int> height = const Value.absent(),
+            Value<String> relativePath = const Value.absent(),
+            Value<bool> syncEnabled = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BackgroundImagesCompanion(
+            id: id,
+            sha256: sha256,
+            mimeType: mimeType,
+            byteSize: byteSize,
+            width: width,
+            height: height,
+            relativePath: relativePath,
+            syncEnabled: syncEnabled,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String sha256,
+            required String mimeType,
+            required int byteSize,
+            required int width,
+            required int height,
+            required String relativePath,
+            Value<bool> syncEnabled = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BackgroundImagesCompanion.insert(
+            id: id,
+            sha256: sha256,
+            mimeType: mimeType,
+            byteSize: byteSize,
+            width: width,
+            height: height,
+            relativePath: relativePath,
+            syncEnabled: syncEnabled,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$BackgroundImagesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $BackgroundImagesTable,
+    BackgroundImageRow,
+    $$BackgroundImagesTableFilterComposer,
+    $$BackgroundImagesTableOrderingComposer,
+    $$BackgroundImagesTableAnnotationComposer,
+    $$BackgroundImagesTableCreateCompanionBuilder,
+    $$BackgroundImagesTableUpdateCompanionBuilder,
+    (
+      BackgroundImageRow,
+      BaseReferences<_$AppDatabase, $BackgroundImagesTable, BackgroundImageRow>
+    ),
+    BackgroundImageRow,
+    PrefetchHooks Function()>;
+typedef $$DeviceAppearanceProfilesTableCreateCompanionBuilder
+    = DeviceAppearanceProfilesCompanion Function({
+  required String id,
+  required String platform,
+  required String density,
+  required String navOrderJson,
+  required String hiddenNavJson,
+  required String startModule,
+  Value<String?> localBackgroundImageId,
+  required double backgroundFocusX,
+  required double backgroundFocusY,
+  required double backgroundZoom,
+  required double backgroundBlur,
+  required double backgroundOverlay,
+  required String hapticsMode,
+  required int updatedAt,
+  Value<int> rowid,
+});
+typedef $$DeviceAppearanceProfilesTableUpdateCompanionBuilder
+    = DeviceAppearanceProfilesCompanion Function({
+  Value<String> id,
+  Value<String> platform,
+  Value<String> density,
+  Value<String> navOrderJson,
+  Value<String> hiddenNavJson,
+  Value<String> startModule,
+  Value<String?> localBackgroundImageId,
+  Value<double> backgroundFocusX,
+  Value<double> backgroundFocusY,
+  Value<double> backgroundZoom,
+  Value<double> backgroundBlur,
+  Value<double> backgroundOverlay,
+  Value<String> hapticsMode,
+  Value<int> updatedAt,
+  Value<int> rowid,
+});
+
+class $$DeviceAppearanceProfilesTableFilterComposer
+    extends Composer<_$AppDatabase, $DeviceAppearanceProfilesTable> {
+  $$DeviceAppearanceProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get platform => $composableBuilder(
+      column: $table.platform, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get density => $composableBuilder(
+      column: $table.density, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get navOrderJson => $composableBuilder(
+      column: $table.navOrderJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get hiddenNavJson => $composableBuilder(
+      column: $table.hiddenNavJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get startModule => $composableBuilder(
+      column: $table.startModule, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get localBackgroundImageId => $composableBuilder(
+      column: $table.localBackgroundImageId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get backgroundFocusX => $composableBuilder(
+      column: $table.backgroundFocusX,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get backgroundFocusY => $composableBuilder(
+      column: $table.backgroundFocusY,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get backgroundZoom => $composableBuilder(
+      column: $table.backgroundZoom,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get backgroundBlur => $composableBuilder(
+      column: $table.backgroundBlur,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get backgroundOverlay => $composableBuilder(
+      column: $table.backgroundOverlay,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get hapticsMode => $composableBuilder(
+      column: $table.hapticsMode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$DeviceAppearanceProfilesTableOrderingComposer
+    extends Composer<_$AppDatabase, $DeviceAppearanceProfilesTable> {
+  $$DeviceAppearanceProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get platform => $composableBuilder(
+      column: $table.platform, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get density => $composableBuilder(
+      column: $table.density, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get navOrderJson => $composableBuilder(
+      column: $table.navOrderJson,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get hiddenNavJson => $composableBuilder(
+      column: $table.hiddenNavJson,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get startModule => $composableBuilder(
+      column: $table.startModule, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get localBackgroundImageId => $composableBuilder(
+      column: $table.localBackgroundImageId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get backgroundFocusX => $composableBuilder(
+      column: $table.backgroundFocusX,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get backgroundFocusY => $composableBuilder(
+      column: $table.backgroundFocusY,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get backgroundZoom => $composableBuilder(
+      column: $table.backgroundZoom,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get backgroundBlur => $composableBuilder(
+      column: $table.backgroundBlur,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get backgroundOverlay => $composableBuilder(
+      column: $table.backgroundOverlay,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get hapticsMode => $composableBuilder(
+      column: $table.hapticsMode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DeviceAppearanceProfilesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DeviceAppearanceProfilesTable> {
+  $$DeviceAppearanceProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get platform =>
+      $composableBuilder(column: $table.platform, builder: (column) => column);
+
+  GeneratedColumn<String> get density =>
+      $composableBuilder(column: $table.density, builder: (column) => column);
+
+  GeneratedColumn<String> get navOrderJson => $composableBuilder(
+      column: $table.navOrderJson, builder: (column) => column);
+
+  GeneratedColumn<String> get hiddenNavJson => $composableBuilder(
+      column: $table.hiddenNavJson, builder: (column) => column);
+
+  GeneratedColumn<String> get startModule => $composableBuilder(
+      column: $table.startModule, builder: (column) => column);
+
+  GeneratedColumn<String> get localBackgroundImageId => $composableBuilder(
+      column: $table.localBackgroundImageId, builder: (column) => column);
+
+  GeneratedColumn<double> get backgroundFocusX => $composableBuilder(
+      column: $table.backgroundFocusX, builder: (column) => column);
+
+  GeneratedColumn<double> get backgroundFocusY => $composableBuilder(
+      column: $table.backgroundFocusY, builder: (column) => column);
+
+  GeneratedColumn<double> get backgroundZoom => $composableBuilder(
+      column: $table.backgroundZoom, builder: (column) => column);
+
+  GeneratedColumn<double> get backgroundBlur => $composableBuilder(
+      column: $table.backgroundBlur, builder: (column) => column);
+
+  GeneratedColumn<double> get backgroundOverlay => $composableBuilder(
+      column: $table.backgroundOverlay, builder: (column) => column);
+
+  GeneratedColumn<String> get hapticsMode => $composableBuilder(
+      column: $table.hapticsMode, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DeviceAppearanceProfilesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DeviceAppearanceProfilesTable,
+    DeviceAppearanceProfileRow,
+    $$DeviceAppearanceProfilesTableFilterComposer,
+    $$DeviceAppearanceProfilesTableOrderingComposer,
+    $$DeviceAppearanceProfilesTableAnnotationComposer,
+    $$DeviceAppearanceProfilesTableCreateCompanionBuilder,
+    $$DeviceAppearanceProfilesTableUpdateCompanionBuilder,
+    (
+      DeviceAppearanceProfileRow,
+      BaseReferences<_$AppDatabase, $DeviceAppearanceProfilesTable,
+          DeviceAppearanceProfileRow>
+    ),
+    DeviceAppearanceProfileRow,
+    PrefetchHooks Function()> {
+  $$DeviceAppearanceProfilesTableTableManager(
+      _$AppDatabase db, $DeviceAppearanceProfilesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DeviceAppearanceProfilesTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DeviceAppearanceProfilesTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DeviceAppearanceProfilesTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> platform = const Value.absent(),
+            Value<String> density = const Value.absent(),
+            Value<String> navOrderJson = const Value.absent(),
+            Value<String> hiddenNavJson = const Value.absent(),
+            Value<String> startModule = const Value.absent(),
+            Value<String?> localBackgroundImageId = const Value.absent(),
+            Value<double> backgroundFocusX = const Value.absent(),
+            Value<double> backgroundFocusY = const Value.absent(),
+            Value<double> backgroundZoom = const Value.absent(),
+            Value<double> backgroundBlur = const Value.absent(),
+            Value<double> backgroundOverlay = const Value.absent(),
+            Value<String> hapticsMode = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DeviceAppearanceProfilesCompanion(
+            id: id,
+            platform: platform,
+            density: density,
+            navOrderJson: navOrderJson,
+            hiddenNavJson: hiddenNavJson,
+            startModule: startModule,
+            localBackgroundImageId: localBackgroundImageId,
+            backgroundFocusX: backgroundFocusX,
+            backgroundFocusY: backgroundFocusY,
+            backgroundZoom: backgroundZoom,
+            backgroundBlur: backgroundBlur,
+            backgroundOverlay: backgroundOverlay,
+            hapticsMode: hapticsMode,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String platform,
+            required String density,
+            required String navOrderJson,
+            required String hiddenNavJson,
+            required String startModule,
+            Value<String?> localBackgroundImageId = const Value.absent(),
+            required double backgroundFocusX,
+            required double backgroundFocusY,
+            required double backgroundZoom,
+            required double backgroundBlur,
+            required double backgroundOverlay,
+            required String hapticsMode,
+            required int updatedAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              DeviceAppearanceProfilesCompanion.insert(
+            id: id,
+            platform: platform,
+            density: density,
+            navOrderJson: navOrderJson,
+            hiddenNavJson: hiddenNavJson,
+            startModule: startModule,
+            localBackgroundImageId: localBackgroundImageId,
+            backgroundFocusX: backgroundFocusX,
+            backgroundFocusY: backgroundFocusY,
+            backgroundZoom: backgroundZoom,
+            backgroundBlur: backgroundBlur,
+            backgroundOverlay: backgroundOverlay,
+            hapticsMode: hapticsMode,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DeviceAppearanceProfilesTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $DeviceAppearanceProfilesTable,
+        DeviceAppearanceProfileRow,
+        $$DeviceAppearanceProfilesTableFilterComposer,
+        $$DeviceAppearanceProfilesTableOrderingComposer,
+        $$DeviceAppearanceProfilesTableAnnotationComposer,
+        $$DeviceAppearanceProfilesTableCreateCompanionBuilder,
+        $$DeviceAppearanceProfilesTableUpdateCompanionBuilder,
+        (
+          DeviceAppearanceProfileRow,
+          BaseReferences<_$AppDatabase, $DeviceAppearanceProfilesTable,
+              DeviceAppearanceProfileRow>
+        ),
+        DeviceAppearanceProfileRow,
+        PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4525,6 +12503,25 @@ class $AppDatabaseManager {
       $$SyncLogsTableTableManager(_db, _db.syncLogs);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db, _db.appSettings);
+  $$TaskListsTableTableManager get taskLists =>
+      $$TaskListsTableTableManager(_db, _db.taskLists);
+  $$TasksV2TableTableManager get tasksV2 =>
+      $$TasksV2TableTableManager(_db, _db.tasksV2);
+  $$TaskTagsTableTableManager get taskTags =>
+      $$TaskTagsTableTableManager(_db, _db.taskTags);
+  $$TaskTagLinksTableTableManager get taskTagLinks =>
+      $$TaskTagLinksTableTableManager(_db, _db.taskTagLinks);
+  $$SmartFiltersTableTableManager get smartFilters =>
+      $$SmartFiltersTableTableManager(_db, _db.smartFilters);
+  $$ContentAttachmentsTableTableManager get contentAttachments =>
+      $$ContentAttachmentsTableTableManager(_db, _db.contentAttachments);
+  $$CustomColorsTableTableManager get customColors =>
+      $$CustomColorsTableTableManager(_db, _db.customColors);
+  $$BackgroundImagesTableTableManager get backgroundImages =>
+      $$BackgroundImagesTableTableManager(_db, _db.backgroundImages);
+  $$DeviceAppearanceProfilesTableTableManager get deviceAppearanceProfiles =>
+      $$DeviceAppearanceProfilesTableTableManager(
+          _db, _db.deviceAppearanceProfiles);
 }
 
 mixin _$NotesDaoMixin on DatabaseAccessor<AppDatabase> {
@@ -4609,4 +12606,76 @@ class AppSettingsDaoManager {
   AppSettingsDaoManager(this._db);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db.attachedDatabase, _db.appSettings);
+}
+
+mixin _$TasksV2DaoMixin on DatabaseAccessor<AppDatabase> {
+  $TasksV2Table get tasksV2 => attachedDatabase.tasksV2;
+  TasksV2DaoManager get managers => TasksV2DaoManager(this);
+}
+
+class TasksV2DaoManager {
+  final _$TasksV2DaoMixin _db;
+  TasksV2DaoManager(this._db);
+  $$TasksV2TableTableManager get tasksV2 =>
+      $$TasksV2TableTableManager(_db.attachedDatabase, _db.tasksV2);
+}
+
+mixin _$TaskTaxonomyDaoMixin on DatabaseAccessor<AppDatabase> {
+  $TaskListsTable get taskLists => attachedDatabase.taskLists;
+  $TaskTagsTable get taskTags => attachedDatabase.taskTags;
+  $TaskTagLinksTable get taskTagLinks => attachedDatabase.taskTagLinks;
+  $SmartFiltersTable get smartFilters => attachedDatabase.smartFilters;
+  $TasksV2Table get tasksV2 => attachedDatabase.tasksV2;
+  TaskTaxonomyDaoManager get managers => TaskTaxonomyDaoManager(this);
+}
+
+class TaskTaxonomyDaoManager {
+  final _$TaskTaxonomyDaoMixin _db;
+  TaskTaxonomyDaoManager(this._db);
+  $$TaskListsTableTableManager get taskLists =>
+      $$TaskListsTableTableManager(_db.attachedDatabase, _db.taskLists);
+  $$TaskTagsTableTableManager get taskTags =>
+      $$TaskTagsTableTableManager(_db.attachedDatabase, _db.taskTags);
+  $$TaskTagLinksTableTableManager get taskTagLinks =>
+      $$TaskTagLinksTableTableManager(_db.attachedDatabase, _db.taskTagLinks);
+  $$SmartFiltersTableTableManager get smartFilters =>
+      $$SmartFiltersTableTableManager(_db.attachedDatabase, _db.smartFilters);
+  $$TasksV2TableTableManager get tasksV2 =>
+      $$TasksV2TableTableManager(_db.attachedDatabase, _db.tasksV2);
+}
+
+mixin _$AttachmentsDaoMixin on DatabaseAccessor<AppDatabase> {
+  $ContentAttachmentsTable get contentAttachments =>
+      attachedDatabase.contentAttachments;
+  AttachmentsDaoManager get managers => AttachmentsDaoManager(this);
+}
+
+class AttachmentsDaoManager {
+  final _$AttachmentsDaoMixin _db;
+  AttachmentsDaoManager(this._db);
+  $$ContentAttachmentsTableTableManager get contentAttachments =>
+      $$ContentAttachmentsTableTableManager(
+          _db.attachedDatabase, _db.contentAttachments);
+}
+
+mixin _$AppearanceDaoMixin on DatabaseAccessor<AppDatabase> {
+  $CustomColorsTable get customColors => attachedDatabase.customColors;
+  $BackgroundImagesTable get backgroundImages =>
+      attachedDatabase.backgroundImages;
+  $DeviceAppearanceProfilesTable get deviceAppearanceProfiles =>
+      attachedDatabase.deviceAppearanceProfiles;
+  AppearanceDaoManager get managers => AppearanceDaoManager(this);
+}
+
+class AppearanceDaoManager {
+  final _$AppearanceDaoMixin _db;
+  AppearanceDaoManager(this._db);
+  $$CustomColorsTableTableManager get customColors =>
+      $$CustomColorsTableTableManager(_db.attachedDatabase, _db.customColors);
+  $$BackgroundImagesTableTableManager get backgroundImages =>
+      $$BackgroundImagesTableTableManager(
+          _db.attachedDatabase, _db.backgroundImages);
+  $$DeviceAppearanceProfilesTableTableManager get deviceAppearanceProfiles =>
+      $$DeviceAppearanceProfilesTableTableManager(
+          _db.attachedDatabase, _db.deviceAppearanceProfiles);
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/widgets/app_shell.dart';
-import '../../sync/application/sync_controller.dart';
-import '../../sync/domain/sync_result.dart';
+import '../../../shared/widgets/app_shell_embed_scope.dart';
+import '../../appearance/presentation/appearance_page.dart';
+import '../../sync/presentation/sync_upgrade_notice.dart';
 import '../application/theme_controller.dart';
 import '../domain/theme_scheme.dart';
 
@@ -16,7 +16,6 @@ class SettingsPage extends ConsumerStatefulWidget {
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _themeNameController = TextEditingController();
-  final _peerAddressController = TextEditingController();
 
   static const _backgroundSwatches = [
     Color(0xFFF8F8F6),
@@ -34,26 +33,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     Color(0xFF8AB4F8),
   ];
 
-  static const _textSwatches = [
-    Color(0xFF202124),
-    Color(0xFF1F2937),
-    Color(0xFF203128),
-    Color(0xFF2B213A),
-    Color(0xFFE8EAED),
-  ];
-
-  static const _surfaceSwatches = [
-    Color(0xFFFFFFFF),
-    Color(0xFFF8FAFC),
-    Color(0xFFF1F5F9),
-    Color(0xFFEFF6FF),
-    Color(0xFF1F232B),
-  ];
-
   @override
   void dispose() {
     _themeNameController.dispose();
-    _peerAddressController.dispose();
     super.dispose();
   }
 
@@ -61,20 +43,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final themeState = ref.watch(themeControllerProvider);
 
-    return AppShell(
-      title: '设置',
-      child: themeState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('设置加载失败：$error')),
-        data: _buildContent,
-      ),
+    final content = themeState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(child: Text('设置加载失败：$error')),
+      data: _buildContent,
+    );
+    if (AppShellEmbedScope.maybeOf(context)) return content;
+    return Scaffold(
+      appBar: AppBar(title: const Text('设置')),
+      body: SafeArea(child: content),
     );
   }
 
   Widget _buildContent(ThemeState state) {
     final controller = ref.read(themeControllerProvider.notifier);
-    final syncState = ref.watch(syncControllerProvider);
-    final syncController = ref.read(syncControllerProvider.notifier);
     final activeTheme = state.activeTheme;
 
     return Align(
@@ -85,6 +67,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           key: const Key('settings-list'),
           padding: const EdgeInsets.all(16),
           children: [
+            Text('同步', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            const SyncUpgradeNotice(),
+            const Divider(height: 36),
             Text('主题', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             _ThemePreview(theme: activeTheme),
@@ -122,20 +108,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               onSelected: (color) =>
                   controller.updateDraft(primaryColor: color),
             ),
-            _ColorSwatchRow(
-              keyPrefix: 'text',
-              label: '文字',
-              colors: _textSwatches,
-              selectedColor: activeTheme.textColor,
-              onSelected: (color) => controller.updateDraft(textColor: color),
-            ),
-            _ColorSwatchRow(
-              keyPrefix: 'surface',
-              label: '面板',
-              colors: _surfaceSwatches,
-              selectedColor: activeTheme.surfaceColor,
-              onSelected: (color) =>
-                  controller.updateDraft(surfaceColor: color),
+            const Text(
+              '文字与面板颜色会根据强调色和背景自动生成，以保证安全对比度。',
+              key: Key('derived-colors-note'),
             ),
             const SizedBox(height: 8),
             SegmentedButton<Brightness>(
@@ -212,128 +187,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
               ),
             const Divider(height: 36),
-            Text('同步', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 12),
-            _SyncPanel(
-              state: syncState,
-              peerAddressController: _peerAddressController,
-              onPeerAddressChanged: syncController.updatePeerAddress,
-              onStartServer: syncController.startServer,
-              onStopServer: syncController.stopServer,
-              onSync: () => syncController.syncWithPeer(),
+            Text(
+              'Appearance V2',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
+            const SizedBox(height: 12),
+            const AppearancePage(embedded: true),
           ],
         ),
       ),
     );
-  }
-}
-
-class _SyncPanel extends StatelessWidget {
-  const _SyncPanel({
-    required this.state,
-    required this.peerAddressController,
-    required this.onPeerAddressChanged,
-    required this.onStartServer,
-    required this.onStopServer,
-    required this.onSync,
-  });
-
-  final SyncState state;
-  final TextEditingController peerAddressController;
-  final ValueChanged<String> onPeerAddressChanged;
-  final VoidCallback onStartServer;
-  final VoidCallback onStopServer;
-  final VoidCallback onSync;
-
-  @override
-  Widget build(BuildContext context) {
-    if (peerAddressController.text != state.peerAddress) {
-      peerAddressController.text = state.peerAddress;
-    }
-    final syncing = state.status == SyncStatus.syncing ||
-        state.status == SyncStatus.startingServer;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.wifi_tethering_outlined),
-          title: const Text('局域网同步'),
-          subtitle: Text(
-            state.serverUri == null
-                ? '先开启本机同步服务，再在另一台设备输入地址。'
-                : '本机服务：${state.serverUri}',
-          ),
-        ),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            FilledButton.icon(
-              key: const Key('sync-start-server-button'),
-              onPressed:
-                  syncing || state.isServerRunning ? null : onStartServer,
-              icon: const Icon(Icons.play_arrow),
-              label: const Text('开启服务'),
-            ),
-            OutlinedButton.icon(
-              key: const Key('sync-stop-server-button'),
-              onPressed: state.isServerRunning ? onStopServer : null,
-              icon: const Icon(Icons.stop),
-              label: const Text('停止服务'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                key: const Key('sync-peer-address-field'),
-                controller: peerAddressController,
-                decoration: const InputDecoration(
-                  labelText: '对端地址',
-                  hintText: 'http://192.168.1.10:8787',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: onPeerAddressChanged,
-              ),
-            ),
-            const SizedBox(width: 8),
-            FilledButton.icon(
-              key: const Key('sync-now-button'),
-              onPressed: syncing ? null : onSync,
-              icon: const Icon(Icons.sync),
-              label: const Text('同步'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        if (state.status == SyncStatus.syncing ||
-            state.status == SyncStatus.startingServer)
-          const LinearProgressIndicator(),
-        if (state.errorMessage != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              state.errorMessage!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        if (state.lastResult != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(_formatSyncResult(state.lastResult!)),
-          ),
-      ],
-    );
-  }
-
-  String _formatSyncResult(SyncResult result) {
-    return '已同步：笔记新增 ${result.notesCreated}、更新 ${result.notesUpdated}；'
-        '待办新增 ${result.todosCreated}、更新 ${result.todosUpdated}。';
   }
 }
 

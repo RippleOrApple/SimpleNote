@@ -1,20 +1,28 @@
 name: simple_note
 description: A minimal local-first notes and todos app for Windows and Android.
 publish_to: "none"
-version: 1.0.1+2
+version: 2.0.0+3
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
+  cross_file: ^0.3.5+4
+  crypto: ^3.0.7
   drift: ^2.34.0
   drift_flutter: ^0.3.0
+  file_picker: ^11.0.2
   flutter:
     sdk: flutter
   flutter_markdown: ^0.7.3
   flutter_riverpod: ^2.5.1
+  image: ^4.9.1
+  image_picker: ^1.2.3
+  mime: ^2.0.0
   path: ^1.9.1
   path_provider: ^2.1.6
+  phosphoricons_flutter: ^1.0.0
+  sqlite3: ^3.3.4
   uuid: ^4.4.2
 
 dev_dependencies:
@@ -26,7 +34,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/backgrounds/presets/
+    - assets/licenses/
   fonts:
     - family: NotoSansSC
       fonts:
         - asset: assets/fonts/NotoSansCJKsc-Regular.otf
+    - family: ResourceHanRoundedCN
+      fonts:
+        - asset: assets/fonts/ResourceHanRoundedCN-Regular.ttf
+    - family: LXGWWenKai
+      fonts:
+        - asset: assets/fonts/LXGWWenKai-Regular.ttf

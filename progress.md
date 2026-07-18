@@ -71,3 +71,213 @@
 | What's the goal? | Make the app feel safer and smoother to use |
 | What have I learned? | See `findings.md` |
 | What have I done? | Added compact back actions, delete confirmations, SnackBars, clean subtitle text, and tests |
+
+## Session: 2026-07-18 - V2 Task 7
+
+### Implementation
+
+- Added `AdaptiveAppShell`, custom icon-only Android navigation, Windows frosted functional rail, and placeholder module pages.
+- Added navigation settings for ordering, visibility, and default module selection.
+- Connected navigation persistence to appearance device profiles and migrated app routes to the shared shell.
+- Kept the legacy `AppShell` as a minimal compatibility wrapper while feature pages move to the shared shell.
+- Updated v2 navigation and widget regression tests for the Today/Notes/Settings shell contract.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/navigation` | Pass |
+| `flutter test test/widget_test.dart` | Pass, 6 tests |
+| `flutter test` | Pass, 130 tests |
+
+### Handoff
+
+- V2 Task 7 is complete.
+- V2 Task 8 is next: task domain models, queries, and repository.
+
+## Session: 2026-07-18 - V2 Task 8
+
+### Implementation
+
+- Added V2 task and taxonomy domain objects with JSON and copy contracts.
+- Added TaskQuery factories for inbox, today, next seven days, all tasks, custom lists, and smart filters.
+- Implemented V2 task persistence, parameterized search, sorting, taxonomy CRUD, tag replacement, and soft deletion.
+- Added transactional subtask validation, parent list inheritance, direct-child deletion, and active-tag validation.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/tasks test/database/migration_v2_test.dart` | Pass, 14 tests |
+| `flutter test` | Pass, 141 tests |
+
+### Handoff
+
+- V2 Task 8 is complete.
+- V2 Task 9 is next: task application state, smart sources, lists, tags, and filters.
+
+## Session: 2026-07-18 - V2 Task 9
+
+### Implementation
+
+- Added task application state with sources, queries, search results, selection, subtasks, taxonomy, and save status.
+- Added task quick add/edit/toggle/delete and one-level subtask workflows.
+- Added list, tag, and smart-filter creation and updates plus list archiving and deletion.
+- Added source and sort selection, completed visibility, debounced search, and source restoration.
+- Extended the repository for subtask loading, active task-tag maps, and transactional list deletion to Inbox.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/tasks` | Pass, 17 tests |
+| `flutter test` | Pass, 147 tests |
+
+### Handoff
+
+- V2 Task 9 is complete.
+- V2 Task 10 is next: Windows four-zone and Android task workspaces.
+
+## Session: 2026-07-18 - V2 Task 10
+
+### Implementation
+
+- Added responsive task sources, task list, detail, quick-add, and smart-filter presentation widgets.
+- Added Windows four-zone behavior at 1280 wide, intermediate list/detail behavior, and compact Android list/detail plus source bottom sheet navigation.
+- Added search, sorting, completed visibility, custom-list tinting, four priorities, list/tag controls, one-level subtasks, save status, and task deletion confirmation.
+- Added 350 ms title/description debounce, completion motion, and Android haptics after successful completion and deletion commits.
+- Replaced the Today placeholder with `TasksPage`, removed the legacy Todo page, and replaced the temporary AppShell with a focused embed scope.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/tasks/tasks_page_test.dart test/tasks/tasks_controller_test.dart test/widget_test.dart test/navigation/adaptive_app_shell_test.dart` | Pass, 20 tests |
+| `flutter test` | Pass, 150 tests |
+
+### Handoff
+
+- V2 Task 10 is complete.
+- V2 Task 11 is next: transactional attachment import, storage, and metadata.
+
+## Session: 2026-07-18 - V2 Task 11
+
+### Implementation
+
+- Added content attachment ownership, metadata, input adapters, and shared Markdown selection/edit contracts.
+- Added file/gallery/camera picking and one-time Android lost-image recovery into a pending-import prompt.
+- Added 20 MB preflight validation, decoded-format enforcement, SHA-256 paths, 720px JPEG thumbnails, flushed temporary writes, and atomic final moves.
+- Added shared SHA staging leases so concurrent imports preserve files after any successful transaction and clean them only when every lease fails.
+- Added Drift attachment queries plus atomic Note/Task Markdown and metadata import/delete transactions.
+- Added exact Markdown image-node removal, soft deletion, version increments, and physical-file preservation on detach.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/attachments` | Pass, 12 tests |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 162 tests |
+
+### Handoff
+
+- V2 Task 11 is complete.
+- V2 Task 12 is next: shared Markdown toolbar, editor, and attachment renderer.
+
+## Session: 2026-07-18 - V2 Task 12
+
+### Implementation
+
+- Added `MarkdownEditingController` with wrapping, insertion, and selected-line prefix operations.
+- Added a shared Markdown editor with heading, bold, italic, list, task-list, quote, code, code-block, link, and image controls.
+- Added Android file/gallery/camera and Windows file image menus with trimmed alt text and cancellation-safe selection handling.
+- Added `EmbeddedMarkdownView` with local attachment URI parsing and explicit remote-image rejection.
+- Added thumbnail-first attachment rendering, stable inline dimensions, resolver/missing-file placeholders, original-image full-screen zoom, and confirmed deletion.
+- Cached attachment resolver Futures and clamped service-returned selections before restoring the editor.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/attachments/embedded_markdown_editor_test.dart test/attachments/embedded_markdown_view_test.dart` | Pass, 12 tests |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 174 tests |
+
+### Handoff
+
+- V2 Task 12 is complete.
+- V2 Task 13 is next: inline images in Notes and Tasks.
+
+## Session: 2026-07-18 - V2 Task 13
+
+### Implementation
+
+- Added note and task controller operations for inline image insertion, deletion, attachment resolution, recovered-image import, save state, and retryable error messages.
+- Added merged note edit debouncing, immutable note creation timestamps, pending-edit flushing, and cross-note edit protection.
+- Replaced Note and Task Markdown fields with `EmbeddedMarkdownEditor` and previews with `EmbeddedMarkdownView`.
+- Added task edit/preview switching that flushes pending description text before image insertion or preview.
+- Replaced the modal lost-image notice with a non-blocking banner that offers explicit current-note and current-task targets.
+- Added real Drift/file-store integration tests for insertion, cancellation, deletion, failure, recovery, metadata, and physical files.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/notes/notes_controller_test.dart test/notes/note_inline_image_test.dart test/tasks/tasks_controller_test.dart test/tasks/task_inline_image_test.dart test/tasks/tasks_page_test.dart test/attachments/pending_attachment_recovery_prompt_test.dart test/widget_test.dart` | Pass, 25 tests |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 184 tests |
+
+### Handoff
+
+- V2 Task 13 is complete.
+- V2 Task 14 is next: disable V1 sync in production and record Phase 1 acceptance.
+
+## Session: 2026-07-18 - V2 Task 14
+
+### Implementation
+
+- Added `legacySyncEnabledProvider`, defaulting to false, and guarded both legacy server startup and peer sync before any network work.
+- Kept V1 controller and HTTP compatibility covered only through explicit test construction.
+- Replaced the settings sync panel with `SyncUpgradeNotice` and moved it to the first viewport.
+- Routed Android More to Settings, which retains the embedded Appearance V2 controls.
+- Added the V2 Phase 1 acceptance matrix and updated README sync/build guidance.
+- Added Android cross-drive Kotlin and plugin compatibility configuration.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/sync/sync_controller_test.dart test/widget_test.dart` | Pass, 8 tests after observed red state |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 159 files unchanged |
+| `dart run build_runner build --delete-conflicting-outputs` | Pass, 295 outputs |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 186 tests |
+| `flutter build windows --debug` | Pass, final Debug executable produced |
+| `flutter build apk --debug` | Pass with configured JDK 17, final Debug APK produced |
+| Android `SimpleNote_Pixel` install/start/More screenshot check | Pass; no layout overlap and upgrade notice visible |
+
+### Handoff
+
+- V2 Task 14 and the Phase 1 automated acceptance gate are complete.
+- Physical Android camera/gallery/haptic checks and Windows process-restart checks remain release QA, as recorded in `docs/V2_PHASE_1_ACCEPTANCE.md`.
+
+## Session: 2026-07-18 - PR Merge Conflict Resolution
+
+### Implementation
+
+- Merged `origin/main` into `codex/ticktick-v2-phase1` to resolve GitHub PR conflicts.
+- Preserved the completed V2 Phase 1 implementation, release metadata, generated database state, and v2 adaptive shell.
+- Kept the legacy Todo page and old AppShell deleted because V2 Task 10 replaced them with the adaptive task workspace.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| Conflict marker scan | Pass, no conflict markers |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 159 files unchanged |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 186 tests |

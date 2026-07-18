@@ -1,8 +1,29 @@
 #include "flutter_window.h"
 
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
+
 #include <optional>
 
 #include "flutter/generated_plugin_registrant.h"
+
+namespace {
+
+constexpr char kAccessibilityChannel[] = "simple_note/accessibility";
+constexpr char kGetReduceTransparencyMethod[] = "getReduceTransparency";
+
+bool ReadReduceTransparencyPreference() {
+  DWORD enable_transparency = 1;
+  DWORD value_size = sizeof(enable_transparency);
+  const LSTATUS status = RegGetValueW(
+      HKEY_CURRENT_USER,
+      L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+      L"EnableTransparency", RRF_RT_REG_DWORD, nullptr, &enable_transparency,
+      &value_size);
+  return status == ERROR_SUCCESS && enable_transparency == 0;
+}
+
+}  // namespace
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
@@ -25,6 +46,19 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+  flutter::MethodChannel<> accessibility_channel(
+      flutter_controller_->engine()->messenger(), kAccessibilityChannel,
+      &flutter::StandardMethodCodec::GetInstance());
+  accessibility_channel.SetMethodCallHandler(
+      [](const flutter::MethodCall<>& call,
+         std::unique_ptr<flutter::MethodResult<>> result) {
+        if (call.method_name() == kGetReduceTransparencyMethod) {
+          result->Success(
+              flutter::EncodableValue(ReadReduceTransparencyPreference()));
+          return;
+        }
+        result->NotImplemented();
+      });
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {

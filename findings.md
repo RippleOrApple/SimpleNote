@@ -31,3 +31,72 @@
 | Issue | Resolution |
 |-------|------------|
 | None yet | - |
+
+## V2 Task 7 Findings
+
+- Existing navigation code covered the controller and domain model; the presentation shell, route integration, and navigation editor were missing.
+- The Android contract requires an icon-only `NavigationBar` with no descendant `Text` widgets, so the implementation uses custom 48dp icon targets inside `NavigationBar`.
+- Windows rail selection uses the injected device platform, with the 920 logical-pixel breakpoint as the adaptive fallback.
+- Legacy `/todos`, `/notes`, and `/settings` routes now resolve through the adaptive shell; Notes and Settings remain compatible modules while Today is the Task 10 placeholder.
+- Appearance navigation settings are persisted through `AppearanceController.setNavigation` and normalized by `DeviceAppearanceProfile`.
+
+## V2 Task 8 Findings
+
+- The V2 tables and migration already existed, but `TasksV2Dao` and `TaskTaxonomyDao` were empty accessors.
+- Routed task work must use `tasks_v2`; the legacy Todo domain remains compatibility code only.
+- Search uses one parameterized SQL query across task title, Markdown body, active list name, and active tag name, with wildcard escaping and `DISTINCT` task rows.
+- Smart-filter list, completion, priority, and tag rules are intersections; multiple selected tags require every tag.
+- Subtasks inherit the parent's list, cannot have children, cannot reference themselves, and are soft-deleted with their direct parent transactionally.
+
+## V2 Task 9 Findings
+
+- Built-in task sources can be represented directly by stable `TaskQuery` objects; `TasksState.sources` exposes the four standard source descriptors.
+- A task moved between Inbox and a custom list must also move the active query so the selected task remains valid.
+- Deleting a custom list is one transaction: clear active task `list_id` values, then soft-delete the list.
+- Search debounce cancellation must complete superseded Futures; otherwise rapid typing can leave callers waiting forever.
+- Soft-deleted tags remain sync history, but active task-tag maps and smart-filter evaluation must ignore their links.
+
+## V2 Task 10 Findings
+
+- The full task workspace breakpoint must include the 112 logical pixels consumed by the outer Windows functional rail; `AppShellEmbedScope` supplies that explicit layout context.
+- A custom-list tint surface must be a `Material`, not a `ColoredBox`, so task-row selection colors and ink reactions remain visible.
+- Task title and Markdown description controllers remain mounted across saves and failures; only task selection changes replace their text, while writes debounce for 350 ms.
+- Completion and deletion haptics belong after the repository write reports `saved`; failed transactions must not emit feedback.
+- The temporary AppShell could be removed by retaining only a narrow embed scope and letting Notes and Settings own their standalone Scaffold fallback.
+
+## V2 Task 11 Findings
+
+- Attachment paths stored in syncable metadata must remain support-directory-relative; absolute original and thumbnail paths are local computed fields and are omitted from JSON.
+- File staging and database transactions need separate rollback coordination: temporary and final files are outside SQLite, so the service explicitly resolves a staged-file lease after commit or failure.
+- Same-SHA concurrent imports require a shared lease per absolute storage root and SHA. One successful commit preserves the files; files are removed only after every lease fails.
+- Import transactions validate the Note or Task owner inside the transaction, update Markdown and owner version, and insert metadata as one unit.
+- Delete transactions validate attachment ownership and require an exact Markdown image node before soft-deleting metadata; physical files remain for Phase 1 cleanup policy.
+- Android `retrieveLostData()` is called once through a cached provider, and recovered images remain pending until an editor explicitly consumes them.
+
+## V2 Task 12 Findings
+
+- Programmatic Markdown toolbar edits do not trigger `TextField.onChanged`, so toolbar actions explicitly emit the updated string while service-returned image edits remain controller-owned commits.
+- Image insertion must snapshot editor selection before opening the source dialog; dialog focus must not replace the target selection.
+- The installed `flutter_markdown` version deprecates `imageBuilder` and has legacy argument-order behavior, so `sizedImageBuilder` provides unambiguous URI, alt, and title fields.
+- Attachment resolver Futures must be cached in `AttachmentImage`; creating one on every build repeatedly queries metadata and can leave the image in a loading loop.
+- A stable 280x180 inline image canvas prevents Markdown `Wrap` relayout shifts across loading, missing, and loaded states while full-screen preview preserves the original aspect ratio.
+- Widget tests that perform real temporary-file IO inside Flutter fake async must use synchronous operations or `runAsync`; direct async `File.delete()` can stall the test isolate.
+
+## V2 Task 13 Findings
+
+- Image insertion must flush pending Markdown edits before taking the owner snapshot; otherwise the attachment transaction can overwrite recently typed text.
+- Picker cancellation returns before save-state mutation, preserving Markdown, timestamps, version, selection, and focus.
+- Note text writes need one merged 350 ms debounce for title and content, plus repository lookup by ID so filtering or switching notes cannot discard pending edits.
+- Recovered Android images remain inert until the user chooses the currently selected note or task from a non-modal banner; target buttons update as editor selection changes.
+- In-memory `XFile.fromData` values can expose an empty `name` with the installed `cross_file` version, so recovered images use `recovered image` as a non-empty alt-text fallback.
+- Real attachment file IO should be tested through directly awaited controller tests; Flutter widget fake async is suitable for verifying the recovery prompt and no-auto-import behavior, but not for awaiting the disk transaction started by a button callback.
+
+## V2 Task 14 Findings
+
+- Guarding only the settings UI is insufficient: `SyncController.startServer` and `syncWithPeer` must reject V1 by default so alternate callers cannot start the legacy protocol.
+- V1 compatibility remains testable through the explicit `legacySyncEnabledProvider`/constructor flag and direct `LocalSyncServer` HTTP contract tests.
+- Android More previously opened Appearance directly, making Settings and the sync upgrade notice unreachable; Settings now owns both the notice and embedded Appearance controls.
+- Flutter plugin builds on Windows require symlink privilege, but pre-created directory junctions in `windows/flutter/ephemeral` satisfy the generated plugin layout without changing Developer Mode.
+- The current Android plugin tree is incompatible with AGP 9 because `file_picker` expects Built-in Kotlin while `flutter_plugin_android_lifecycle` still applies legacy KGP. AGP 8.9.1 plus Gradle 8.11.1 and JDK 17 builds successfully.
+- Kotlin incremental caches cannot relativize Pub Cache sources on `C:` against a project on `D:`; `kotlin.incremental=false` avoids that cross-drive failure.
+- The Android emulator confirmed final APK startup, icon-only navigation, Android More routing, and first-viewport sync notice rendering without overlap.

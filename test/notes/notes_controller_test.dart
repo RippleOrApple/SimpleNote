@@ -70,4 +70,29 @@ void main() {
     state = await container.read(notesControllerProvider.future);
     expect(state.notes, isEmpty);
   });
+
+  test('debounced edits survive switching to another note', () async {
+    final controller = container.read(notesControllerProvider.notifier);
+    await container.read(notesControllerProvider.future);
+    await controller.createNote();
+    final firstId =
+        (await container.read(notesControllerProvider.future)).selectedNoteId!;
+
+    final firstSave = controller.updateNote(firstId, content: 'First draft');
+    await controller.createNote();
+    final secondId =
+        (await container.read(notesControllerProvider.future)).selectedNoteId!;
+    final secondSave = controller.updateNote(secondId, content: 'Second draft');
+    await Future.wait([firstSave, secondSave]);
+
+    final state = await container.read(notesControllerProvider.future);
+    expect(
+      state.notes.singleWhere((note) => note.id == firstId).content,
+      'First draft',
+    );
+    expect(
+      state.notes.singleWhere((note) => note.id == secondId).content,
+      'Second draft',
+    );
+  });
 }

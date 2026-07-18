@@ -8,7 +8,7 @@ import 'package:simple_note/features/sync/infrastructure/local_sync_server.dart'
 import 'package:simple_note/features/sync/infrastructure/sync_api_client.dart';
 
 void main() {
-  test('local sync server exposes health device snapshot and sync endpoints',
+  test('legacy compatibility server retains its HTTP contract for tests',
       () async {
     final serverDatabase = AppDatabase(NativeDatabase.memory());
     addTearDown(serverDatabase.close);
