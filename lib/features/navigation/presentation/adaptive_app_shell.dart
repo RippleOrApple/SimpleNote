@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/frosted_surface.dart';
-import '../../../shared/widgets/app_shell.dart';
+import '../../../shared/widgets/app_shell_embed_scope.dart';
 import '../../sync/data/sync_repository.dart';
 import '../../appearance/presentation/appearance_page.dart';
 import '../../notes/presentation/notes_page.dart';
 import '../../settings/presentation/settings_page.dart';
+import '../../tasks/presentation/tasks_page.dart';
 import '../application/navigation_controller.dart';
 import '../domain/app_module.dart';
 import 'placeholder_module_page.dart';
@@ -97,6 +98,7 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
     final builder = widget.moduleBuilders[module];
     if (builder != null) return Builder(builder: builder);
     return switch (module) {
+      AppModuleKey.today => const TasksPage(),
       AppModuleKey.notes => const NotesPage(),
       AppModuleKey.settings => const SettingsPage(),
       AppModuleKey.more => const AppearancePage(),

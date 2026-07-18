@@ -17,6 +17,7 @@ void main() {
 
     expect(find.byKey(const Key('android-nav-today')), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byKey(const Key('task-list-pane')), findsOneWidget);
   });
 
   testWidgets('SimpleNote installs the appearance theme and global background',

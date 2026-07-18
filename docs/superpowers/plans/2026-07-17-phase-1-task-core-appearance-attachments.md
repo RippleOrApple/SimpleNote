@@ -1748,7 +1748,7 @@ git commit -m "feat: add task sources and application workflows"
 - Produces Android source sheet, task list, and full-page detail flow.
 - Exposes quick add, search, completed visibility, four priorities, one-level subtasks, editable list/tag styles, filters, sorting, and delete confirmation.
 
-- [ ] **Step 1: Write failing responsive task widget tests**
+- [x] **Step 1: Write failing responsive task widget tests**
 
 At 1280×800:
 
@@ -1798,7 +1798,7 @@ await tester.pumpAndSettle();
 expect(find.text('Prepare demo'), findsWidgets);
 ```
 
-- [ ] **Step 2: Run the focused test and verify the red state**
+- [x] **Step 2: Run the focused test and verify the red state**
 
 Run:
 
@@ -1808,7 +1808,7 @@ flutter test test/tasks/tasks_page_test.dart
 
 Expected: FAIL because the task presentation files do not exist.
 
-- [ ] **Step 3: Implement responsive breakpoints and pane ownership**
+- [x] **Step 3: Implement responsive breakpoints and pane ownership**
 
 Use:
 
@@ -1830,7 +1830,7 @@ const paneGap = 12.0;
 
 Compact and relaxed values derive from the device profile, but Android touch targets never fall below 48px.
 
-- [ ] **Step 4: Implement source, list, and quick-add panes**
+- [x] **Step 4: Implement source, list, and quick-add panes**
 
 Source order:
 
@@ -1862,7 +1862,7 @@ Selection uses solid accent; hover uses the derived low-tint surface.
 
 When the active query is a custom list, wrap the list content area in a surface keyed `task-list-tinted-surface` whose background is derived from that list's saved color and the global tint-strength setting. Smart sources, tags, and filters use the global neutral surface. The outer background, top bar, navigation, and detail pane remain governed by the global appearance.
 
-- [ ] **Step 5: Implement detail, taxonomy, and filter editors**
+- [x] **Step 5: Implement detail, taxonomy, and filter editors**
 
 `TaskDetailPane` exposes stable keys:
 
@@ -1887,13 +1887,13 @@ Use a plain multiline Markdown field in this task; Task 12 replaces it with the 
 
 The `全部任务` source exposes `task-include-completed`; changing it calls `setIncludeCompleted` and preserves the current sort mode. List editing exposes name, one approved or custom color, and a rounded Phosphor icon key. Tag editing exposes name and color. List deletion confirmation states that tasks move to Inbox. Tag deletion confirmation states that task content is unchanged. Smart-filter rules use list, tag, completion, and priority controls; date rules are visible but disabled with the label `时间筛选将在 Phase 2 启用`.
 
-- [ ] **Step 6: Add expressive completion animation and haptic feedback**
+- [x] **Step 6: Add expressive completion animation and haptic feedback**
 
 Use `AnimatedScale` and `AnimatedOpacity` for 340ms when motion is expressive. When `MediaQuery.disableAnimations` is true or motion level is reduced, use only 90ms opacity. Do not remove the row until the animation completes; then reload the active query.
 
 After a completion or confirmed delete commits successfully, call `AppHaptics.trigger` with the matching key-action event. Never emit feedback before the transaction succeeds.
 
-- [ ] **Step 7: Run focused and existing widget tests**
+- [x] **Step 7: Run focused and existing widget tests**
 
 Run:
 
@@ -1904,7 +1904,7 @@ flutter test test/tasks/tasks_page_test.dart test/tasks/tasks_controller_test.da
 
 Expected: task page, controller, and updated application widget tests pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```powershell
 git add lib/features/tasks/presentation lib/features/navigation/presentation lib/features/todos/presentation lib/shared/widgets/app_shell.dart test/tasks test/widget_test.dart

@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/app_shell.dart';
+import '../../../shared/widgets/app_shell_embed_scope.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../tags/domain/tag.dart';
 import '../application/notes_controller.dart';
@@ -16,18 +16,20 @@ class NotesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notesState = ref.watch(notesControllerProvider);
 
-    return AppShell(
-      title: '笔记',
+    final content = notesState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(child: Text('笔记加载失败：$error')),
+      data: (state) => _NotesWorkspace(state: state),
+    );
+    if (AppShellEmbedScope.maybeOf(context)) return content;
+    return Scaffold(
+      appBar: AppBar(title: const Text('笔记')),
+      body: SafeArea(child: content),
       floatingActionButton: FloatingActionButton(
         tooltip: '新建笔记',
         onPressed: () =>
             ref.read(notesControllerProvider.notifier).createNote(),
         child: const Icon(Icons.add),
-      ),
-      child: notesState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('笔记加载失败：$error')),
-        data: (state) => _NotesWorkspace(state: state),
       ),
     );
   }

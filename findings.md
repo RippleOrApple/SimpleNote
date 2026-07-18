@@ -55,3 +55,11 @@
 - Deleting a custom list is one transaction: clear active task `list_id` values, then soft-delete the list.
 - Search debounce cancellation must complete superseded Futures; otherwise rapid typing can leave callers waiting forever.
 - Soft-deleted tags remain sync history, but active task-tag maps and smart-filter evaluation must ignore their links.
+
+## V2 Task 10 Findings
+
+- The full task workspace breakpoint must include the 112 logical pixels consumed by the outer Windows functional rail; `AppShellEmbedScope` supplies that explicit layout context.
+- A custom-list tint surface must be a `Material`, not a `ColoredBox`, so task-row selection colors and ink reactions remain visible.
+- Task title and Markdown description controllers remain mounted across saves and failures; only task selection changes replace their text, while writes debounce for 350 ms.
+- Completion and deletion haptics belong after the repository write reports `saved`; failed transactions must not emit feedback.
+- The temporary AppShell could be removed by retaining only a narrow embed scope and letting Notes and Settings own their standalone Scaffold fallback.

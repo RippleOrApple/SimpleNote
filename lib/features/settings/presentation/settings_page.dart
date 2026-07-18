@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/widgets/app_shell.dart';
+import '../../../shared/widgets/app_shell_embed_scope.dart';
 import '../../appearance/presentation/appearance_page.dart';
 import '../../sync/application/sync_controller.dart';
 import '../../sync/domain/sync_result.dart';
@@ -46,13 +46,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final themeState = ref.watch(themeControllerProvider);
 
-    return AppShell(
-      title: '设置',
-      child: themeState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('设置加载失败：$error')),
-        data: _buildContent,
-      ),
+    final content = themeState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(child: Text('设置加载失败：$error')),
+      data: _buildContent,
+    );
+    if (AppShellEmbedScope.maybeOf(context)) return content;
+    return Scaffold(
+      appBar: AppBar(title: const Text('设置')),
+      body: SafeArea(child: content),
     );
   }
 

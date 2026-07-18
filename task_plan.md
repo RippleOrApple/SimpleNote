@@ -96,3 +96,14 @@ Complete
 - Added transactional list deletion that moves tasks back to virtual Inbox and active-tag filtering for task links.
 - **Verification:** `flutter analyze` passed; `flutter test` passed with 147 tests.
 - **Next:** V2 Task 10, Windows and Android task workspaces.
+
+## V2 Task 10: Windows and Android Task Workspaces
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added the responsive task source, list, and detail panes for Windows and Android.
+- Added search, quick add, completed visibility, list tinting, sorting, priority, tags, subtasks, taxonomy editors, smart filters, save status, and delete confirmation.
+- Replaced the Today placeholder with `TasksPage` and removed the legacy Todo page and temporary AppShell wrapper.
+- Added completion animation and post-commit Android haptic feedback for completion and deletion.
+- **Verification:** `flutter analyze` passed; `flutter test` passed with 150 tests.
+- **Next:** V2 Task 11, transactional attachment import, storage, and metadata.

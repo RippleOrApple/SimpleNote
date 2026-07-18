@@ -10,7 +10,6 @@ import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/appearance/presentation/appearance_page.dart';
 import 'package:simple_note/features/navigation/domain/app_module.dart';
 import 'package:simple_note/features/navigation/presentation/adaptive_app_shell.dart';
-import 'package:simple_note/features/navigation/presentation/placeholder_module_page.dart';
 import 'package:simple_note/features/notes/presentation/notes_page.dart';
 import 'package:simple_note/features/settings/presentation/settings_page.dart';
 import 'package:simple_note/features/sync/data/sync_repository.dart';
@@ -172,7 +171,7 @@ void main() {
     navigator.pushReplacementNamed(AppRoutes.todos);
     await tester.pumpAndSettle();
     expect(find.byType(AdaptiveAppShell), findsOneWidget);
-    expect(find.byType(PlaceholderModulePage), findsOneWidget);
+    expect(find.byKey(const Key('task-list-pane')), findsOneWidget);
     expect(find.byType(Scaffold), findsOneWidget);
 
     Navigator.of(tester.element(find.byType(AdaptiveAppShell)))

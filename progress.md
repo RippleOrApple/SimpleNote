@@ -140,3 +140,26 @@
 
 - V2 Task 9 is complete.
 - V2 Task 10 is next: Windows four-zone and Android task workspaces.
+
+## Session: 2026-07-18 - V2 Task 10
+
+### Implementation
+
+- Added responsive task sources, task list, detail, quick-add, and smart-filter presentation widgets.
+- Added Windows four-zone behavior at 1280 wide, intermediate list/detail behavior, and compact Android list/detail plus source bottom sheet navigation.
+- Added search, sorting, completed visibility, custom-list tinting, four priorities, list/tag controls, one-level subtasks, save status, and task deletion confirmation.
+- Added 350 ms title/description debounce, completion motion, and Android haptics after successful completion and deletion commits.
+- Replaced the Today placeholder with `TasksPage`, removed the legacy Todo page, and replaced the temporary AppShell with a focused embed scope.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/tasks/tasks_page_test.dart test/tasks/tasks_controller_test.dart test/widget_test.dart test/navigation/adaptive_app_shell_test.dart` | Pass, 20 tests |
+| `flutter test` | Pass, 150 tests |
+
+### Handoff
+
+- V2 Task 10 is complete.
+- V2 Task 11 is next: transactional attachment import, storage, and metadata.

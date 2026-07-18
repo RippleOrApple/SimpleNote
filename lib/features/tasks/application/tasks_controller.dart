@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/feedback/app_haptics.dart';
 import '../../../core/utils/id_generator.dart';
 import '../../../core/utils/time.dart';
+import '../../appearance/application/appearance_controller.dart';
+import '../../appearance/domain/appearance_presets.dart';
 import '../../appearance/domain/rgb_color.dart';
 import '../../sync/data/sync_repository.dart';
 import '../data/tasks_repository.dart';
@@ -123,6 +126,7 @@ class TasksController extends AsyncNotifier<TasksState> {
 
   late TasksRepository _repository;
   late String _deviceId;
+  late String _platform;
   Timer? _searchDebounce;
   Completer<void>? _searchCompleter;
   TaskQuery? _lastSourceQuery;
@@ -131,7 +135,9 @@ class TasksController extends AsyncNotifier<TasksState> {
   @override
   Future<TasksState> build() async {
     _repository = ref.watch(tasksRepositoryProvider);
-    _deviceId = ref.watch(deviceInfoProvider).deviceId;
+    final device = ref.watch(deviceInfoProvider);
+    _deviceId = device.deviceId;
+    _platform = device.platform;
     ref.onDispose(() {
       _searchDebounce?.cancel();
       if (!(_searchCompleter?.isCompleted ?? true)) {
@@ -256,13 +262,19 @@ class TasksController extends AsyncNotifier<TasksState> {
     final task = current == null ? null : _taskById(current, id);
     if (task == null) return;
     await updateTask(id, completed: !task.completed);
+    if (state.valueOrNull?.saveStatus == TaskSaveStatus.saved) {
+      _triggerFeedback(HapticEvent.complete);
+    }
   }
 
-  Future<void> deleteTask(String id) {
-    return _write(
+  Future<void> deleteTask(String id) async {
+    await _write(
       () => _repository.softDeleteTask(id, Clock.nowMillis()),
       clearSelection: true,
     );
+    if (state.valueOrNull?.saveStatus == TaskSaveStatus.saved) {
+      _triggerFeedback(HapticEvent.delete);
+    }
   }
 
   Future<void> addSubtask(String parentId, String title) async {
@@ -592,6 +604,16 @@ class TasksController extends AsyncNotifier<TasksState> {
 
   bool _includesCompleted(TaskQuery query) =>
       query is AllTaskQuery && query.includeCompleted;
+
+  void _triggerFeedback(HapticEvent event) {
+    final mode = ref
+            .read(appearanceControllerProvider)
+            .valueOrNull
+            ?.deviceProfile
+            .hapticsMode ??
+        HapticsMode.off;
+    unawaited(AppHaptics(platform: _platform, mode: mode).trigger(event));
+  }
 
   Task? _taskById(TasksState state, String id) {
     for (final task in [...state.tasks, ...state.subtasks]) {
