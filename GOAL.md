@@ -2,59 +2,53 @@
 
 ## Objective
 
-Complete V2 Task 16: add task completion events and recurring-task advancement.
+Complete V2 Task 17: make task date queries and smart-filter date rules fully active.
 
-Task completion should become a durable event stream for future history and statistics. Completing a recurring task should write a completion event, compute the next occurrence, keep the same task ID, and advance the task back to an incomplete future occurrence.
+Today, Next 7 Days, and saved smart filters should understand both task start time and due time instead of only matching the old due-date path. Date filtering should be deterministic, repository-backed, and available to the existing filter editor.
 
 ## Scope
 
-- Add `task_completions` persistence and domain contracts.
-- Add repository APIs for listing completion events and completing a task occurrence transactionally.
-- Record completion events for normal task completion.
-- For recurring tasks, compute the next occurrence before writing any data.
-- Support daily, workday, weekly, monthly, and yearly recurrence rules with optional `INTERVAL`.
-- Support weekly `BYDAY` selections.
-- Respect recurrence end dates and occurrence counts.
-- Preserve task state if recurrence parsing or next-date calculation fails.
-- Route `TasksController.toggleTask` through the repository completion transaction.
-- Update schema, domain, repository, and controller tests.
+- Extend task filter rules with start-date and due-date ranges.
+- Preserve JSON compatibility for existing smart filters that do not contain date rules.
+- Update Today to include unfinished top-level tasks that are overdue, due today, or start today.
+- Update Next 7 Days to include unfinished top-level tasks whose start or due time falls inside the seven-day window.
+- Update smart-filter repository evaluation to apply start and due ranges.
+- Replace the disabled date placeholder in the smart-filter editor with active date-range controls.
+- Update domain, repository, controller, and widget tests.
 - Update planning files with findings and verification results.
 
 ## Non-goals
 
-- Do not build recurrence editing UI yet.
-- Do not add calendar views yet.
-- Do not schedule native notifications yet.
-- Do not implement per-occurrence exceptions.
+- Do not build calendar views yet.
+- Do not add natural-language date parsing.
+- Do not add drag-to-reschedule.
+- Do not schedule native notifications.
 - Do not re-enable V2 sync.
 
 ## Acceptance Criteria
 
-- [x] New databases include `task_completions`.
-- [x] Schema 2 databases migrate to include `task_completions`.
-- [x] `TaskCompletion` JSON round-trips.
-- [x] Completing a normal task marks it completed and writes one completion event.
-- [x] Completing a recurring task writes one completion event and advances the same task ID to the next incomplete occurrence.
-- [x] Daily, workday, weekly `BYDAY`, monthly, and yearly rules calculate the expected next occurrence.
-- [x] Recurrence `INTERVAL` is respected.
-- [x] Recurrence end date and count stop further advancement.
-- [x] Invalid recurrence rules leave the task unchanged and write no completion event.
-- [x] Controller completion uses the transactional completion path.
-- [x] `dart run build_runner build --delete-conflicting-outputs` passes.
+- [x] Task filter rules JSON round-trips start and due date ranges.
+- [x] Existing smart-filter JSON without date ranges still loads.
+- [x] Inbox excludes tasks with either `startAt` or `dueAt`.
+- [x] Today includes overdue tasks, tasks due today, and tasks starting today.
+- [x] Today excludes tasks starting after today and tasks due after today.
+- [x] Next 7 Days includes tasks whose start or due time falls in the seven-day window.
+- [x] Smart filters can match start ranges, due ranges, and combined start/due ranges.
+- [x] Date filters combine with list, tag, completion, and priority rules.
+- [x] The smart-filter editor exposes active start/due date-range controls instead of a disabled placeholder.
 - [x] `dart format --output=none --set-exit-if-changed lib test` passes.
 - [x] `flutter analyze` passes.
 - [x] Relevant tests pass.
 
 ## Constraints
 
-- Keep recurrence parsing deterministic and dependency-free.
-- Keep recurrence data in the existing `recurrence_rule`, `recurrence_end_at`, and `recurrence_count` task fields.
-- Keep Task 16 limited to persistence, domain, and application behavior.
-- Keep V1 sync disabled in production.
+- Keep date values as epoch milliseconds.
+- Keep date ranges inclusive at the lower bound and exclusive at the upper bound.
+- Keep query behavior top-level only unless explicitly listing subtasks.
+- Prefer repository-level date behavior over UI-only filtering.
 
 ## Notes
 
-- Accepted rule shape is `FREQ=DAILY`, `FREQ=WORKDAYS`, `FREQ=WEEKLY;BYDAY=MO,WE`, `FREQ=MONTHLY`, or `FREQ=YEARLY`, with optional `INTERVAL=n`.
-- Task 17 should make date filtering richer.
-- Task 18 should introduce calendar aggregation.
-- Task 19 should schedule native reminders.
+- Calendar aggregation remains Task 18.
+- Reminder scheduling remains Task 19.
+- V2 sync remains Phase 4.

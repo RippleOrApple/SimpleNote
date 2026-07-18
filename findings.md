@@ -115,3 +115,12 @@
 - Recurrence calculation must happen before the database transaction writes anything so invalid rules cannot leave a completion event without an advanced task.
 - Phase 2 has not shipped from `main`, so Task 16 can add `task_completions` to the same schema v3 migration introduced by Task 15.
 - `recurrence_count` is treated as the maximum number of active completion events; when the newly written event reaches that count, the task stays completed instead of advancing.
+
+## V2 Task 17 Findings
+
+- `TaskFilterRules` currently covers list IDs, tag IDs, completion, and priority only; date controls in the editor were intentionally disabled during Phase 1.
+- Built-in Today currently considers `dueAt < nextDayStart`, which includes overdue and due-today tasks but misses tasks with only `startAt`.
+- Built-in Next 7 Days currently considers only `dueAt` in range; Phase 2 should include either start or due dates in range.
+- Date range checks should run in repository predicates so search, saved filters, and controller reloads share one behavior.
+- Drift nullable integer columns should be passed as generated columns for date helper predicates; `Expression<int?>` violates Drift's non-nullable generic bound.
+- The smart-filter date editor control key needs to live on the real `OutlinedButton`, not the outer row, so widget tests and pointer hit testing exercise the active control.

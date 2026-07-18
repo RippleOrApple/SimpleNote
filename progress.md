@@ -346,3 +346,32 @@
 
 - V2 Task 16 is complete.
 - V2 Task 17 is next: richer date filters for Today, Next 7 Days, and smart filters.
+
+## Session: 2026-07-18 - V2 Task 17
+
+### Planning
+
+- Updated `GOAL.md` for active task date queries and smart-filter date ranges.
+- Confirmed Phase 1 smart-filter date UI was disabled and repository rules did not include dates.
+- Chose inclusive lower and exclusive upper date-range bounds for start and due filters.
+
+### Implementation
+
+- Added `TaskDateRange` and active `startRange`/`dueRange` fields to smart-filter rules with backward-compatible JSON parsing.
+- Updated repository Inbox, Today, Next 7 Days, and saved-filter predicates to consider both `startAt` and `dueAt` where required.
+- Activated the smart-filter editor start/due date-range controls and wired saved filters to persist the selected ranges.
+- Added domain, repository, controller, and widget coverage for date-range serialization, query semantics, combined rules, and active date controls.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/tasks/task_domain_test.dart test/tasks/tasks_repository_test.dart test/tasks/tasks_controller_test.dart test/tasks/task_filter_editor_test.dart` | Pass, 32 tests after fixing Drift column typing and date-button hit testing |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 167 files unchanged |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 208 tests |
+
+### Handoff
+
+- V2 Task 17 is complete.
+- V2 Task 18 is next: calendar aggregation.

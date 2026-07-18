@@ -179,3 +179,17 @@ Complete
 - Cover schema, domain, repository, and controller paths with tests.
 - **Verification:** build_runner, formatter, `flutter analyze`, targeted task/database tests, and full `flutter test` passed with 205 tests.
 - **Next:** V2 Task 17, richer date filters for Today, Next 7 Days, and smart filters.
+
+## V2 Task 17: Date Queries and Smart Filter Date Rules
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Extend `TaskFilterRules` with active start and due date ranges.
+- Make Today include overdue, due-today, and start-today tasks.
+- Make Next 7 Days include tasks with start or due dates inside the seven-day window.
+- Apply date ranges inside repository smart-filter evaluation.
+- Replace the disabled date-rule placeholder in the smart-filter editor with active controls.
+- Cover JSON compatibility, repository semantics, controller persistence, and widget UI.
+- **Verification:** formatter, `flutter analyze`, targeted task tests, and full `flutter test` passed with 208 tests.
+- **Next:** V2 Task 18, calendar aggregation.

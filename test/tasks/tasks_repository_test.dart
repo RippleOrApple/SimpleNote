@@ -25,7 +25,10 @@ void main() {
     await repository.upsertTask(_task('inbox'));
     await repository.upsertTask(_task('overdue', dueAt: 500));
     await repository.upsertTask(_task('today', dueAt: 1500));
+    await repository.upsertTask(_task('starts-today', startAt: 1500));
+    await repository.upsertTask(_task('tomorrow', dueAt: 2500));
     await repository.upsertTask(_task('next', dueAt: 2500));
+    await repository.upsertTask(_task('starts-next', startAt: 3000));
     await repository.upsertTask(_task('listed', listId: 'list-1'));
     await repository.upsertTask(_task('completed', completed: true));
     await repository.upsertTask(_task('child', parentId: 'listed'));
@@ -39,14 +42,21 @@ void main() {
         TaskQuery.today(dayStart: 1000, nextDayStart: 2000),
       ))
           .map((task) => task.id),
-      containsAll(['overdue', 'today']),
+      containsAll(['overdue', 'today', 'starts-today']),
+    );
+    expect(
+      (await repository.queryTasks(
+        TaskQuery.today(dayStart: 1000, nextDayStart: 2000),
+      ))
+          .map((task) => task.id),
+      isNot(contains('tomorrow')),
     );
     expect(
       (await repository.queryTasks(
         TaskQuery.nextSevenDays(dayStart: 2000, eighthDayStart: 9000),
       ))
           .map((task) => task.id),
-      contains('next'),
+      containsAll(['next', 'starts-next']),
     );
     expect(
       (await repository.queryTasks(TaskQuery.list('list-1')))
@@ -118,6 +128,53 @@ void main() {
     );
 
     expect(result.map((task) => task.id), ['tagged']);
+  });
+
+  test('smart filters apply start and due date ranges with other rules',
+      () async {
+    await repository.upsertTaskList(_list('list-1'));
+    await repository.upsertTask(_task(
+      'match',
+      listId: 'list-1',
+      startAt: 1200,
+      dueAt: 1800,
+      priority: TaskPriority.high,
+    ));
+    await repository.upsertTask(_task(
+      'wrong-start',
+      listId: 'list-1',
+      startAt: 900,
+      dueAt: 1800,
+      priority: TaskPriority.high,
+    ));
+    await repository.upsertTask(_task(
+      'wrong-due',
+      listId: 'list-1',
+      startAt: 1200,
+      dueAt: 2200,
+      priority: TaskPriority.high,
+    ));
+    await repository.upsertTask(_task(
+      'wrong-priority',
+      listId: 'list-1',
+      startAt: 1200,
+      dueAt: 1800,
+      priority: TaskPriority.low,
+    ));
+
+    final result = await repository.queryTasks(
+      TaskQuery.filter(
+        const TaskFilterRules(
+          listIds: {'list-1'},
+          priorities: {TaskPriority.high},
+          startRange: TaskDateRange(from: 1000, before: 2000),
+          dueRange: TaskDateRange(from: 1000, before: 2000),
+        ),
+        sortMode: TaskSortMode.manual,
+      ),
+    );
+
+    expect(result.map((task) => task.id), ['match']);
   });
 
   test('enforces one subtask level and inherits parent list', () async {
@@ -363,6 +420,7 @@ Task _task(
   String? title,
   String descriptionMarkdown = '',
   bool completed = false,
+  TaskPriority priority = TaskPriority.none,
   int? startAt,
   int? dueAt,
   String? recurrenceRule,
@@ -375,6 +433,7 @@ Task _task(
     title: title ?? id,
     descriptionMarkdown: descriptionMarkdown,
     completed: completed,
+    priority: priority,
     startAt: startAt,
     dueAt: dueAt,
     recurrenceRule: recurrenceRule,

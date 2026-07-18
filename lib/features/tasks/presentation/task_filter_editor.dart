@@ -28,6 +28,8 @@ class _TaskFilterEditorState extends State<TaskFilterEditor> {
   final _tagIds = <String>{};
   final _priorities = <TaskPriority>{};
   bool? _completed;
+  DateTimeRange? _startRange;
+  DateTimeRange? _dueRange;
   TaskSortMode _sortMode = TaskSortMode.manual;
 
   @override
@@ -128,12 +130,20 @@ class _TaskFilterEditorState extends State<TaskFilterEditor> {
                 },
               ),
               const SizedBox(height: 16),
-              const InputDecorator(
-                decoration: InputDecoration(
-                  labelText: '时间筛选',
-                  enabled: false,
-                ),
-                child: Text('时间筛选将在 Phase 2 启用'),
+              Text('时间筛选', style: Theme.of(context).textTheme.labelLarge),
+              const SizedBox(height: 8),
+              _DateRangeButton(
+                buttonKey: const Key('task-filter-start-range-button'),
+                label: '开始日期',
+                value: _startRange,
+                onChanged: (value) => setState(() => _startRange = value),
+              ),
+              const SizedBox(height: 8),
+              _DateRangeButton(
+                buttonKey: const Key('task-filter-due-range-button'),
+                label: '截止日期',
+                value: _dueRange,
+                onChanged: (value) => setState(() => _dueRange = value),
               ),
             ],
           ),
@@ -154,6 +164,8 @@ class _TaskFilterEditorState extends State<TaskFilterEditor> {
                 tagIds: _tagIds,
                 completed: _completed,
                 priorities: _priorities,
+                startRange: _toTaskDateRange(_startRange),
+                dueRange: _toTaskDateRange(_dueRange),
               ),
               sortMode: _sortMode,
             );
@@ -164,6 +176,80 @@ class _TaskFilterEditorState extends State<TaskFilterEditor> {
       ],
     );
   }
+}
+
+class _DateRangeButton extends StatelessWidget {
+  const _DateRangeButton({
+    required this.buttonKey,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final Key buttonKey;
+  final String label;
+  final DateTimeRange? value;
+  final ValueChanged<DateTimeRange?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            key: buttonKey,
+            onPressed: () async {
+              final now = DateTime.now();
+              final initial = value ??
+                  DateTimeRange(
+                    start: DateTime(now.year, now.month, now.day),
+                    end: DateTime(now.year, now.month, now.day)
+                        .add(const Duration(days: 6)),
+                  );
+              final picked = await showDateRangePicker(
+                context: context,
+                initialDateRange: initial,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+              if (picked != null) onChanged(picked);
+            },
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text('$label：${_dateRangeLabel(value)}'),
+            ),
+          ),
+        ),
+        IconButton(
+          tooltip: '清除$label',
+          onPressed: value == null ? null : () => onChanged(null),
+          icon: const Icon(Icons.close_rounded),
+        ),
+      ],
+    );
+  }
+}
+
+TaskDateRange? _toTaskDateRange(DateTimeRange? value) {
+  if (value == null) return null;
+  final start = DateTime(value.start.year, value.start.month, value.start.day);
+  final end = DateTime(value.end.year, value.end.month, value.end.day)
+      .add(const Duration(days: 1));
+  return TaskDateRange(
+    from: start.millisecondsSinceEpoch,
+    before: end.millisecondsSinceEpoch,
+  );
+}
+
+String _dateRangeLabel(DateTimeRange? value) {
+  if (value == null) return '不限';
+  return '${_dateLabel(value.start)} - ${_dateLabel(value.end)}';
+}
+
+String _dateLabel(DateTime value) {
+  final month = value.month.toString().padLeft(2, '0');
+  final day = value.day.toString().padLeft(2, '0');
+  return '${value.year}-$month-$day';
 }
 
 String _priorityLabel(TaskPriority value) => switch (value) {

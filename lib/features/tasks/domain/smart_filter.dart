@@ -10,18 +10,24 @@ class TaskFilterRules {
     this.tagIds = const {},
     this.completed,
     this.priorities = const {},
+    this.startRange,
+    this.dueRange,
   });
 
   final Set<String> listIds;
   final Set<String> tagIds;
   final bool? completed;
   final Set<TaskPriority> priorities;
+  final TaskDateRange? startRange;
+  final TaskDateRange? dueRange;
 
   Map<String, Object?> toJson() => {
         'listIds': listIds.toList()..sort(),
         'tagIds': tagIds.toList()..sort(),
         'completed': completed,
         'priorities': priorities.map((value) => value.name).toList()..sort(),
+        'startRange': startRange?.toJson(),
+        'dueRange': dueRange?.toJson(),
       };
 
   factory TaskFilterRules.fromJson(Map<String, Object?> json) {
@@ -33,7 +39,42 @@ class TaskFilterRules {
         for (final value in (json['priorities'] as List? ?? const []))
           TaskPriority.values.byName(value as String),
       },
+      startRange: TaskDateRange.maybeFromJson(json['startRange']),
+      dueRange: TaskDateRange.maybeFromJson(json['dueRange']),
     );
+  }
+}
+
+class TaskDateRange {
+  const TaskDateRange({this.from, this.before})
+      : assert(from != null || before != null);
+
+  final int? from;
+  final int? before;
+
+  bool contains(int? value) {
+    if (value == null) return false;
+    if (from != null && value < from!) return false;
+    if (before != null && value >= before!) return false;
+    return true;
+  }
+
+  Map<String, Object?> toJson() => {
+        'from': from,
+        'before': before,
+      };
+
+  factory TaskDateRange.fromJson(Map<String, Object?> json) {
+    final range = TaskDateRange(
+      from: json['from'] as int?,
+      before: json['before'] as int?,
+    );
+    return range;
+  }
+
+  static TaskDateRange? maybeFromJson(Object? value) {
+    if (value == null) return null;
+    return TaskDateRange.fromJson((value as Map).cast<String, Object?>());
   }
 }
 

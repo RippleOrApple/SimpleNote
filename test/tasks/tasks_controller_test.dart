@@ -78,10 +78,15 @@ void main() {
 
     await controller.saveSmartFilter(
       name: 'Focus',
-      rules: TaskFilterRules(tagIds: {tag.id}),
+      rules: TaskFilterRules(
+        tagIds: {tag.id},
+        startRange: const TaskDateRange(from: 1000, before: 2000),
+      ),
       sortMode: TaskSortMode.priority,
     );
-    expect((await harness.state).filters.single.name, 'Focus');
+    final savedFilter = (await harness.state).filters.single;
+    expect(savedFilter.name, 'Focus');
+    expect(savedFilter.rules.startRange?.from, 1000);
 
     await controller.deleteTag(tag.id);
     state = await harness.state;

@@ -506,15 +506,16 @@ class DriftTasksRepository implements TasksRepository {
             task.listId.isNull() &
             task.startAt.isNull() &
             task.dueAt.isNull();
-      case TodayTaskQuery(:final nextDayStart):
+      case TodayTaskQuery(:final dayStart, :final nextDayStart):
         expression = expression &
             task.completed.equals(false) &
-            task.dueAt.isSmallerThanValue(nextDayStart);
+            (task.dueAt.isSmallerThanValue(nextDayStart) |
+                _dateInRange(task.startAt, dayStart, nextDayStart));
       case NextSevenDaysTaskQuery(:final dayStart, :final eighthDayStart):
         expression = expression &
             task.completed.equals(false) &
-            task.dueAt.isBiggerOrEqualValue(dayStart) &
-            task.dueAt.isSmallerThanValue(eighthDayStart);
+            (_dateInRange(task.dueAt, dayStart, eighthDayStart) |
+                _dateInRange(task.startAt, dayStart, eighthDayStart));
       case AllTaskQuery(:final includeCompleted):
         if (!includeCompleted) {
           expression = expression & task.completed.equals(false);
@@ -532,6 +533,36 @@ class DriftTasksRepository implements TasksRepository {
           expression = expression &
               task.priority.isIn(rules.priorities.map((item) => item.index));
         }
+        if (rules.startRange != null) {
+          expression =
+              expression & _dateMatchesRule(task.startAt, rules.startRange!);
+        }
+        if (rules.dueRange != null) {
+          expression =
+              expression & _dateMatchesRule(task.dueAt, rules.dueRange!);
+        }
+    }
+    return expression;
+  }
+
+  Expression<bool> _dateMatchesRule(
+    GeneratedColumn<int> column,
+    TaskDateRange range,
+  ) {
+    return _dateInRange(column, range.from, range.before);
+  }
+
+  Expression<bool> _dateInRange(
+    GeneratedColumn<int> column,
+    int? from,
+    int? before,
+  ) {
+    var expression = column.isNotNull();
+    if (from != null) {
+      expression = expression & column.isBiggerOrEqualValue(from);
+    }
+    if (before != null) {
+      expression = expression & column.isSmallerThanValue(before);
     }
     return expression;
   }
@@ -586,7 +617,9 @@ class DriftTasksRepository implements TasksRepository {
         (rules.priorities.isEmpty ||
             rules.priorities.contains(
               TaskPriority.values[row.priority],
-            ));
+            )) &&
+        (rules.startRange == null || rules.startRange!.contains(row.startAt)) &&
+        (rules.dueRange == null || rules.dueRange!.contains(row.dueAt));
   }
 
   Comparator<TaskV2Row> _comparator(TaskSortMode mode) {
