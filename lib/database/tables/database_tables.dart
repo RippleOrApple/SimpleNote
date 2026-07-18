@@ -10,6 +10,7 @@ class DatabaseTables {
   static const appSettings = 'app_settings';
   static const taskLists = 'task_lists';
   static const tasksV2 = 'tasks_v2';
+  static const taskCompletions = 'task_completions';
   static const taskReminders = 'task_reminders';
   static const taskTags = 'task_tags';
   static const taskTagLinks = 'task_tag_links';

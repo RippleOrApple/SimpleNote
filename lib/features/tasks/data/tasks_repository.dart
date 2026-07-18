@@ -7,8 +7,10 @@ import '../../../core/utils/time.dart';
 import '../../../database/app_database.dart';
 import '../domain/smart_filter.dart';
 import '../domain/task.dart';
+import '../domain/task_completion.dart';
 import '../domain/task_list.dart';
 import '../domain/task_query.dart';
+import '../domain/task_recurrence.dart';
 import '../domain/task_reminder.dart';
 import '../domain/task_tag.dart';
 
@@ -25,9 +27,16 @@ abstract class TasksRepository {
   });
   Future<Task?> findTask(String id);
   Future<List<Task>> listSubtasks(String parentId);
+  Future<List<TaskCompletion>> listTaskCompletions(String taskId);
   Future<List<TaskReminder>> listTaskReminders(String taskId);
   Future<Map<String, Set<String>>> taskTagIds(Iterable<String> taskIds);
   Future<void> upsertTask(Task task);
+  Future<void> completeTaskOccurrence(
+    String id, {
+    required int completedAt,
+    required String completionId,
+  });
+  Future<void> uncompleteTask(String id, int updatedAt);
   Future<void> upsertTaskReminder(TaskReminder reminder);
   Future<void> softDeleteTask(String id, int deletedAt);
   Future<void> softDeleteTaskReminder(String id, int deletedAt);
@@ -142,6 +151,18 @@ class DriftTasksRepository implements TasksRepository {
   }
 
   @override
+  Future<List<TaskCompletion>> listTaskCompletions(String taskId) async {
+    final rows = await (_database.select(_database.taskCompletions)
+          ..where((row) => row.taskId.equals(taskId) & row.deletedAt.isNull())
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.scheduledAt),
+            (row) => OrderingTerm.asc(row.completedAt),
+          ]))
+        .get();
+    return rows.map(_fromCompletionRow).toList();
+  }
+
+  @override
   Future<Map<String, Set<String>>> taskTagIds(
     Iterable<String> taskIds,
   ) async {
@@ -186,6 +207,85 @@ class DriftTasksRepository implements TasksRepository {
   }
 
   @override
+  Future<void> completeTaskOccurrence(
+    String id, {
+    required int completedAt,
+    required String completionId,
+  }) async {
+    final row = await _database.tasksV2Dao.findById(id);
+    if (row == null || row.deletedAt != null) {
+      throw StateError('Cannot complete a missing or deleted task.');
+    }
+    final task = _fromRow(row);
+    final existingCompletions = await listTaskCompletions(id);
+    final recurrence = advanceRecurringTask(
+      task: task,
+      completedAt: completedAt,
+      completionCountAfterThis: existingCompletions.length + 1,
+    );
+    final scheduledAt =
+        recurrence?.scheduledAt ?? task.dueAt ?? task.startAt ?? completedAt;
+    final nextTask = recurrence?.nextTask ??
+        task.copyWith(
+          completed: true,
+          completedAt: completedAt,
+          updatedAt: completedAt,
+          version: task.version + 1,
+        );
+    await _database.transaction(() async {
+      await _database.into(_database.taskCompletions).insert(
+            TaskCompletionsCompanion.insert(
+              id: completionId,
+              taskId: id,
+              scheduledAt: scheduledAt,
+              completedAt: completedAt,
+              createdAt: completedAt,
+              updatedAt: completedAt,
+              deviceId: task.deviceId,
+            ),
+          );
+      await _database.tasksV2Dao.upsertTask(_toCompanion(nextTask));
+    });
+  }
+
+  @override
+  Future<void> uncompleteTask(String id, int updatedAt) async {
+    final row = await _database.tasksV2Dao.findById(id);
+    if (row == null || row.deletedAt != null) {
+      throw StateError('Cannot uncomplete a missing or deleted task.');
+    }
+    await _database.transaction(() async {
+      await _database.tasksV2Dao.upsertTask(_toCompanion(
+        _fromRow(row).copyWith(
+          completed: false,
+          clearCompletedAt: true,
+          updatedAt: updatedAt,
+          version: row.version + 1,
+        ),
+      ));
+      final latest = await (_database.select(_database.taskCompletions)
+            ..where(
+              (completion) =>
+                  completion.taskId.equals(id) & completion.deletedAt.isNull(),
+            )
+            ..orderBy([
+              (completion) => OrderingTerm.desc(completion.completedAt),
+            ])
+            ..limit(1))
+          .getSingleOrNull();
+      if (latest != null) {
+        await (_database.update(_database.taskCompletions)
+              ..where((completion) => completion.id.equals(latest.id)))
+            .write(TaskCompletionsCompanion(
+          deletedAt: Value(updatedAt),
+          updatedAt: Value(updatedAt),
+          version: Value(latest.version + 1),
+        ));
+      }
+    });
+  }
+
+  @override
   Future<void> upsertTaskReminder(TaskReminder reminder) async {
     _validateReminderTrigger(reminder);
     await _database.transaction(() async {
@@ -219,6 +319,18 @@ class DriftTasksRepository implements TasksRepository {
             ..where((task) => task.parentId.equals(id)))
           .write(
         TasksV2Companion(
+          deletedAt: Value(deletedAt),
+          updatedAt: Value(deletedAt),
+        ),
+      );
+      await (_database.update(_database.taskCompletions)
+            ..where(
+              (completion) =>
+                  completion.taskId.isIn(taskIds) &
+                  completion.deletedAt.isNull(),
+            ))
+          .write(
+        TaskCompletionsCompanion(
           deletedAt: Value(deletedAt),
           updatedAt: Value(deletedAt),
         ),
@@ -552,6 +664,19 @@ class DriftTasksRepository implements TasksRepository {
         recurrenceRule: row.recurrenceRule,
         recurrenceEndAt: row.recurrenceEndAt,
         recurrenceCount: row.recurrenceCount,
+        completedAt: row.completedAt,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        deletedAt: row.deletedAt,
+        deviceId: row.deviceId,
+        version: row.version,
+      );
+
+  static TaskCompletion _fromCompletionRow(TaskCompletionRow row) =>
+      TaskCompletion(
+        id: row.id,
+        taskId: row.taskId,
+        scheduledAt: row.scheduledAt,
         completedAt: row.completedAt,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,

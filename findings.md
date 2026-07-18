@@ -107,3 +107,11 @@
 - The missing Task 15 persistence piece is `task_reminders`, plus schema version 3 migration and repository contracts.
 - `DatabaseBackupService` currently backs up only schema 1 before schema 2 migration; schema 2 -> 3 should also create a pre-v3 backup for production files.
 - Reminder UI, native notification scheduling, recurrence completion events, and calendar aggregation are separate Phase 2 tasks.
+
+## V2 Task 16 Findings
+
+- The spec defines `task_completions` as the durable source for future task history and statistics.
+- A recurring task keeps one stable task ID; completing an occurrence records an event, computes the next date, then restores the task to incomplete with advanced dates.
+- Recurrence calculation must happen before the database transaction writes anything so invalid rules cannot leave a completion event without an advanced task.
+- Phase 2 has not shipped from `main`, so Task 16 can add `task_completions` to the same schema v3 migration introduced by Task 15.
+- `recurrence_count` is treated as the maximum number of active completion events; when the newly written event reaches that count, the task stays completed instead of advancing.

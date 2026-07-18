@@ -314,3 +314,35 @@
 
 - V2 Task 15 is complete.
 - V2 Task 16 is next: recurrence completion events and next-date advancement.
+
+## Session: 2026-07-18 - V2 Task 16
+
+### Planning
+
+- Updated `GOAL.md` for completion events and recurrence advancement.
+- Scoped recurrence support to dependency-free rules: daily, workdays, weekly `BYDAY`, monthly, yearly, and `INTERVAL`.
+- Decided to compute recurrence before writes so invalid rules leave no completion event or task mutation.
+
+### Implementation
+
+- Added `task_completions` to schema v3 plus an active task/schedule index.
+- Added `TaskCompletion` JSON/sync contracts.
+- Added dependency-free recurrence parsing and next-date calculation for daily, workday, weekly, monthly, yearly, interval, end-date, and count rules.
+- Added transactional `completeTaskOccurrence` and `uncompleteTask` repository APIs.
+- Routed `TasksController.toggleTask` through the transactional completion path.
+- Cascaded task soft deletion to active completion events.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `dart run build_runner build --delete-conflicting-outputs` | Pass, 134 outputs written |
+| `flutter test test/database/schema_v2_test.dart test/database/migration_v2_test.dart test/tasks/task_domain_test.dart test/tasks/task_recurrence_test.dart test/tasks/tasks_repository_test.dart test/tasks/tasks_controller_test.dart` | Pass, 42 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 166 files unchanged |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 205 tests |
+
+### Handoff
+
+- V2 Task 16 is complete.
+- V2 Task 17 is next: richer date filters for Today, Next 7 Days, and smart filters.

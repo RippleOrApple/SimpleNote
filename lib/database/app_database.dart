@@ -18,6 +18,7 @@ import 'tables/notes_table.dart';
 import 'tables/smart_filters_table.dart';
 import 'tables/sync_logs_table.dart';
 import 'tables/tags_table.dart';
+import 'tables/task_completions_table.dart';
 import 'tables/task_lists_table.dart';
 import 'tables/task_reminders_table.dart';
 import 'tables/task_tag_links_table.dart';
@@ -58,6 +59,7 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
     AppSettings,
     TaskLists,
     TasksV2,
+    TaskCompletions,
     TaskReminders,
     TaskTags,
     TaskTagLinks,

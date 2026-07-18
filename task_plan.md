@@ -165,3 +165,17 @@ Complete
 - Cover schema 1 -> 3, schema 2 -> 3, repository, and domain behavior with tests.
 - **Verification:** build_runner, formatter, `flutter analyze`, targeted task/database tests, and full `flutter test` passed.
 - **Next:** V2 Task 16, recurrence completion events and next-date advancement.
+
+## V2 Task 16: Completion Events and Recurrence Advancement
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Add `task_completions` persistence and domain contracts.
+- Add transactional task completion that records events.
+- Advance recurring tasks in place while preserving their stable task ID.
+- Support daily, workday, weekly `BYDAY`, monthly, yearly, interval, end-date, and count semantics.
+- Preserve existing task state when recurrence parsing or next-date calculation fails.
+- Cover schema, domain, repository, and controller paths with tests.
+- **Verification:** build_runner, formatter, `flutter analyze`, targeted task/database tests, and full `flutter test` passed with 205 tests.
+- **Next:** V2 Task 17, richer date filters for Today, Next 7 Days, and smart filters.

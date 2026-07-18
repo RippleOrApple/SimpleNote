@@ -2,42 +2,44 @@
 
 ## Objective
 
-Complete V2 Task 15: establish the Phase 2 task time and reminder foundation.
+Complete V2 Task 16: add task completion events and recurring-task advancement.
 
-Phase 1 already introduced the core task time fields on `tasks_v2`; this task should finish the first Phase 2 database step by moving the schema to version 3, adding reminder persistence, and exposing reminder contracts through the task domain and repository layer.
+Task completion should become a durable event stream for future history and statistics. Completing a recurring task should write a completion event, compute the next occurrence, keep the same task ID, and advance the task back to an incomplete future occurrence.
 
 ## Scope
 
-- Add schema v3 migration support.
-- Add the `task_reminders` table.
-- Keep existing `tasks_v2` start time, due time, all-day, and recurrence columns intact.
-- Add a `TaskReminder` domain model with JSON round-trip support.
-- Add repository methods for listing, upserting, and soft-deleting task reminders.
-- Validate that a reminder uses exactly one of absolute `triggerAt` or relative `offsetMinutes`.
-- Ensure reminders belong to an existing active task.
-- Soft-delete reminders when their task is soft-deleted.
-- Update schema, migration, domain, and repository tests.
+- Add `task_completions` persistence and domain contracts.
+- Add repository APIs for listing completion events and completing a task occurrence transactionally.
+- Record completion events for normal task completion.
+- For recurring tasks, compute the next occurrence before writing any data.
+- Support daily, workday, weekly, monthly, and yearly recurrence rules with optional `INTERVAL`.
+- Support weekly `BYDAY` selections.
+- Respect recurrence end dates and occurrence counts.
+- Preserve task state if recurrence parsing or next-date calculation fails.
+- Route `TasksController.toggleTask` through the repository completion transaction.
+- Update schema, domain, repository, and controller tests.
 - Update planning files with findings and verification results.
 
 ## Non-goals
 
-- Do not build reminder UI in the task detail pane yet.
-- Do not schedule platform notifications yet.
-- Do not implement recurrence advancement or completion event history yet.
-- Do not build calendar views yet.
+- Do not build recurrence editing UI yet.
+- Do not add calendar views yet.
+- Do not schedule native notifications yet.
+- Do not implement per-occurrence exceptions.
 - Do not re-enable V2 sync.
 
 ## Acceptance Criteria
 
-- [x] New databases use schema version 3.
-- [x] Existing schema 1 databases migrate through schema 2 and schema 3.
-- [x] Existing schema 2 databases migrate to schema 3 without losing V2 tasks.
-- [x] `task_reminders` exists with required sync metadata fields.
-- [x] `task_reminders` enforces exactly one of `trigger_at` or `offset_minutes`.
-- [x] Task reminders can be created, updated, listed, and soft-deleted through the repository.
-- [x] Creating a reminder for a missing or deleted task fails.
-- [x] Soft-deleting a task also soft-deletes its reminders.
-- [x] Task and reminder domain JSON round-trip tests pass.
+- [x] New databases include `task_completions`.
+- [x] Schema 2 databases migrate to include `task_completions`.
+- [x] `TaskCompletion` JSON round-trips.
+- [x] Completing a normal task marks it completed and writes one completion event.
+- [x] Completing a recurring task writes one completion event and advances the same task ID to the next incomplete occurrence.
+- [x] Daily, workday, weekly `BYDAY`, monthly, and yearly rules calculate the expected next occurrence.
+- [x] Recurrence `INTERVAL` is respected.
+- [x] Recurrence end date and count stop further advancement.
+- [x] Invalid recurrence rules leave the task unchanged and write no completion event.
+- [x] Controller completion uses the transactional completion path.
 - [x] `dart run build_runner build --delete-conflicting-outputs` passes.
 - [x] `dart format --output=none --set-exit-if-changed lib test` passes.
 - [x] `flutter analyze` passes.
@@ -45,15 +47,14 @@ Phase 1 already introduced the core task time fields on `tasks_v2`; this task sh
 
 ## Constraints
 
-- Keep Flutter, Riverpod, Drift, and the current feature-layer structure.
-- Keep Task 15 limited to persistence/domain/application contracts.
-- Prefer repository-level behavior tests before UI work.
+- Keep recurrence parsing deterministic and dependency-free.
+- Keep recurrence data in the existing `recurrence_rule`, `recurrence_end_at`, and `recurrence_count` task fields.
+- Keep Task 16 limited to persistence, domain, and application behavior.
 - Keep V1 sync disabled in production.
 
 ## Notes
 
-- V2 Phase 2 covers time, recurrence, reminders, and calendar.
-- Task 16 should own recurrence completion events and next-date advancement.
-- Task 17 should make date rules in Today, Next 7 Days, and smart filters richer.
-- Task 18 should introduce calendar aggregation UI.
+- Accepted rule shape is `FREQ=DAILY`, `FREQ=WORKDAYS`, `FREQ=WEEKLY;BYDAY=MO,WE`, `FREQ=MONTHLY`, or `FREQ=YEARLY`, with optional `INTERVAL=n`.
+- Task 17 should make date filtering richer.
+- Task 18 should introduce calendar aggregation.
 - Task 19 should schedule native reminders.

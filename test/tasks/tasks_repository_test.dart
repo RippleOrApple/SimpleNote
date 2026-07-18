@@ -158,6 +158,113 @@ void main() {
     );
   });
 
+  test('completing a normal task writes a completion event', () async {
+    await repository.upsertTask(_task('task', dueAt: 1000));
+
+    await repository.completeTaskOccurrence(
+      'task',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    final task = await repository.findTask('task');
+    final completions = await repository.listTaskCompletions('task');
+
+    expect(task?.completed, isTrue);
+    expect(task?.completedAt, 1500);
+    expect(completions, hasLength(1));
+    expect(completions.single.scheduledAt, 1000);
+    expect(completions.single.completedAt, 1500);
+  });
+
+  test('completing a recurring task records history and advances in place',
+      () async {
+    await repository.upsertTask(_task(
+      'daily',
+      startAt: 500,
+      dueAt: 1000,
+      recurrenceRule: 'FREQ=DAILY;INTERVAL=2',
+    ));
+
+    await repository.completeTaskOccurrence(
+      'daily',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    final task = await repository.findTask('daily');
+    final completions = await repository.listTaskCompletions('daily');
+
+    expect(task?.completed, isFalse);
+    expect(task?.completedAt, isNull);
+    expect(task?.startAt, 500 + const Duration(days: 2).inMilliseconds);
+    expect(task?.dueAt, 1000 + const Duration(days: 2).inMilliseconds);
+    expect(task?.id, 'daily');
+    expect(completions.single.scheduledAt, 1000);
+  });
+
+  test('recurrence count stops advancement on the final occurrence', () async {
+    await repository.upsertTask(_task(
+      'twice',
+      dueAt: 1000,
+      recurrenceRule: 'FREQ=DAILY',
+      recurrenceCount: 1,
+    ));
+
+    await repository.completeTaskOccurrence(
+      'twice',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    final task = await repository.findTask('twice');
+
+    expect(task?.completed, isTrue);
+    expect(task?.dueAt, 1000);
+    expect(task?.completedAt, 1500);
+  });
+
+  test('invalid recurrence leaves task and completions unchanged', () async {
+    await repository.upsertTask(_task(
+      'bad',
+      dueAt: 1000,
+      recurrenceRule: 'FREQ=HOURLY',
+    ));
+
+    await expectLater(
+      repository.completeTaskOccurrence(
+        'bad',
+        completedAt: 1500,
+        completionId: 'completion-1',
+      ),
+      throwsFormatException,
+    );
+
+    final task = await repository.findTask('bad');
+    final completions = await repository.listTaskCompletions('bad');
+
+    expect(task?.completed, isFalse);
+    expect(task?.dueAt, 1000);
+    expect(completions, isEmpty);
+  });
+
+  test('uncompleting a task soft deletes the latest completion', () async {
+    await repository.upsertTask(_task('task', dueAt: 1000));
+    await repository.completeTaskOccurrence(
+      'task',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    await repository.uncompleteTask('task', 2000);
+
+    final task = await repository.findTask('task');
+
+    expect(task?.completed, isFalse);
+    expect(task?.completedAt, isNull);
+    expect(await repository.listTaskCompletions('task'), isEmpty);
+  });
+
   test('creates, updates, lists, and soft deletes task reminders', () async {
     await repository.upsertTask(_task('task'));
     await repository.upsertTaskReminder(_reminder(
@@ -217,11 +324,17 @@ void main() {
     await repository.upsertTask(_task('child', parentId: 'parent'));
     await repository.upsertTaskReminder(_reminder('parent-reminder', 'parent'));
     await repository.upsertTaskReminder(_reminder('child-reminder', 'child'));
+    await repository.completeTaskOccurrence(
+      'parent',
+      completedAt: 100,
+      completionId: 'parent-completion',
+    );
 
     await repository.softDeleteTask('parent', 9000);
 
     expect(await repository.listTaskReminders('parent'), isEmpty);
     expect(await repository.listTaskReminders('child'), isEmpty);
+    expect(await repository.listTaskCompletions('parent'), isEmpty);
   });
 
   test('taxonomy CRUD soft deletes records', () async {
@@ -250,7 +363,10 @@ Task _task(
   String? title,
   String descriptionMarkdown = '',
   bool completed = false,
+  int? startAt,
   int? dueAt,
+  String? recurrenceRule,
+  int? recurrenceCount,
 }) {
   return Task(
     id: id,
@@ -259,7 +375,10 @@ Task _task(
     title: title ?? id,
     descriptionMarkdown: descriptionMarkdown,
     completed: completed,
+    startAt: startAt,
     dueAt: dueAt,
+    recurrenceRule: recurrenceRule,
+    recurrenceCount: recurrenceCount,
     createdAt: 1,
     updatedAt: 1,
     deviceId: 'device',

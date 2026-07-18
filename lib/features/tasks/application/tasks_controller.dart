@@ -288,7 +288,17 @@ class TasksController extends AsyncNotifier<TasksState> {
     final current = state.valueOrNull;
     final task = current == null ? null : _taskById(current, id);
     if (task == null) return;
-    await updateTask(id, completed: !task.completed);
+    final now = Clock.nowMillis();
+    await _write(
+      task.completed
+          ? () => _repository.uncompleteTask(id, now)
+          : () => _repository.completeTaskOccurrence(
+                id,
+                completedAt: now,
+                completionId: IdGenerator.create(),
+              ),
+      selectedTaskId: id,
+    );
     if (state.valueOrNull?.saveStatus == TaskSaveStatus.saved) {
       _triggerFeedback(HapticEvent.complete);
     }

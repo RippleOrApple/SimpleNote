@@ -183,6 +183,25 @@ void main() {
     expect(state.tasks.single.listId, isNull);
   });
 
+  test('toggle completion records a durable completion event', () async {
+    final harness = await _Harness.create();
+    addTearDown(harness.dispose);
+    final controller = harness.controller;
+
+    await controller.quickAdd('Done through controller');
+    final taskId = (await harness.state).selectedTaskId!;
+
+    await controller.toggleTask(taskId);
+
+    final repository = DriftTasksRepository(harness.database);
+    final task = await repository.findTask(taskId);
+    final completions = await repository.listTaskCompletions(taskId);
+
+    expect(task?.completed, isTrue);
+    expect(completions, hasLength(1));
+    expect(completions.single.taskId, taskId);
+  });
+
   test('write failure preserves state and selection', () async {
     final database = AppDatabase(NativeDatabase.memory());
     final repository = _FailingTasksRepository(database);
