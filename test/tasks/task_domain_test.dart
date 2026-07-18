@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/features/tasks/domain/smart_filter.dart';
 import 'package:simple_note/features/tasks/domain/task.dart';
+import 'package:simple_note/features/tasks/domain/task_completion.dart';
 import 'package:simple_note/features/tasks/domain/task_query.dart';
 import 'package:simple_note/features/tasks/domain/task_reminder.dart';
 
@@ -74,6 +75,24 @@ void main() {
     expect(relative.isRelative, isTrue);
   });
 
+  test('TaskCompletion JSON round-trips sync fields', () {
+    const completion = TaskCompletion(
+      id: 'completion-1',
+      taskId: 'task-1',
+      scheduledAt: 1000,
+      completedAt: 1500,
+      createdAt: 1500,
+      updatedAt: 1600,
+      deviceId: 'device',
+      version: 2,
+    );
+
+    final restored = TaskCompletion.fromJson(completion.toJson());
+
+    expect(restored.toJson(), completion.toJson());
+    expect(restored.isDeleted, isFalse);
+  });
+
   test('TaskReminder copyWith can switch trigger type and clear fire state',
       () {
     const reminder = TaskReminder(
@@ -106,6 +125,8 @@ void main() {
         tagIds: {'tag-1'},
         completed: false,
         priorities: {TaskPriority.high},
+        startRange: TaskDateRange(from: 1000, before: 2000),
+        dueRange: TaskDateRange(before: 3000),
       ),
       sortMode: TaskSortMode.priority,
       createdAt: 1,
@@ -118,7 +139,23 @@ void main() {
     expect(restored.rules.listIds, {'list-1'});
     expect(restored.rules.tagIds, {'tag-1'});
     expect(restored.rules.priorities, {TaskPriority.high});
+    expect(restored.rules.startRange?.from, 1000);
+    expect(restored.rules.startRange?.before, 2000);
+    expect(restored.rules.dueRange?.before, 3000);
     expect(restored.sortMode, TaskSortMode.priority);
+  });
+
+  test('filter rules remain compatible without date ranges', () {
+    final rules = TaskFilterRules.fromJson({
+      'listIds': ['list-1'],
+      'tagIds': const [],
+      'completed': false,
+      'priorities': ['high'],
+    });
+
+    expect(rules.listIds, {'list-1'});
+    expect(rules.startRange, isNull);
+    expect(rules.dueRange, isNull);
   });
 
   test('query factories preserve their semantics and sort mode', () {

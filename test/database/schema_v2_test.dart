@@ -21,6 +21,7 @@ void main() {
       containsAll({
         'task_lists',
         'tasks_v2',
+        'task_completions',
         'task_reminders',
         'task_tags',
         'task_tag_links',
@@ -42,6 +43,7 @@ void main() {
         'custom_colors_rgb_active',
         'content_attachments_owner_active',
         'tasks_v2_due_active',
+        'task_completions_task_active',
         'task_reminders_task_active',
       }),
     );

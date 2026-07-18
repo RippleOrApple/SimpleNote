@@ -1,7 +1,7 @@
 import 'smart_filter.dart';
 import 'task_sort_mode.dart';
 
-export 'smart_filter.dart' show TaskFilterRules;
+export 'smart_filter.dart' show TaskDateRange, TaskFilterRules;
 export 'task_sort_mode.dart' show TaskSortMode;
 
 sealed class TaskQuery {

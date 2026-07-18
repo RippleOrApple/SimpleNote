@@ -157,10 +157,10 @@ void main() {
           "'task_lists', 'tasks_v2', 'task_tags', 'task_tag_links', "
           "'smart_filters', 'content_attachments', 'custom_colors', "
           "'background_images', 'device_appearance_profiles', "
-          "'task_reminders')",
+          "'task_reminders', 'task_completions')",
         )
         .getSingle();
-    expect(tables.read<int>('count'), 10);
+    expect(tables.read<int>('count'), 11);
 
     final indexes = await database
         .customSelect(
@@ -168,10 +168,10 @@ void main() {
           "WHERE type = 'index' AND name IN ("
           "'custom_colors_rgb_active', "
           "'content_attachments_owner_active', 'tasks_v2_due_active', "
-          "'task_reminders_task_active')",
+          "'task_reminders_task_active', 'task_completions_task_active')",
         )
         .getSingle();
-    expect(indexes.read<int>('count'), 4);
+    expect(indexes.read<int>('count'), 5);
 
     final version =
         await database.customSelect('PRAGMA user_version').getSingle();

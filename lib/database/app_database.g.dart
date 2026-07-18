@@ -4472,6 +4472,479 @@ class TasksV2Companion extends UpdateCompanion<TaskV2Row> {
   }
 }
 
+class $TaskCompletionsTable extends TaskCompletions
+    with TableInfo<$TaskCompletionsTable, TaskCompletionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskCompletionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+      'task_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _scheduledAtMeta =
+      const VerificationMeta('scheduledAt');
+  @override
+  late final GeneratedColumn<int> scheduledAt = GeneratedColumn<int>(
+      'scheduled_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _completedAtMeta =
+      const VerificationMeta('completedAt');
+  @override
+  late final GeneratedColumn<int> completedAt = GeneratedColumn<int>(
+      'completed_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        taskId,
+        scheduledAt,
+        completedAt,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_completions';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskCompletionRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('scheduled_at')) {
+      context.handle(
+          _scheduledAtMeta,
+          scheduledAt.isAcceptableOrUnknown(
+              data['scheduled_at']!, _scheduledAtMeta));
+    } else if (isInserting) {
+      context.missing(_scheduledAtMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+          _completedAtMeta,
+          completedAt.isAcceptableOrUnknown(
+              data['completed_at']!, _completedAtMeta));
+    } else if (isInserting) {
+      context.missing(_completedAtMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskCompletionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskCompletionRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
+      scheduledAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}scheduled_at'])!,
+      completedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}completed_at'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $TaskCompletionsTable createAlias(String alias) {
+    return $TaskCompletionsTable(attachedDatabase, alias);
+  }
+}
+
+class TaskCompletionRow extends DataClass
+    implements Insertable<TaskCompletionRow> {
+  final String id;
+  final String taskId;
+  final int scheduledAt;
+  final int completedAt;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const TaskCompletionRow(
+      {required this.id,
+      required this.taskId,
+      required this.scheduledAt,
+      required this.completedAt,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['task_id'] = Variable<String>(taskId);
+    map['scheduled_at'] = Variable<int>(scheduledAt);
+    map['completed_at'] = Variable<int>(completedAt);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  TaskCompletionsCompanion toCompanion(bool nullToAbsent) {
+    return TaskCompletionsCompanion(
+      id: Value(id),
+      taskId: Value(taskId),
+      scheduledAt: Value(scheduledAt),
+      completedAt: Value(completedAt),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory TaskCompletionRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskCompletionRow(
+      id: serializer.fromJson<String>(json['id']),
+      taskId: serializer.fromJson<String>(json['taskId']),
+      scheduledAt: serializer.fromJson<int>(json['scheduledAt']),
+      completedAt: serializer.fromJson<int>(json['completedAt']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'taskId': serializer.toJson<String>(taskId),
+      'scheduledAt': serializer.toJson<int>(scheduledAt),
+      'completedAt': serializer.toJson<int>(completedAt),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  TaskCompletionRow copyWith(
+          {String? id,
+          String? taskId,
+          int? scheduledAt,
+          int? completedAt,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      TaskCompletionRow(
+        id: id ?? this.id,
+        taskId: taskId ?? this.taskId,
+        scheduledAt: scheduledAt ?? this.scheduledAt,
+        completedAt: completedAt ?? this.completedAt,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  TaskCompletionRow copyWithCompanion(TaskCompletionsCompanion data) {
+    return TaskCompletionRow(
+      id: data.id.present ? data.id.value : this.id,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      scheduledAt:
+          data.scheduledAt.present ? data.scheduledAt.value : this.scheduledAt,
+      completedAt:
+          data.completedAt.present ? data.completedAt.value : this.completedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskCompletionRow(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('scheduledAt: $scheduledAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, taskId, scheduledAt, completedAt,
+      createdAt, updatedAt, deletedAt, deviceId, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskCompletionRow &&
+          other.id == this.id &&
+          other.taskId == this.taskId &&
+          other.scheduledAt == this.scheduledAt &&
+          other.completedAt == this.completedAt &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class TaskCompletionsCompanion extends UpdateCompanion<TaskCompletionRow> {
+  final Value<String> id;
+  final Value<String> taskId;
+  final Value<int> scheduledAt;
+  final Value<int> completedAt;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const TaskCompletionsCompanion({
+    this.id = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.scheduledAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskCompletionsCompanion.insert({
+    required String id,
+    required String taskId,
+    required int scheduledAt,
+    required int completedAt,
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        taskId = Value(taskId),
+        scheduledAt = Value(scheduledAt),
+        completedAt = Value(completedAt),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<TaskCompletionRow> custom({
+    Expression<String>? id,
+    Expression<String>? taskId,
+    Expression<int>? scheduledAt,
+    Expression<int>? completedAt,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (taskId != null) 'task_id': taskId,
+      if (scheduledAt != null) 'scheduled_at': scheduledAt,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskCompletionsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? taskId,
+      Value<int>? scheduledAt,
+      Value<int>? completedAt,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return TaskCompletionsCompanion(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      scheduledAt: scheduledAt ?? this.scheduledAt,
+      completedAt: completedAt ?? this.completedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (scheduledAt.present) {
+      map['scheduled_at'] = Variable<int>(scheduledAt.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<int>(completedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskCompletionsCompanion(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('scheduledAt: $scheduledAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TaskRemindersTable extends TaskReminders
     with TableInfo<$TaskRemindersTable, TaskReminderRow> {
   @override
@@ -8937,6 +9410,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   late final $TaskListsTable taskLists = $TaskListsTable(this);
   late final $TasksV2Table tasksV2 = $TasksV2Table(this);
+  late final $TaskCompletionsTable taskCompletions =
+      $TaskCompletionsTable(this);
   late final $TaskRemindersTable taskReminders = $TaskRemindersTable(this);
   late final $TaskTagsTable taskTags = $TaskTagsTable(this);
   late final $TaskTagLinksTable taskTagLinks = $TaskTagLinksTable(this);
@@ -8977,6 +9452,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         appSettings,
         taskLists,
         tasksV2,
+        taskCompletions,
         taskReminders,
         taskTags,
         taskTagLinks,
@@ -11121,6 +11597,240 @@ typedef $$TasksV2TableProcessedTableManager = ProcessedTableManager<
     $$TasksV2TableUpdateCompanionBuilder,
     (TaskV2Row, BaseReferences<_$AppDatabase, $TasksV2Table, TaskV2Row>),
     TaskV2Row,
+    PrefetchHooks Function()>;
+typedef $$TaskCompletionsTableCreateCompanionBuilder = TaskCompletionsCompanion
+    Function({
+  required String id,
+  required String taskId,
+  required int scheduledAt,
+  required int completedAt,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$TaskCompletionsTableUpdateCompanionBuilder = TaskCompletionsCompanion
+    Function({
+  Value<String> id,
+  Value<String> taskId,
+  Value<int> scheduledAt,
+  Value<int> completedAt,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$TaskCompletionsTableFilterComposer
+    extends Composer<_$AppDatabase, $TaskCompletionsTable> {
+  $$TaskCompletionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get scheduledAt => $composableBuilder(
+      column: $table.scheduledAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get completedAt => $composableBuilder(
+      column: $table.completedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$TaskCompletionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TaskCompletionsTable> {
+  $$TaskCompletionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get scheduledAt => $composableBuilder(
+      column: $table.scheduledAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get completedAt => $composableBuilder(
+      column: $table.completedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TaskCompletionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TaskCompletionsTable> {
+  $$TaskCompletionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => column);
+
+  GeneratedColumn<int> get scheduledAt => $composableBuilder(
+      column: $table.scheduledAt, builder: (column) => column);
+
+  GeneratedColumn<int> get completedAt => $composableBuilder(
+      column: $table.completedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$TaskCompletionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskCompletionsTable,
+    TaskCompletionRow,
+    $$TaskCompletionsTableFilterComposer,
+    $$TaskCompletionsTableOrderingComposer,
+    $$TaskCompletionsTableAnnotationComposer,
+    $$TaskCompletionsTableCreateCompanionBuilder,
+    $$TaskCompletionsTableUpdateCompanionBuilder,
+    (
+      TaskCompletionRow,
+      BaseReferences<_$AppDatabase, $TaskCompletionsTable, TaskCompletionRow>
+    ),
+    TaskCompletionRow,
+    PrefetchHooks Function()> {
+  $$TaskCompletionsTableTableManager(
+      _$AppDatabase db, $TaskCompletionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskCompletionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskCompletionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskCompletionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> taskId = const Value.absent(),
+            Value<int> scheduledAt = const Value.absent(),
+            Value<int> completedAt = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskCompletionsCompanion(
+            id: id,
+            taskId: taskId,
+            scheduledAt: scheduledAt,
+            completedAt: completedAt,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String taskId,
+            required int scheduledAt,
+            required int completedAt,
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskCompletionsCompanion.insert(
+            id: id,
+            taskId: taskId,
+            scheduledAt: scheduledAt,
+            completedAt: completedAt,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TaskCompletionsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskCompletionsTable,
+    TaskCompletionRow,
+    $$TaskCompletionsTableFilterComposer,
+    $$TaskCompletionsTableOrderingComposer,
+    $$TaskCompletionsTableAnnotationComposer,
+    $$TaskCompletionsTableCreateCompanionBuilder,
+    $$TaskCompletionsTableUpdateCompanionBuilder,
+    (
+      TaskCompletionRow,
+      BaseReferences<_$AppDatabase, $TaskCompletionsTable, TaskCompletionRow>
+    ),
+    TaskCompletionRow,
     PrefetchHooks Function()>;
 typedef $$TaskRemindersTableCreateCompanionBuilder = TaskRemindersCompanion
     Function({
@@ -13270,6 +13980,8 @@ class $AppDatabaseManager {
       $$TaskListsTableTableManager(_db, _db.taskLists);
   $$TasksV2TableTableManager get tasksV2 =>
       $$TasksV2TableTableManager(_db, _db.tasksV2);
+  $$TaskCompletionsTableTableManager get taskCompletions =>
+      $$TaskCompletionsTableTableManager(_db, _db.taskCompletions);
   $$TaskRemindersTableTableManager get taskReminders =>
       $$TaskRemindersTableTableManager(_db, _db.taskReminders);
   $$TaskTagsTableTableManager get taskTags =>

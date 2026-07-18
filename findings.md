@@ -107,3 +107,46 @@
 - The missing Task 15 persistence piece is `task_reminders`, plus schema version 3 migration and repository contracts.
 - `DatabaseBackupService` currently backs up only schema 1 before schema 2 migration; schema 2 -> 3 should also create a pre-v3 backup for production files.
 - Reminder UI, native notification scheduling, recurrence completion events, and calendar aggregation are separate Phase 2 tasks.
+
+## V2 Task 16 Findings
+
+- The spec defines `task_completions` as the durable source for future task history and statistics.
+- A recurring task keeps one stable task ID; completing an occurrence records an event, computes the next date, then restores the task to incomplete with advanced dates.
+- Recurrence calculation must happen before the database transaction writes anything so invalid rules cannot leave a completion event without an advanced task.
+- Phase 2 has not shipped from `main`, so Task 16 can add `task_completions` to the same schema v3 migration introduced by Task 15.
+- `recurrence_count` is treated as the maximum number of active completion events; when the newly written event reaches that count, the task stays completed instead of advancing.
+
+## V2 Task 17 Findings
+
+- `TaskFilterRules` currently covers list IDs, tag IDs, completion, and priority only; date controls in the editor were intentionally disabled during Phase 1.
+- Built-in Today currently considers `dueAt < nextDayStart`, which includes overdue and due-today tasks but misses tasks with only `startAt`.
+- Built-in Next 7 Days currently considers only `dueAt` in range; Phase 2 should include either start or due dates in range.
+- Date range checks should run in repository predicates so search, saved filters, and controller reloads share one behavior.
+- Drift nullable integer columns should be passed as generated columns for date helper predicates; `Expression<int?>` violates Drift's non-nullable generic bound.
+- The smart-filter date editor control key needs to live on the real `OutlinedButton`, not the outer row, so widget tests and pointer hit testing exercise the active control.
+
+## V2 Task 18 Findings
+
+- The design spec defines Calendar as a read-only aggregation module; it must not create calendar-owned task, note, or habit tables.
+- Notes belong on the calendar by immutable `createdAt`; editing a note must not move its calendar entry.
+- Calendar aggregation can query Drift directly through a dedicated repository because it spans multiple modules, while presentation should use a controller/provider.
+- Until a full visual calendar exists, the important deliverable is deterministic range aggregation that later UI can reuse.
+- Recurring task expansion can reuse `TaskRecurrenceRule`; invalid rules should fall back to the current task marker instead of breaking the entire calendar query.
+- A recurring task's `recurrenceCount` must be interpreted against active completion events because completed occurrences are stored separately in `task_completions`.
+
+## V2 Task 19 Findings
+
+- The spec places notification ownership outside Tasks: Notifications convert reminder definitions into current-platform local notifications.
+- The project does not currently depend on a native notification plugin, so Task 19 should introduce a replaceable platform scheduler interface first.
+- Relative reminders need a task time anchor; due time is the strongest anchor, with start time as the fallback.
+- `firedAt` already exists in `task_reminders`, but the repository needs an explicit operation to persist it from the scheduling layer.
+- Stable platform notification IDs can be derived from reminder IDs with a `task-reminder:` prefix, making reconciliation independent of database row order.
+- Reconciliation should preserve unrelated notification IDs and only cancel stale IDs in the task-reminder namespace.
+
+## V2 Task 20 Findings
+
+- `TasksState` currently loads selected subtasks but not selected reminders, so reminder UI needs state support instead of direct widget database calls.
+- `TaskDetailPane` is already the central place for task metadata controls, tags, subtasks, save status, and delete actions.
+- Scheduling hooks belong in controller writes because controller methods already coordinate repository writes and UI save state.
+- Relative reminder creation needs a task anchor; the detail pane can keep controls enabled only when `dueAt` or `startAt` exists.
+- Reminder reconciliation should run after the repository write completes so the scheduler sees current task/reminder state.

@@ -165,3 +165,72 @@ Complete
 - Cover schema 1 -> 3, schema 2 -> 3, repository, and domain behavior with tests.
 - **Verification:** build_runner, formatter, `flutter analyze`, targeted task/database tests, and full `flutter test` passed.
 - **Next:** V2 Task 16, recurrence completion events and next-date advancement.
+
+## V2 Task 16: Completion Events and Recurrence Advancement
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Add `task_completions` persistence and domain contracts.
+- Add transactional task completion that records events.
+- Advance recurring tasks in place while preserving their stable task ID.
+- Support daily, workday, weekly `BYDAY`, monthly, yearly, interval, end-date, and count semantics.
+- Preserve existing task state when recurrence parsing or next-date calculation fails.
+- Cover schema, domain, repository, and controller paths with tests.
+- **Verification:** build_runner, formatter, `flutter analyze`, targeted task/database tests, and full `flutter test` passed with 205 tests.
+- **Next:** V2 Task 17, richer date filters for Today, Next 7 Days, and smart filters.
+
+## V2 Task 17: Date Queries and Smart Filter Date Rules
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Extend `TaskFilterRules` with active start and due date ranges.
+- Make Today include overdue, due-today, and start-today tasks.
+- Make Next 7 Days include tasks with start or due dates inside the seven-day window.
+- Apply date ranges inside repository smart-filter evaluation.
+- Replace the disabled date-rule placeholder in the smart-filter editor with active controls.
+- Cover JSON compatibility, repository semantics, controller persistence, and widget UI.
+- **Verification:** formatter, `flutter analyze`, targeted task tests, and full `flutter test` passed with 208 tests.
+- **Next:** V2 Task 18, calendar aggregation.
+
+## V2 Task 18: Calendar Aggregation
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Add read-only calendar domain objects for entries and day buckets.
+- Aggregate task start/due markers and note creation dates over a requested range.
+- Expand active recurring task schedules without creating calendar-owned data.
+- Exclude deleted source records and subtasks.
+- Add a Calendar controller for loading date ranges.
+- Cover grouping, sorting, recurrence caps, invalid recurrence fallback, and controller reload behavior.
+- **Verification:** formatter, `flutter analyze`, targeted calendar tests, and full `flutter test` passed with 211 tests.
+- **Next:** V2 Task 19, reminder scheduling.
+
+## V2 Task 19: Reminder Scheduling
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Add a notification scheduling interface with a no-op default adapter.
+- Add task reminder schedule domain objects.
+- Resolve pending absolute and relative task reminders through the task repository.
+- Reconcile pending reminders into platform notification requests.
+- Cancel stale task reminder notification IDs and mark reminders fired.
+- Cover repository filtering, relative trigger resolution, reconciliation, cancellation, and fired-state persistence.
+- **Verification:** formatter, `flutter analyze`, targeted task/notification tests, and full `flutter test` passed with 215 tests.
+- **Next:** V2 Task 20, reminder UI and scheduling hooks.
+
+## V2 Task 20: Reminder UI and Scheduling Hooks
+
+- **Status:** complete
+- **Started:** 2026-07-18
+- **Completed:** 2026-07-18
+- Load selected task reminders into task state.
+- Add controller APIs for absolute reminders, relative reminders, and reminder deletion.
+- Reconcile reminder scheduling after task time/completion/deletion and reminder changes.
+- Add compact reminder controls and removal actions to the task detail pane.
+- Cover controller state, scheduling hooks, and widget reminder controls.
+- **Verification:** formatter, `flutter analyze`, targeted task tests, and full `flutter test` passed with 217 tests.
+- **Next:** confirm V2 Task 21 scope.

@@ -25,7 +25,10 @@ void main() {
     await repository.upsertTask(_task('inbox'));
     await repository.upsertTask(_task('overdue', dueAt: 500));
     await repository.upsertTask(_task('today', dueAt: 1500));
+    await repository.upsertTask(_task('starts-today', startAt: 1500));
+    await repository.upsertTask(_task('tomorrow', dueAt: 2500));
     await repository.upsertTask(_task('next', dueAt: 2500));
+    await repository.upsertTask(_task('starts-next', startAt: 3000));
     await repository.upsertTask(_task('listed', listId: 'list-1'));
     await repository.upsertTask(_task('completed', completed: true));
     await repository.upsertTask(_task('child', parentId: 'listed'));
@@ -39,14 +42,21 @@ void main() {
         TaskQuery.today(dayStart: 1000, nextDayStart: 2000),
       ))
           .map((task) => task.id),
-      containsAll(['overdue', 'today']),
+      containsAll(['overdue', 'today', 'starts-today']),
+    );
+    expect(
+      (await repository.queryTasks(
+        TaskQuery.today(dayStart: 1000, nextDayStart: 2000),
+      ))
+          .map((task) => task.id),
+      isNot(contains('tomorrow')),
     );
     expect(
       (await repository.queryTasks(
         TaskQuery.nextSevenDays(dayStart: 2000, eighthDayStart: 9000),
       ))
           .map((task) => task.id),
-      contains('next'),
+      containsAll(['next', 'starts-next']),
     );
     expect(
       (await repository.queryTasks(TaskQuery.list('list-1')))
@@ -120,6 +130,53 @@ void main() {
     expect(result.map((task) => task.id), ['tagged']);
   });
 
+  test('smart filters apply start and due date ranges with other rules',
+      () async {
+    await repository.upsertTaskList(_list('list-1'));
+    await repository.upsertTask(_task(
+      'match',
+      listId: 'list-1',
+      startAt: 1200,
+      dueAt: 1800,
+      priority: TaskPriority.high,
+    ));
+    await repository.upsertTask(_task(
+      'wrong-start',
+      listId: 'list-1',
+      startAt: 900,
+      dueAt: 1800,
+      priority: TaskPriority.high,
+    ));
+    await repository.upsertTask(_task(
+      'wrong-due',
+      listId: 'list-1',
+      startAt: 1200,
+      dueAt: 2200,
+      priority: TaskPriority.high,
+    ));
+    await repository.upsertTask(_task(
+      'wrong-priority',
+      listId: 'list-1',
+      startAt: 1200,
+      dueAt: 1800,
+      priority: TaskPriority.low,
+    ));
+
+    final result = await repository.queryTasks(
+      TaskQuery.filter(
+        const TaskFilterRules(
+          listIds: {'list-1'},
+          priorities: {TaskPriority.high},
+          startRange: TaskDateRange(from: 1000, before: 2000),
+          dueRange: TaskDateRange(from: 1000, before: 2000),
+        ),
+        sortMode: TaskSortMode.manual,
+      ),
+    );
+
+    expect(result.map((task) => task.id), ['match']);
+  });
+
   test('enforces one subtask level and inherits parent list', () async {
     await repository.upsertTask(_task('parent', listId: 'list-1'));
     await repository.upsertTask(_task('child', parentId: 'parent'));
@@ -156,6 +213,113 @@ void main() {
       repository.replaceTaskTags('active', ['deleted-tag']),
       throwsA(isA<StateError>()),
     );
+  });
+
+  test('completing a normal task writes a completion event', () async {
+    await repository.upsertTask(_task('task', dueAt: 1000));
+
+    await repository.completeTaskOccurrence(
+      'task',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    final task = await repository.findTask('task');
+    final completions = await repository.listTaskCompletions('task');
+
+    expect(task?.completed, isTrue);
+    expect(task?.completedAt, 1500);
+    expect(completions, hasLength(1));
+    expect(completions.single.scheduledAt, 1000);
+    expect(completions.single.completedAt, 1500);
+  });
+
+  test('completing a recurring task records history and advances in place',
+      () async {
+    await repository.upsertTask(_task(
+      'daily',
+      startAt: 500,
+      dueAt: 1000,
+      recurrenceRule: 'FREQ=DAILY;INTERVAL=2',
+    ));
+
+    await repository.completeTaskOccurrence(
+      'daily',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    final task = await repository.findTask('daily');
+    final completions = await repository.listTaskCompletions('daily');
+
+    expect(task?.completed, isFalse);
+    expect(task?.completedAt, isNull);
+    expect(task?.startAt, 500 + const Duration(days: 2).inMilliseconds);
+    expect(task?.dueAt, 1000 + const Duration(days: 2).inMilliseconds);
+    expect(task?.id, 'daily');
+    expect(completions.single.scheduledAt, 1000);
+  });
+
+  test('recurrence count stops advancement on the final occurrence', () async {
+    await repository.upsertTask(_task(
+      'twice',
+      dueAt: 1000,
+      recurrenceRule: 'FREQ=DAILY',
+      recurrenceCount: 1,
+    ));
+
+    await repository.completeTaskOccurrence(
+      'twice',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    final task = await repository.findTask('twice');
+
+    expect(task?.completed, isTrue);
+    expect(task?.dueAt, 1000);
+    expect(task?.completedAt, 1500);
+  });
+
+  test('invalid recurrence leaves task and completions unchanged', () async {
+    await repository.upsertTask(_task(
+      'bad',
+      dueAt: 1000,
+      recurrenceRule: 'FREQ=HOURLY',
+    ));
+
+    await expectLater(
+      repository.completeTaskOccurrence(
+        'bad',
+        completedAt: 1500,
+        completionId: 'completion-1',
+      ),
+      throwsFormatException,
+    );
+
+    final task = await repository.findTask('bad');
+    final completions = await repository.listTaskCompletions('bad');
+
+    expect(task?.completed, isFalse);
+    expect(task?.dueAt, 1000);
+    expect(completions, isEmpty);
+  });
+
+  test('uncompleting a task soft deletes the latest completion', () async {
+    await repository.upsertTask(_task('task', dueAt: 1000));
+    await repository.completeTaskOccurrence(
+      'task',
+      completedAt: 1500,
+      completionId: 'completion-1',
+    );
+
+    await repository.uncompleteTask('task', 2000);
+
+    final task = await repository.findTask('task');
+
+    expect(task?.completed, isFalse);
+    expect(task?.completedAt, isNull);
+    expect(await repository.listTaskCompletions('task'), isEmpty);
   });
 
   test('creates, updates, lists, and soft deletes task reminders', () async {
@@ -197,6 +361,103 @@ void main() {
     );
   });
 
+  test('lists pending reminder schedules with resolved fire times', () async {
+    await repository.upsertTask(_task('absolute'));
+    await repository.upsertTaskReminder(_reminder(
+      'absolute-reminder',
+      'absolute',
+      triggerAt: 5000,
+    ));
+    await repository.upsertTask(_task('relative-due', dueAt: 10000000));
+    await repository.upsertTaskReminder(_reminder(
+      'relative-due-reminder',
+      'relative-due',
+      offsetMinutes: -30,
+    ));
+    await repository.upsertTask(_task('relative-start', startAt: 5000000));
+    await repository.upsertTaskReminder(_reminder(
+      'relative-start-reminder',
+      'relative-start',
+      offsetMinutes: 10,
+    ));
+    await repository.upsertTask(_task('past'));
+    await repository.upsertTaskReminder(_reminder(
+      'past-reminder',
+      'past',
+      triggerAt: 500,
+    ));
+    await repository.upsertTask(_task('completed', completed: true));
+    await repository.upsertTaskReminder(_reminder(
+      'completed-reminder',
+      'completed',
+      triggerAt: 6000,
+    ));
+    await repository.upsertTask(_task('unanchored'));
+    await repository.upsertTaskReminder(_reminder(
+      'unanchored-reminder',
+      'unanchored',
+      offsetMinutes: -5,
+    ));
+    await repository.upsertTask(_task('fired'));
+    await repository.upsertTaskReminder(_reminder(
+      'fired-reminder',
+      'fired',
+      triggerAt: 7000,
+      firedAt: 6500,
+    ));
+    await repository.upsertTask(_task('deleted'));
+    await repository.upsertTaskReminder(_reminder(
+      'deleted-reminder',
+      'deleted',
+      triggerAt: 8000,
+    ));
+    await repository.softDeleteTask('deleted', 2000);
+
+    final schedules = await repository.listPendingTaskReminderSchedules(
+      now: 1000,
+      before: 20000000,
+    );
+
+    expect(schedules.map((schedule) => schedule.reminder.id), [
+      'absolute-reminder',
+      'relative-start-reminder',
+      'relative-due-reminder',
+    ]);
+    expect(schedules.map((schedule) => schedule.fireAt), [
+      5000,
+      5600000,
+      8200000,
+    ]);
+    expect(schedules.map((schedule) => schedule.task.id), [
+      'absolute',
+      'relative-start',
+      'relative-due',
+    ]);
+  });
+
+  test('marking a reminder fired removes it from pending schedules', () async {
+    await repository.upsertTask(_task('task'));
+    await repository.upsertTaskReminder(_reminder(
+      'absolute',
+      'task',
+      triggerAt: 5000,
+    ));
+
+    await repository.markTaskReminderFired('absolute', 3000);
+
+    expect(
+      (await repository.listTaskReminders('task')).single.firedAt,
+      3000,
+    );
+    expect(
+      await repository.listPendingTaskReminderSchedules(
+        now: 1000,
+        before: 10000,
+      ),
+      isEmpty,
+    );
+  });
+
   test('rejects reminders for missing or deleted tasks', () async {
     await expectLater(
       repository.upsertTaskReminder(_reminder('missing', 'missing')),
@@ -217,11 +478,17 @@ void main() {
     await repository.upsertTask(_task('child', parentId: 'parent'));
     await repository.upsertTaskReminder(_reminder('parent-reminder', 'parent'));
     await repository.upsertTaskReminder(_reminder('child-reminder', 'child'));
+    await repository.completeTaskOccurrence(
+      'parent',
+      completedAt: 100,
+      completionId: 'parent-completion',
+    );
 
     await repository.softDeleteTask('parent', 9000);
 
     expect(await repository.listTaskReminders('parent'), isEmpty);
     expect(await repository.listTaskReminders('child'), isEmpty);
+    expect(await repository.listTaskCompletions('parent'), isEmpty);
   });
 
   test('taxonomy CRUD soft deletes records', () async {
@@ -250,7 +517,12 @@ Task _task(
   String? title,
   String descriptionMarkdown = '',
   bool completed = false,
+  TaskPriority priority = TaskPriority.none,
+  int? startAt,
   int? dueAt,
+  int? deletedAt,
+  String? recurrenceRule,
+  int? recurrenceCount,
 }) {
   return Task(
     id: id,
@@ -259,7 +531,12 @@ Task _task(
     title: title ?? id,
     descriptionMarkdown: descriptionMarkdown,
     completed: completed,
+    priority: priority,
+    startAt: startAt,
     dueAt: dueAt,
+    deletedAt: deletedAt,
+    recurrenceRule: recurrenceRule,
+    recurrenceCount: recurrenceCount,
     createdAt: 1,
     updatedAt: 1,
     deviceId: 'device',
@@ -271,6 +548,7 @@ TaskReminder _reminder(
   String taskId, {
   int? triggerAt,
   int? offsetMinutes,
+  int? firedAt,
   int createdAt = 1,
   int updatedAt = 1,
 }) {
@@ -281,6 +559,7 @@ TaskReminder _reminder(
     taskId: taskId,
     triggerAt: effectiveTriggerAt,
     offsetMinutes: offsetMinutes,
+    firedAt: firedAt,
     createdAt: createdAt,
     updatedAt: updatedAt,
     deviceId: 'device',

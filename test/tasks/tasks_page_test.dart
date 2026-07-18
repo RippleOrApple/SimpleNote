@@ -91,6 +91,23 @@ void main() {
     );
     expect(priority.selected, isTrue);
   });
+
+  testWidgets('task detail exposes reminder controls', (tester) async {
+    final harness = await _pumpTasks(tester, size: const Size(1280, 800));
+    addTearDown(harness.dispose);
+
+    await tester.tap(find.byKey(const Key('task-row-release')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('task-reminders-section')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('task-add-reminder')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('task-reminder-relative-10')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('task-reminder-item')), findsOneWidget);
+    expect(find.byKey(const Key('task-remove-reminder')), findsOneWidget);
+  });
 }
 
 Future<_Harness> _pumpTasks(
@@ -102,8 +119,8 @@ Future<_Harness> _pumpTasks(
   await tester.binding.setSurfaceSize(size);
   final database = AppDatabase(NativeDatabase.memory());
   final repository = DriftTasksRepository(database);
-  const now = 1000;
-  await repository.upsertTaskList(const TaskList(
+  final now = DateTime.now().millisecondsSinceEpoch;
+  await repository.upsertTaskList(TaskList(
     id: 'work',
     name: 'Work',
     color: 0x4D8BB8,
@@ -112,15 +129,16 @@ Future<_Harness> _pumpTasks(
     updatedAt: now,
     deviceId: 'task-page-device',
   ));
-  await repository.upsertTask(const Task(
+  await repository.upsertTask(Task(
     id: 'release',
     title: 'Prepare release',
     descriptionMarkdown: 'Release checklist',
+    dueAt: now + const Duration(hours: 1).inMilliseconds,
     createdAt: now,
     updatedAt: now,
     deviceId: 'task-page-device',
   ));
-  await repository.upsertTask(const Task(
+  await repository.upsertTask(Task(
     id: 'work-task',
     listId: 'work',
     title: 'Work item',

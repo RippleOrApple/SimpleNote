@@ -7,9 +7,12 @@ import '../../../core/utils/time.dart';
 import '../../../database/app_database.dart';
 import '../domain/smart_filter.dart';
 import '../domain/task.dart';
+import '../domain/task_completion.dart';
 import '../domain/task_list.dart';
 import '../domain/task_query.dart';
+import '../domain/task_recurrence.dart';
 import '../domain/task_reminder.dart';
+import '../domain/task_reminder_schedule.dart';
 import '../domain/task_tag.dart';
 
 final tasksRepositoryProvider = Provider<TasksRepository>(
@@ -25,10 +28,22 @@ abstract class TasksRepository {
   });
   Future<Task?> findTask(String id);
   Future<List<Task>> listSubtasks(String parentId);
+  Future<List<TaskCompletion>> listTaskCompletions(String taskId);
   Future<List<TaskReminder>> listTaskReminders(String taskId);
+  Future<List<TaskReminderSchedule>> listPendingTaskReminderSchedules({
+    required int now,
+    required int before,
+  });
   Future<Map<String, Set<String>>> taskTagIds(Iterable<String> taskIds);
   Future<void> upsertTask(Task task);
+  Future<void> completeTaskOccurrence(
+    String id, {
+    required int completedAt,
+    required String completionId,
+  });
+  Future<void> uncompleteTask(String id, int updatedAt);
   Future<void> upsertTaskReminder(TaskReminder reminder);
+  Future<void> markTaskReminderFired(String id, int firedAt);
   Future<void> softDeleteTask(String id, int deletedAt);
   Future<void> softDeleteTaskReminder(String id, int deletedAt);
   Future<void> replaceTaskTags(String taskId, Iterable<String> tagIds);
@@ -142,6 +157,48 @@ class DriftTasksRepository implements TasksRepository {
   }
 
   @override
+  Future<List<TaskReminderSchedule>> listPendingTaskReminderSchedules({
+    required int now,
+    required int before,
+  }) async {
+    if (before <= now) return const [];
+    final reminderRows = await (_database.select(_database.taskReminders)
+          ..where(
+            (reminder) =>
+                reminder.deletedAt.isNull() & reminder.firedAt.isNull(),
+          ))
+        .get();
+    final schedules = <TaskReminderSchedule>[];
+    for (final reminderRow in reminderRows) {
+      final taskRow = await _database.tasksV2Dao.findById(reminderRow.taskId);
+      if (taskRow == null || taskRow.deletedAt != null || taskRow.completed) {
+        continue;
+      }
+      final fireAt = _resolveReminderFireAt(reminderRow, taskRow);
+      if (fireAt == null || fireAt <= now || fireAt >= before) continue;
+      schedules.add(TaskReminderSchedule(
+        task: _fromRow(taskRow),
+        reminder: _fromReminderRow(reminderRow),
+        fireAt: fireAt,
+      ));
+    }
+    schedules.sort(_scheduleComparator);
+    return schedules;
+  }
+
+  @override
+  Future<List<TaskCompletion>> listTaskCompletions(String taskId) async {
+    final rows = await (_database.select(_database.taskCompletions)
+          ..where((row) => row.taskId.equals(taskId) & row.deletedAt.isNull())
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.scheduledAt),
+            (row) => OrderingTerm.asc(row.completedAt),
+          ]))
+        .get();
+    return rows.map(_fromCompletionRow).toList();
+  }
+
+  @override
   Future<Map<String, Set<String>>> taskTagIds(
     Iterable<String> taskIds,
   ) async {
@@ -186,6 +243,85 @@ class DriftTasksRepository implements TasksRepository {
   }
 
   @override
+  Future<void> completeTaskOccurrence(
+    String id, {
+    required int completedAt,
+    required String completionId,
+  }) async {
+    final row = await _database.tasksV2Dao.findById(id);
+    if (row == null || row.deletedAt != null) {
+      throw StateError('Cannot complete a missing or deleted task.');
+    }
+    final task = _fromRow(row);
+    final existingCompletions = await listTaskCompletions(id);
+    final recurrence = advanceRecurringTask(
+      task: task,
+      completedAt: completedAt,
+      completionCountAfterThis: existingCompletions.length + 1,
+    );
+    final scheduledAt =
+        recurrence?.scheduledAt ?? task.dueAt ?? task.startAt ?? completedAt;
+    final nextTask = recurrence?.nextTask ??
+        task.copyWith(
+          completed: true,
+          completedAt: completedAt,
+          updatedAt: completedAt,
+          version: task.version + 1,
+        );
+    await _database.transaction(() async {
+      await _database.into(_database.taskCompletions).insert(
+            TaskCompletionsCompanion.insert(
+              id: completionId,
+              taskId: id,
+              scheduledAt: scheduledAt,
+              completedAt: completedAt,
+              createdAt: completedAt,
+              updatedAt: completedAt,
+              deviceId: task.deviceId,
+            ),
+          );
+      await _database.tasksV2Dao.upsertTask(_toCompanion(nextTask));
+    });
+  }
+
+  @override
+  Future<void> uncompleteTask(String id, int updatedAt) async {
+    final row = await _database.tasksV2Dao.findById(id);
+    if (row == null || row.deletedAt != null) {
+      throw StateError('Cannot uncomplete a missing or deleted task.');
+    }
+    await _database.transaction(() async {
+      await _database.tasksV2Dao.upsertTask(_toCompanion(
+        _fromRow(row).copyWith(
+          completed: false,
+          clearCompletedAt: true,
+          updatedAt: updatedAt,
+          version: row.version + 1,
+        ),
+      ));
+      final latest = await (_database.select(_database.taskCompletions)
+            ..where(
+              (completion) =>
+                  completion.taskId.equals(id) & completion.deletedAt.isNull(),
+            )
+            ..orderBy([
+              (completion) => OrderingTerm.desc(completion.completedAt),
+            ])
+            ..limit(1))
+          .getSingleOrNull();
+      if (latest != null) {
+        await (_database.update(_database.taskCompletions)
+              ..where((completion) => completion.id.equals(latest.id)))
+            .write(TaskCompletionsCompanion(
+          deletedAt: Value(updatedAt),
+          updatedAt: Value(updatedAt),
+          version: Value(latest.version + 1),
+        ));
+      }
+    });
+  }
+
+  @override
   Future<void> upsertTaskReminder(TaskReminder reminder) async {
     _validateReminderTrigger(reminder);
     await _database.transaction(() async {
@@ -197,6 +333,21 @@ class DriftTasksRepository implements TasksRepository {
             _toReminderCompanion(reminder),
           );
     });
+  }
+
+  @override
+  Future<void> markTaskReminderFired(String id, int firedAt) async {
+    final row = await (_database.select(_database.taskReminders)
+          ..where((reminder) => reminder.id.equals(id)))
+        .getSingleOrNull();
+    if (row == null || row.deletedAt != null) return;
+    await (_database.update(_database.taskReminders)
+          ..where((reminder) => reminder.id.equals(id)))
+        .write(TaskRemindersCompanion(
+      firedAt: Value(firedAt),
+      updatedAt: Value(firedAt),
+      version: Value(row.version + 1),
+    ));
   }
 
   @override
@@ -219,6 +370,18 @@ class DriftTasksRepository implements TasksRepository {
             ..where((task) => task.parentId.equals(id)))
           .write(
         TasksV2Companion(
+          deletedAt: Value(deletedAt),
+          updatedAt: Value(deletedAt),
+        ),
+      );
+      await (_database.update(_database.taskCompletions)
+            ..where(
+              (completion) =>
+                  completion.taskId.isIn(taskIds) &
+                  completion.deletedAt.isNull(),
+            ))
+          .write(
+        TaskCompletionsCompanion(
           deletedAt: Value(deletedAt),
           updatedAt: Value(deletedAt),
         ),
@@ -394,15 +557,16 @@ class DriftTasksRepository implements TasksRepository {
             task.listId.isNull() &
             task.startAt.isNull() &
             task.dueAt.isNull();
-      case TodayTaskQuery(:final nextDayStart):
+      case TodayTaskQuery(:final dayStart, :final nextDayStart):
         expression = expression &
             task.completed.equals(false) &
-            task.dueAt.isSmallerThanValue(nextDayStart);
+            (task.dueAt.isSmallerThanValue(nextDayStart) |
+                _dateInRange(task.startAt, dayStart, nextDayStart));
       case NextSevenDaysTaskQuery(:final dayStart, :final eighthDayStart):
         expression = expression &
             task.completed.equals(false) &
-            task.dueAt.isBiggerOrEqualValue(dayStart) &
-            task.dueAt.isSmallerThanValue(eighthDayStart);
+            (_dateInRange(task.dueAt, dayStart, eighthDayStart) |
+                _dateInRange(task.startAt, dayStart, eighthDayStart));
       case AllTaskQuery(:final includeCompleted):
         if (!includeCompleted) {
           expression = expression & task.completed.equals(false);
@@ -420,6 +584,36 @@ class DriftTasksRepository implements TasksRepository {
           expression = expression &
               task.priority.isIn(rules.priorities.map((item) => item.index));
         }
+        if (rules.startRange != null) {
+          expression =
+              expression & _dateMatchesRule(task.startAt, rules.startRange!);
+        }
+        if (rules.dueRange != null) {
+          expression =
+              expression & _dateMatchesRule(task.dueAt, rules.dueRange!);
+        }
+    }
+    return expression;
+  }
+
+  Expression<bool> _dateMatchesRule(
+    GeneratedColumn<int> column,
+    TaskDateRange range,
+  ) {
+    return _dateInRange(column, range.from, range.before);
+  }
+
+  Expression<bool> _dateInRange(
+    GeneratedColumn<int> column,
+    int? from,
+    int? before,
+  ) {
+    var expression = column.isNotNull();
+    if (from != null) {
+      expression = expression & column.isBiggerOrEqualValue(from);
+    }
+    if (before != null) {
+      expression = expression & column.isSmallerThanValue(before);
     }
     return expression;
   }
@@ -474,7 +668,9 @@ class DriftTasksRepository implements TasksRepository {
         (rules.priorities.isEmpty ||
             rules.priorities.contains(
               TaskPriority.values[row.priority],
-            ));
+            )) &&
+        (rules.startRange == null || rules.startRange!.contains(row.startAt)) &&
+        (rules.dueRange == null || rules.dueRange!.contains(row.dueAt));
   }
 
   Comparator<TaskV2Row> _comparator(TaskSortMode mode) {
@@ -560,6 +756,19 @@ class DriftTasksRepository implements TasksRepository {
         version: row.version,
       );
 
+  static TaskCompletion _fromCompletionRow(TaskCompletionRow row) =>
+      TaskCompletion(
+        id: row.id,
+        taskId: row.taskId,
+        scheduledAt: row.scheduledAt,
+        completedAt: row.completedAt,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        deletedAt: row.deletedAt,
+        deviceId: row.deviceId,
+        version: row.version,
+      );
+
   static TaskReminder _fromReminderRow(TaskReminderRow row) => TaskReminder(
         id: row.id,
         taskId: row.taskId,
@@ -587,6 +796,30 @@ class DriftTasksRepository implements TasksRepository {
       return leftOffset.compareTo(rightOffset);
     }
     return left.createdAt.compareTo(right.createdAt);
+  }
+
+  static int? _resolveReminderFireAt(
+    TaskReminderRow reminder,
+    TaskV2Row task,
+  ) {
+    final absolute = reminder.triggerAt;
+    if (absolute != null) return absolute;
+    final offset = reminder.offsetMinutes;
+    final anchor = task.dueAt ?? task.startAt;
+    if (offset == null || anchor == null) return null;
+    return anchor + offset * 60 * 1000;
+  }
+
+  static int _scheduleComparator(
+    TaskReminderSchedule left,
+    TaskReminderSchedule right,
+  ) {
+    final time = left.fireAt.compareTo(right.fireAt);
+    if (time != 0) return time;
+    final reminderCreated =
+        left.reminder.createdAt.compareTo(right.reminder.createdAt);
+    if (reminderCreated != 0) return reminderCreated;
+    return left.reminder.id.compareTo(right.reminder.id);
   }
 
   static void _validateReminderTrigger(TaskReminder reminder) {
