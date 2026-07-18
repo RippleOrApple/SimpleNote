@@ -63,3 +63,14 @@ Complete
 |-------|---------|------------|
 | Compact back action did not really clear selected item because selected getters returned the first item when no id was selected | 1 | Updated selected getters to return null when no selected id exists |
 | Todo compact delete test could not find the edit tooltip before the selected getter fix | 1 | Fixed selected state behavior, then reran widget tests |
+
+## V2 Task 7: Customizable Adaptive Navigation
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added platform catalogs, navigation persistence, protected Today selection, and per-platform profiles.
+- Added the adaptive shell with Android icon-only navigation, Windows frosted rail, and IndexedStack state preservation.
+- Added navigation settings with reorder, hide/show, and default-module controls.
+- Migrated compatibility routes and updated regression tests to the v2 shell contract.
+- **Verification:** `flutter analyze` passed; `flutter test` passed with 130 tests.
+- **Next:** V2 Task 8, task domain models, queries, and repository.

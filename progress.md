@@ -71,3 +71,27 @@
 | What's the goal? | Make the app feel safer and smoother to use |
 | What have I learned? | See `findings.md` |
 | What have I done? | Added compact back actions, delete confirmations, SnackBars, clean subtitle text, and tests |
+
+## Session: 2026-07-18 - V2 Task 7
+
+### Implementation
+
+- Added `AdaptiveAppShell`, custom icon-only Android navigation, Windows frosted functional rail, and placeholder module pages.
+- Added navigation settings for ordering, visibility, and default module selection.
+- Connected navigation persistence to appearance device profiles and migrated app routes to the shared shell.
+- Kept the legacy `AppShell` as a minimal compatibility wrapper while feature pages move to the shared shell.
+- Updated v2 navigation and widget regression tests for the Today/Notes/Settings shell contract.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/navigation` | Pass |
+| `flutter test test/widget_test.dart` | Pass, 6 tests |
+| `flutter test` | Pass, 130 tests |
+
+### Handoff
+
+- V2 Task 7 is complete.
+- V2 Task 8 is next: task domain models, queries, and repository.

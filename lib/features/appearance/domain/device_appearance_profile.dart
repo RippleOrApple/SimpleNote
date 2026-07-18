@@ -1,4 +1,5 @@
 import 'appearance_presets.dart';
+import '../../navigation/domain/app_module.dart';
 
 final class DeviceAppearanceProfile {
   factory DeviceAppearanceProfile({
@@ -24,11 +25,15 @@ final class DeviceAppearanceProfile {
           updatedAt, 'updatedAt', 'Must be non-negative.');
     }
 
-    final normalizedOrder = _normalizeOrdered(navOrder);
-    if (!normalizedOrder.contains('today')) {
-      normalizedOrder.add('today');
-    }
-    final normalizedHidden = _normalizeSet(hiddenNav)..remove('today');
+    final catalog = AppModuleCatalog.forPlatform(platform);
+    final normalizedOrder = AppModuleCatalog.normalizeOrder(
+      platform,
+      navOrder,
+    ).map((module) => module.name).toList();
+    final catalogNames = catalog.map((module) => module.name).toSet();
+    final normalizedHidden = _normalizeSet(hiddenNav)
+      ..retainAll(catalogNames)
+      ..remove(AppModuleKey.today.name);
     final normalizedStart = startModule.trim();
     final safeStart = normalizedStart.isNotEmpty &&
             normalizedOrder.contains(normalizedStart) &&
@@ -109,7 +114,8 @@ final class DeviceAppearanceProfile {
       id: id,
       platform: platform,
       density: LayoutDensity.standard,
-      navOrder: const ['today', 'calendar', 'habits', 'notes', 'more'],
+      navOrder:
+          AppModuleCatalog.forPlatform(platform).map((module) => module.name),
       hiddenNav: const {},
       startModule: 'today',
       backgroundFocusX: 0.5,
@@ -271,18 +277,6 @@ final class DeviceAppearanceProfile {
       updatedAt,
     );
   }
-}
-
-List<String> _normalizeOrdered(Iterable<String> values) {
-  final seen = <String>{};
-  final result = <String>[];
-  for (final value in values) {
-    final normalized = value.trim();
-    if (normalized.isNotEmpty && seen.add(normalized)) {
-      result.add(normalized);
-    }
-  }
-  return result;
 }
 
 Set<String> _normalizeSet(Iterable<String> values) {

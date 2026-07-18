@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/typography_preferences.dart';
 import '../../../core/utils/time.dart';
 import '../../sync/data/sync_repository.dart';
+import '../../navigation/domain/app_module.dart';
 import '../data/appearance_repository.dart';
 import '../domain/appearance_presets.dart';
 import '../domain/appearance_settings.dart';
@@ -157,6 +158,20 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
 
   Future<void> setHaptics(HapticsMode value) {
     return _updateDevice((profile) => profile.copyWith(hapticsMode: value));
+  }
+
+  Future<void> setNavigation({
+    required Iterable<AppModuleKey> order,
+    required Iterable<AppModuleKey> hidden,
+    required AppModuleKey startModule,
+  }) {
+    return _updateDevice(
+      (profile) => profile.copyWith(
+        navOrder: order.map((module) => module.name),
+        hiddenNav: hidden.map((module) => module.name),
+        startModule: startModule.name,
+      ),
+    );
   }
 
   Future<void> addCustomColor({

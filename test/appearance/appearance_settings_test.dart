@@ -194,7 +194,10 @@ void main() {
       updatedAt: 50,
     );
 
-    expect(profile.navOrder, ['notes', 'more', 'today']);
+    expect(
+      profile.navOrder,
+      ['notes', 'more', 'today', 'calendar', 'habits'],
+    );
     expect(profile.hiddenNav, {'notes'});
     expect(profile.startModule, 'today');
     expect(profile.localBackgroundImageId, isNull);

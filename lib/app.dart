@@ -10,6 +10,7 @@ import 'features/appearance/domain/appearance_presets.dart';
 import 'features/appearance/domain/appearance_settings.dart';
 import 'features/appearance/domain/device_appearance_profile.dart';
 import 'features/appearance/infrastructure/background_image_render_adapter.dart';
+import 'features/navigation/presentation/adaptive_app_shell.dart';
 import 'features/sync/data/sync_repository.dart';
 import 'shared/widgets/app_background.dart';
 import 'shared/widgets/frosted_surface.dart';
@@ -52,7 +53,7 @@ class SimpleNoteApp extends ConsumerWidget {
       title: '简记',
       debugShowCheckedModeBanner: false,
       theme: theme,
-      initialRoute: AppRoutes.home,
+      home: const AdaptiveAppShell(),
       onGenerateRoute: (routeSettings) => AppRoutes.onGenerateRoute(
         routeSettings,
         transitionDuration: routeDuration,

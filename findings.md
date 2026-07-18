@@ -31,3 +31,11 @@
 | Issue | Resolution |
 |-------|------------|
 | None yet | - |
+
+## V2 Task 7 Findings
+
+- Existing navigation code covered the controller and domain model; the presentation shell, route integration, and navigation editor were missing.
+- The Android contract requires an icon-only `NavigationBar` with no descendant `Text` widgets, so the implementation uses custom 48dp icon targets inside `NavigationBar`.
+- Windows rail selection uses the injected device platform, with the 920 logical-pixel breakpoint as the adaptive fallback.
+- Legacy `/todos`, `/notes`, and `/settings` routes now resolve through the adaptive shell; Notes and Settings remain compatible modules while Today is the Task 10 placeholder.
+- Appearance navigation settings are persisted through `AppearanceController.setNavigation` and normalized by `DeviceAppearanceProfile`.

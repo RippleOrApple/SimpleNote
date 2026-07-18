@@ -13,6 +13,7 @@ import '../infrastructure/background_image_service.dart';
 import 'background_settings_section.dart';
 import 'color_settings_section.dart';
 import 'layout_settings_section.dart';
+import 'navigation_settings_section.dart';
 import 'typography_settings_section.dart';
 
 class AppearancePage extends ConsumerWidget {
@@ -147,6 +148,12 @@ class _AppearanceContent extends StatelessWidget {
             onHapticsChanged: controller.setHaptics,
             onBrightnessChanged: controller.setBrightnessMode,
           ),
+        ),
+        const SizedBox(height: 20),
+        FrostedSurface(
+          glassOpacity: portable.glassOpacity,
+          padding: const EdgeInsets.all(16),
+          child: const NavigationSettingsSection(),
         ),
       ],
     );

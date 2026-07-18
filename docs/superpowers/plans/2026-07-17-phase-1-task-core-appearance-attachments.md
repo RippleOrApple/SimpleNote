@@ -1218,7 +1218,7 @@ git commit -m "feat: add personalized v2 appearance UI"
 - Produces `NavigationController.select`, `reorder`, `setHidden`, and `setStartModule`.
 - Makes `AdaptiveAppShell` the single routed application shell.
 
-- [ ] **Step 1: Write failing navigation invariant tests**
+- [x] **Step 1: Write failing navigation invariant tests**
 
 ```dart
 test('today cannot be hidden and start module must remain visible', () async {
@@ -1250,7 +1250,7 @@ expect(find.byType(NavigationRail), findsOneWidget);
 expect(find.byKey(const Key('windows-functional-rail')), findsOneWidget);
 ```
 
-- [ ] **Step 2: Run focused tests and verify the red state**
+- [x] **Step 2: Run focused tests and verify the red state**
 
 Run:
 
@@ -1260,7 +1260,7 @@ flutter test test/navigation/navigation_controller_test.dart test/navigation/ada
 
 Expected: FAIL because navigation remains hard-coded in the old `AppShell`.
 
-- [ ] **Step 3: Define the module catalog**
+- [x] **Step 3: Define the module catalog**
 
 ```dart
 enum AppModuleKey {
@@ -1290,7 +1290,7 @@ final class AppModuleDescriptor {
 
 Use Phosphor rounded-weight equivalents through `PhosphorIcons.regular` and `PhosphorIcons.fill`. The bottom bar passes labels only to semantics and tooltips, never to a persistent `Text` widget.
 
-- [ ] **Step 4: Implement controller invariants**
+- [x] **Step 4: Implement controller invariants**
 
 Normalize every saved profile:
 
@@ -1321,7 +1321,7 @@ Future<void> setNavigation({
 });
 ```
 
-- [ ] **Step 5: Implement the single adaptive shell**
+- [x] **Step 5: Implement the single adaptive shell**
 
 `SimpleNoteApp` uses:
 
@@ -1344,7 +1344,7 @@ MaterialApp(
 
 Remove `AppShell` wrapping from `NotesPage` and `SettingsPage`; keep `lib/shared/widgets/app_shell.dart` as a deprecated forwarding export for one task so intermediate commits compile, then remove it in Task 10.
 
-- [ ] **Step 6: Implement the navigation editor**
+- [x] **Step 6: Implement the navigation editor**
 
 The editor:
 
@@ -1355,7 +1355,7 @@ The editor:
 - Requires a new visible default before hiding the current start module.
 - Exposes keys `nav-editor-<module>`, `nav-hide-<module>`, and `nav-default-<module>`.
 
-- [ ] **Step 7: Run focused tests**
+- [x] **Step 7: Run focused tests**
 
 Run:
 
