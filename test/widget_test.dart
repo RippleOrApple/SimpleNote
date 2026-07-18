@@ -84,6 +84,11 @@ void main() {
 
     expect(find.byType(AdaptiveAppShell), findsOneWidget);
     expect(find.byType(SettingsPage), findsOneWidget);
+    expect(find.byKey(const Key('sync-upgrade-notice')), findsOneWidget);
+    expect(find.byKey(const Key('sync-start-server-button')), findsNothing);
+    expect(find.byKey(const Key('sync-stop-server-button')), findsNothing);
+    expect(find.byKey(const Key('sync-peer-address-field')), findsNothing);
+    expect(find.byKey(const Key('sync-now-button')), findsNothing);
   });
 }
 

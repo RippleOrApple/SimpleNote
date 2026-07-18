@@ -1,4 +1,5 @@
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/sync/application/sync_controller.dart';
@@ -22,6 +23,7 @@ void main() {
     final controller = SyncController(
       repository: repository,
       client: const SyncApiClient(),
+      legacySyncEnabled: true,
     );
     addTearDown(controller.dispose);
 
@@ -34,5 +36,38 @@ void main() {
 
     await controller.stopServer();
     expect(controller.state.isServerRunning, isFalse);
+  });
+
+  test('production provider blocks the legacy sync protocol', () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    final container = ProviderContainer(overrides: [
+      appDatabaseProvider.overrideWithValue(database),
+      deviceInfoProvider.overrideWithValue(const DeviceInfo(
+        deviceId: 'production-guard',
+        deviceName: 'Guard test',
+        platform: 'windows',
+        appVersion: '2.0.0',
+      )),
+    ]);
+    addTearDown(() async {
+      container.dispose();
+      await database.close();
+    });
+    final controller = container.read(syncControllerProvider.notifier);
+
+    await controller.startServer(port: 0);
+    expect(container.read(syncControllerProvider).status, SyncStatus.error);
+    expect(
+      container.read(syncControllerProvider).errorMessage,
+      contains('V2 同步将在 Phase 4 启用'),
+    );
+    expect(container.read(syncControllerProvider).isServerRunning, isFalse);
+
+    await controller.syncWithPeer('http://127.0.0.1:8787');
+    expect(container.read(syncControllerProvider).status, SyncStatus.error);
+    expect(
+      container.read(syncControllerProvider).errorMessage,
+      contains('V2 同步将在 Phase 4 启用'),
+    );
   });
 }

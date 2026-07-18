@@ -90,3 +90,13 @@
 - Recovered Android images remain inert until the user chooses the currently selected note or task from a non-modal banner; target buttons update as editor selection changes.
 - In-memory `XFile.fromData` values can expose an empty `name` with the installed `cross_file` version, so recovered images use `recovered image` as a non-empty alt-text fallback.
 - Real attachment file IO should be tested through directly awaited controller tests; Flutter widget fake async is suitable for verifying the recovery prompt and no-auto-import behavior, but not for awaiting the disk transaction started by a button callback.
+
+## V2 Task 14 Findings
+
+- Guarding only the settings UI is insufficient: `SyncController.startServer` and `syncWithPeer` must reject V1 by default so alternate callers cannot start the legacy protocol.
+- V1 compatibility remains testable through the explicit `legacySyncEnabledProvider`/constructor flag and direct `LocalSyncServer` HTTP contract tests.
+- Android More previously opened Appearance directly, making Settings and the sync upgrade notice unreachable; Settings now owns both the notice and embedded Appearance controls.
+- Flutter plugin builds on Windows require symlink privilege, but pre-created directory junctions in `windows/flutter/ephemeral` satisfy the generated plugin layout without changing Developer Mode.
+- The current Android plugin tree is incompatible with AGP 9 because `file_picker` expects Built-in Kotlin while `flutter_plugin_android_lifecycle` still applies legacy KGP. AGP 8.9.1 plus Gradle 8.11.1 and JDK 17 builds successfully.
+- Kotlin incremental caches cannot relativize Pub Cache sources on `C:` against a project on `D:`; `kotlin.incremental=false` avoids that cross-drive failure.
+- The Android emulator confirmed final APK startup, icon-only navigation, Android More routing, and first-viewport sync notice rendering without overlap.

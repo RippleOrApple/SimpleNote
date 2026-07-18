@@ -70,3 +70,9 @@ D:\DevEnv\Flutter\bin\flutter.bat test
 ## 简历描述参考
 
 独立设计并开发“简记 SimpleNote”，一款 Windows / Android 双端本地优先笔记待办应用。项目基于 Flutter 构建跨端界面，使用 Drift + SQLite 实现本地持久化，支持 Markdown 编辑预览、标签搜索、待办优先级与截止时间、主题高度自定义，并实现了基于局域网 HTTP 和时间戳合并策略的数据同步 MVP。项目配套自动化测试与 GitHub Actions，覆盖需求分析、产品设计、架构设计、开发实现、测试验证和发布准备。
+
+## V2 Phase 1
+
+V2 Phase 1 已加入自适应导航、完整任务工作区、跨平台外观设置，以及笔记和任务正文图片。旧版局域网同步协议无法识别这些数据，生产版本已禁用 V1 同步入口；V2 同步将在 Phase 4 启用，本地功能不受影响。
+
+构建说明：Windows 插件构建需要启用 Developer Mode 或具备符号链接权限；Android 构建使用 JDK 17。完整验收结果见 [V2 Phase 1 验收记录](docs/V2_PHASE_1_ACCEPTANCE.md)。

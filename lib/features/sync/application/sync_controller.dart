@@ -14,13 +14,18 @@ final syncApiClientProvider = Provider<SyncApiClient>((ref) {
   return const SyncApiClient();
 });
 
+final legacySyncEnabledProvider = Provider<bool>((ref) => false);
+
 final syncControllerProvider =
     StateNotifierProvider<SyncController, SyncState>((ref) {
   return SyncController(
     repository: ref.watch(syncRepositoryProvider),
     client: ref.watch(syncApiClientProvider),
+    legacySyncEnabled: ref.watch(legacySyncEnabledProvider),
   );
 });
+
+const legacySyncUpgradeMessage = 'V2 同步将在 Phase 4 启用；当前版本不会启动旧同步协议。';
 
 class SyncState {
   const SyncState({
@@ -77,18 +82,25 @@ class SyncController extends StateNotifier<SyncState> {
   SyncController({
     required SyncRepository repository,
     required SyncApiClient client,
+    required bool legacySyncEnabled,
   })  : _repository = repository,
         _client = client,
+        _legacySyncEnabled = legacySyncEnabled,
         _server = LocalSyncServer(repository),
         super(const SyncState());
 
   final SyncRepository _repository;
   final SyncApiClient _client;
+  final bool _legacySyncEnabled;
   final LocalSyncServer _server;
 
   Future<void> startServer({
     int port = AppConstants.defaultSyncPort,
   }) async {
+    if (!_legacySyncEnabled) {
+      _rejectLegacySync();
+      return;
+    }
     state = state.copyWith(
       status: SyncStatus.startingServer,
       clearErrorMessage: true,
@@ -124,6 +136,10 @@ class SyncController extends StateNotifier<SyncState> {
   }
 
   Future<void> syncWithPeer([String? address]) async {
+    if (!_legacySyncEnabled) {
+      _rejectLegacySync();
+      return;
+    }
     final rawAddress = (address ?? state.peerAddress).trim();
     if (rawAddress.isEmpty) {
       state = state.copyWith(
@@ -167,6 +183,14 @@ class SyncController extends StateNotifier<SyncState> {
         errorMessage: error.toString(),
       );
     }
+  }
+
+  void _rejectLegacySync() {
+    state = state.copyWith(
+      status: SyncStatus.error,
+      errorMessage: legacySyncUpgradeMessage,
+      clearLastResult: true,
+    );
   }
 
   @override

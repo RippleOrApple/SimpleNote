@@ -90,6 +90,23 @@ void main() {
     );
   });
 
+  testWidgets('Android More opens settings with the sync upgrade notice',
+      (tester) async {
+    final harness = await _pumpShell(
+      tester,
+      device: _androidDevice,
+      size: const Size(390, 844),
+    );
+    addTearDown(harness.dispose);
+
+    await tester.tap(find.byKey(const Key('android-nav-more')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SettingsPage), findsOneWidget);
+    expect(find.byKey(const Key('sync-upgrade-notice')), findsOneWidget);
+    expect(find.byKey(const Key('sync-start-server-button')), findsNothing);
+  });
+
   testWidgets('switching modules preserves editor state in an IndexedStack',
       (tester) async {
     final harness = await _pumpShell(

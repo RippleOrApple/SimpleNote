@@ -235,3 +235,32 @@
 
 - V2 Task 13 is complete.
 - V2 Task 14 is next: disable V1 sync in production and record Phase 1 acceptance.
+
+## Session: 2026-07-18 - V2 Task 14
+
+### Implementation
+
+- Added `legacySyncEnabledProvider`, defaulting to false, and guarded both legacy server startup and peer sync before any network work.
+- Kept V1 controller and HTTP compatibility covered only through explicit test construction.
+- Replaced the settings sync panel with `SyncUpgradeNotice` and moved it to the first viewport.
+- Routed Android More to Settings, which retains the embedded Appearance V2 controls.
+- Added the V2 Phase 1 acceptance matrix and updated README sync/build guidance.
+- Added Android cross-drive Kotlin and plugin compatibility configuration.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/sync/sync_controller_test.dart test/widget_test.dart` | Pass, 8 tests after observed red state |
+| `dart format --output=none --set-exit-if-changed lib test` | Pass, 159 files unchanged |
+| `dart run build_runner build --delete-conflicting-outputs` | Pass, 295 outputs |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 186 tests |
+| `flutter build windows --debug` | Pass, final Debug executable produced |
+| `flutter build apk --debug` | Pass with configured JDK 17, final Debug APK produced |
+| Android `SimpleNote_Pixel` install/start/More screenshot check | Pass; no layout overlap and upgrade notice visible |
+
+### Handoff
+
+- V2 Task 14 and the Phase 1 automated acceptance gate are complete.
+- Physical Android camera/gallery/haptic checks and Windows process-restart checks remain release QA, as recorded in `docs/V2_PHASE_1_ACCEPTANCE.md`.

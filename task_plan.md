@@ -140,3 +140,15 @@ Complete
 - Added a non-blocking Android recovery banner with explicit current-note/current-task targets and no automatic attachment.
 - **Verification:** `flutter analyze` passed; `flutter test` passed with 184 tests.
 - **Next:** V2 Task 14, disable V1 sync in production and record Phase 1 acceptance.
+
+## V2 Task 14: V1 Sync Guard and Phase 1 Acceptance
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added a production-default V1 sync guard with explicit test-only compatibility enablement.
+- Replaced all production sync controls with a first-viewport Phase 4 upgrade notice.
+- Routed Android More through Settings so the notice and embedded Appearance controls are reachable.
+- Added the Phase 1 acceptance matrix, README status, Android emulator smoke results, and hardware follow-up boundaries.
+- Stabilized Android debug builds on the mixed Kotlin plugin tree with AGP 8.9.1, Gradle 8.11.1, JDK 17, and non-incremental Kotlin compilation.
+- **Verification:** formatter, build_runner, `flutter analyze`, 186 tests, Windows Debug build, and Android Debug APK build passed.
+- **Next:** Phase 1 implementation is complete; physical-device release QA remains documented in the acceptance record.

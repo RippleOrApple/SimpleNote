@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/widgets/frosted_surface.dart';
 import '../../../shared/widgets/app_shell_embed_scope.dart';
 import '../../sync/data/sync_repository.dart';
-import '../../appearance/presentation/appearance_page.dart';
 import '../../notes/presentation/notes_page.dart';
 import '../../settings/presentation/settings_page.dart';
 import '../../tasks/presentation/tasks_page.dart';
@@ -101,7 +100,7 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
       AppModuleKey.today => const TasksPage(),
       AppModuleKey.notes => const NotesPage(),
       AppModuleKey.settings => const SettingsPage(),
-      AppModuleKey.more => const AppearancePage(),
+      AppModuleKey.more => const SettingsPage(),
       _ => PlaceholderModulePage(module: module),
     };
   }

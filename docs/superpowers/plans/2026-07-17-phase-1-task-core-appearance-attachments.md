@@ -2397,7 +2397,7 @@ git commit -m "feat: add inline images to notes and tasks"
 - Shows a clear Phase 4 upgrade notice instead of start-server and sync buttons.
 - Produces a verified Phase 1 acceptance record.
 
-- [ ] **Step 1: Write the failing production guard and widget tests**
+- [x] **Step 1: Write the failing production guard and widget tests**
 
 Controller assertion:
 
@@ -2421,7 +2421,7 @@ expect(find.byKey(const Key('sync-start-server-button')), findsNothing);
 expect(find.byKey(const Key('sync-now-button')), findsNothing);
 ```
 
-- [ ] **Step 2: Run focused tests and verify the red state**
+- [x] **Step 2: Run focused tests and verify the red state**
 
 Run:
 
@@ -2431,7 +2431,7 @@ flutter test test/sync/sync_controller_test.dart test/widget_test.dart
 
 Expected: FAIL because production still exposes V1 sync controls.
 
-- [ ] **Step 3: Add the explicit V1 sync guard**
+- [x] **Step 3: Add the explicit V1 sync guard**
 
 ```dart
 final legacySyncEnabledProvider = Provider<bool>((ref) => false);
@@ -2449,7 +2449,7 @@ return;
 
 Override `legacySyncEnabledProvider` to true only in existing V1 HTTP and merge tests so compatibility code remains covered.
 
-- [ ] **Step 4: Replace sync controls with the upgrade notice**
+- [x] **Step 4: Replace sync controls with the upgrade notice**
 
 `SyncUpgradeNotice` uses key `sync-upgrade-notice` and states:
 
@@ -2461,7 +2461,7 @@ V2 任务、外观和正文图片不能由旧协议安全识别。Phase 4 完成
 
 Do not render peer address, start, stop, or sync buttons in production.
 
-- [ ] **Step 5: Update documentation and acceptance matrix**
+- [x] **Step 5: Update documentation and acceptance matrix**
 
 `docs/V2_PHASE_1_ACCEPTANCE.md` records:
 
@@ -2482,7 +2482,7 @@ Android debug APK build
 
 For each row, record the exact automated command or manual device check and its result.
 
-- [ ] **Step 6: Run the complete verification suite**
+- [x] **Step 6: Run the complete verification suite**
 
 Run:
 
@@ -2506,7 +2506,7 @@ Windows debug build succeeds
 Android debug APK build succeeds
 ```
 
-- [ ] **Step 7: Perform manual smoke checks**
+- [x] **Step 7: Perform manual smoke checks**
 
 Windows:
 
@@ -2525,7 +2525,7 @@ Android:
 4. Confirm default haptics produce no vibration.
 5. Restart during an image-picker round trip and confirm recovered media prompts for a target.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```powershell
 git add lib/features/sync lib/features/settings lib/features/navigation test/sync test/widget_test.dart README.md docs/V2_PHASE_1_ACCEPTANCE.md
