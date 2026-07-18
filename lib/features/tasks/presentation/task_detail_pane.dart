@@ -1,8 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
+import '../../../shared/models/markdown_edit.dart';
+import '../../../shared/widgets/embedded_markdown_editor.dart';
+import '../../../shared/widgets/embedded_markdown_view.dart';
 import '../../appearance/domain/rgb_color.dart';
+import '../../attachments/domain/content_attachment.dart';
 import '../application/tasks_controller.dart';
 import '../domain/task.dart';
 import '../domain/task_list.dart';
@@ -26,10 +31,12 @@ class TaskDetailPane extends StatefulWidget {
 
 class _TaskDetailPaneState extends State<TaskDetailPane> {
   final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
   Timer? _titleDebounce;
   Timer? _descriptionDebounce;
+  String? _pendingDescription;
+  String? _pendingDescriptionTaskId;
   String? _taskId;
+  bool _previewMode = false;
 
   @override
   void initState() {
@@ -52,7 +59,9 @@ class _TaskDetailPaneState extends State<TaskDetailPane> {
     _descriptionDebounce?.cancel();
     _taskId = task?.id;
     _titleController.text = task?.title ?? '';
-    _descriptionController.text = task?.descriptionMarkdown ?? '';
+    _pendingDescription = null;
+    _pendingDescriptionTaskId = null;
+    if (force) _previewMode = false;
   }
 
   @override
@@ -60,7 +69,6 @@ class _TaskDetailPaneState extends State<TaskDetailPane> {
     _titleDebounce?.cancel();
     _descriptionDebounce?.cancel();
     _titleController.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -104,17 +112,58 @@ class _TaskDetailPaneState extends State<TaskDetailPane> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                TextField(
-                  key: const Key('task-description-field'),
-                  controller: _descriptionController,
-                  minLines: 7,
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    labelText: 'Markdown 描述',
-                    alignLabelWithHint: true,
-                  ),
-                  onChanged: (value) => _debounceDescription(task.id, value),
+                SegmentedButton<bool>(
+                  segments: const [
+                    ButtonSegment(
+                      value: false,
+                      icon: Icon(Icons.edit_outlined),
+                      label: Text('编辑'),
+                    ),
+                    ButtonSegment(
+                      value: true,
+                      icon: Icon(Icons.visibility_outlined),
+                      label: Text('预览'),
+                    ),
+                  ],
+                  selected: {_previewMode},
+                  onSelectionChanged: (values) =>
+                      _setPreviewMode(task.id, values.first),
                 ),
+                const SizedBox(height: 12),
+                if (_previewMode)
+                  Container(
+                    key: const Key('task-markdown-preview'),
+                    constraints: const BoxConstraints(minHeight: 240),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).dividerColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: EmbeddedMarkdownView(
+                      markdown: task.descriptionMarkdown.isEmpty
+                          ? '_暂无可预览内容。_'
+                          : task.descriptionMarkdown,
+                      styleSheet: MarkdownStyleSheet.fromTheme(
+                        Theme.of(context),
+                      ),
+                      resolveAttachment: widget.controller.resolveAttachment,
+                      onDeleteAttachment: widget.controller.deleteImage,
+                    ),
+                  )
+                else
+                  EmbeddedMarkdownEditor(
+                    key: const Key('task-description-field'),
+                    initialValue: task.descriptionMarkdown,
+                    textStyle: Theme.of(context).textTheme.bodyLarge!,
+                    onChanged: (value) => _debounceDescription(task.id, value),
+                    onInsertImage: (source, selection, {required altText}) =>
+                        _insertImage(
+                      task.id,
+                      source,
+                      selection,
+                      altText: altText,
+                    ),
+                  ),
                 const SizedBox(height: 16),
                 Text('优先级', style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 8),
@@ -237,9 +286,42 @@ class _TaskDetailPaneState extends State<TaskDetailPane> {
 
   void _debounceDescription(String id, String value) {
     _descriptionDebounce?.cancel();
+    _pendingDescriptionTaskId = id;
+    _pendingDescription = value;
     _descriptionDebounce = Timer(const Duration(milliseconds: 350), () {
-      widget.controller.updateTask(id, descriptionMarkdown: value);
+      _flushDescription();
     });
+  }
+
+  Future<void> _flushDescription() async {
+    _descriptionDebounce?.cancel();
+    _descriptionDebounce = null;
+    final id = _pendingDescriptionTaskId;
+    final value = _pendingDescription;
+    _pendingDescriptionTaskId = null;
+    _pendingDescription = null;
+    if (id != null && value != null) {
+      await widget.controller.updateTask(id, descriptionMarkdown: value);
+    }
+  }
+
+  Future<MarkdownEditResult?> _insertImage(
+    String taskId,
+    AttachmentPickSource source,
+    MarkdownSelection selection, {
+    required String altText,
+  }) async {
+    if (_pendingDescriptionTaskId == taskId) await _flushDescription();
+    return widget.controller.insertImage(
+      source,
+      selection,
+      altText: altText,
+    );
+  }
+
+  Future<void> _setPreviewMode(String taskId, bool value) async {
+    if (_pendingDescriptionTaskId == taskId) await _flushDescription();
+    if (mounted) setState(() => _previewMode = value);
   }
 
   TaskList? _listById(String id) {

@@ -81,3 +81,12 @@
 - Attachment resolver Futures must be cached in `AttachmentImage`; creating one on every build repeatedly queries metadata and can leave the image in a loading loop.
 - A stable 280x180 inline image canvas prevents Markdown `Wrap` relayout shifts across loading, missing, and loaded states while full-screen preview preserves the original aspect ratio.
 - Widget tests that perform real temporary-file IO inside Flutter fake async must use synchronous operations or `runAsync`; direct async `File.delete()` can stall the test isolate.
+
+## V2 Task 13 Findings
+
+- Image insertion must flush pending Markdown edits before taking the owner snapshot; otherwise the attachment transaction can overwrite recently typed text.
+- Picker cancellation returns before save-state mutation, preserving Markdown, timestamps, version, selection, and focus.
+- Note text writes need one merged 350 ms debounce for title and content, plus repository lookup by ID so filtering or switching notes cannot discard pending edits.
+- Recovered Android images remain inert until the user chooses the currently selected note or task from a non-modal banner; target buttons update as editor selection changes.
+- In-memory `XFile.fromData` values can expose an empty `name` with the installed `cross_file` version, so recovered images use `recovered image` as a non-empty alt-text fallback.
+- Real attachment file IO should be tested through directly awaited controller tests; Flutter widget fake async is suitable for verifying the recovery prompt and no-auto-import behavior, but not for awaiting the disk transaction started by a button callback.

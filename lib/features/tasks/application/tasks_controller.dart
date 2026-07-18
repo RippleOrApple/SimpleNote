@@ -1,13 +1,18 @@
 import 'dart:async';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/feedback/app_haptics.dart';
 import '../../../core/utils/id_generator.dart';
 import '../../../core/utils/time.dart';
+import '../../../shared/models/markdown_edit.dart';
 import '../../appearance/application/appearance_controller.dart';
 import '../../appearance/domain/appearance_presets.dart';
 import '../../appearance/domain/rgb_color.dart';
+import '../../attachments/application/attachment_import_service.dart';
+import '../../attachments/domain/content_attachment.dart';
+import '../../attachments/infrastructure/attachment_picker.dart';
 import '../../sync/data/sync_repository.dart';
 import '../data/tasks_repository.dart';
 import '../domain/smart_filter.dart';
@@ -275,6 +280,114 @@ class TasksController extends AsyncNotifier<TasksState> {
     if (state.valueOrNull?.saveStatus == TaskSaveStatus.saved) {
       _triggerFeedback(HapticEvent.delete);
     }
+  }
+
+  Future<MarkdownEditResult?> insertImage(
+    AttachmentPickSource source,
+    MarkdownSelection selection, {
+    required String altText,
+  }) async {
+    final current = state.valueOrNull;
+    final task = current?.selectedTask;
+    if (current == null || task == null) return null;
+    final picked = await ref.read(attachmentPickerProvider).pick(source);
+    if (picked == null) return null;
+    return _attachImage(
+      picked,
+      selection,
+      altText: altText,
+    );
+  }
+
+  Future<void> importRecoveredImages(List<XFile> files) async {
+    for (final file in files) {
+      final task = state.valueOrNull?.selectedTask;
+      if (task == null) return;
+      final result = await _attachImage(
+        file,
+        MarkdownSelection(
+          baseOffset: task.descriptionMarkdown.length,
+          extentOffset: task.descriptionMarkdown.length,
+        ),
+        altText: _recoveredImageAlt(file),
+      );
+      if (result == null) return;
+    }
+  }
+
+  Future<MarkdownEditResult?> _attachImage(
+    XFile picked,
+    MarkdownSelection selection, {
+    required String altText,
+  }) async {
+    final current = state.valueOrNull;
+    final task = current?.selectedTask;
+    if (current == null || task == null) return null;
+    state = AsyncData(current.copyWith(
+      saveStatus: TaskSaveStatus.saving,
+      clearErrorMessage: true,
+    ));
+    try {
+      final service = await ref.read(attachmentImportServiceProvider.future);
+      final result = await service.importAndAttach(
+        owner: AttachmentOwner(AttachmentOwnerType.task, task.id),
+        input: XFileAttachmentInput(picked),
+        currentMarkdown: task.descriptionMarkdown,
+        selection: selection,
+        altText: altText,
+      );
+      state = AsyncData(await _load(
+        query: current.query,
+        searchText: current.searchText,
+        selectedTaskId: task.id,
+        saveStatus: TaskSaveStatus.saved,
+      ));
+      return result.edit;
+    } catch (error) {
+      state = AsyncData(current.copyWith(
+        saveStatus: TaskSaveStatus.failed,
+        errorMessage: error.toString(),
+      ));
+      return null;
+    }
+  }
+
+  Future<void> deleteImage(String attachmentId) async {
+    final current = state.valueOrNull;
+    final task = current?.selectedTask;
+    if (current == null || task == null) return;
+    state = AsyncData(current.copyWith(
+      saveStatus: TaskSaveStatus.saving,
+      clearErrorMessage: true,
+    ));
+    try {
+      final service = await ref.read(attachmentImportServiceProvider.future);
+      await service.deleteAndDetach(
+        owner: AttachmentOwner(AttachmentOwnerType.task, task.id),
+        attachmentId: attachmentId,
+        currentMarkdown: task.descriptionMarkdown,
+        selection: MarkdownSelection(
+          baseOffset: task.descriptionMarkdown.length,
+          extentOffset: task.descriptionMarkdown.length,
+        ),
+      );
+      state = AsyncData(await _load(
+        query: current.query,
+        searchText: current.searchText,
+        selectedTaskId: task.id,
+        saveStatus: TaskSaveStatus.saved,
+      ));
+    } catch (error) {
+      state = AsyncData(current.copyWith(
+        saveStatus: TaskSaveStatus.failed,
+        errorMessage: error.toString(),
+      ));
+    }
+  }
+
+  Future<ContentAttachment?> resolveAttachment(String id) async {
+    final service = await ref.read(attachmentImportServiceProvider.future);
+    return service.resolveAttachment(id);
   }
 
   Future<void> addSubtask(String parentId, String title) async {
@@ -621,6 +734,11 @@ class TasksController extends AsyncNotifier<TasksState> {
     }
     return null;
   }
+}
+
+String _recoveredImageAlt(XFile file) {
+  final name = file.name.trim();
+  return name.isEmpty ? 'recovered image' : name;
 }
 
 T? _findById<T>(Iterable<T> values, String id) {

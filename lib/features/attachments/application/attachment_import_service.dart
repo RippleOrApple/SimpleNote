@@ -59,6 +59,10 @@ final class AttachmentImportService {
   final AttachmentFileStore _fileStore;
   final String _deviceId;
 
+  Future<ContentAttachment?> resolveAttachment(String id) {
+    return _repository.findById(id);
+  }
+
   Future<AttachmentImportResult> importAndAttach({
     required AttachmentOwner owner,
     required AttachmentInput input,

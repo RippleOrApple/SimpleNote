@@ -129,3 +129,14 @@ Complete
 - Added stable 280x180 inline image dimensions and cached resolver Futures to avoid repeated queries and layout churn.
 - **Verification:** `flutter analyze` passed; `flutter test` passed with 174 tests.
 - **Next:** V2 Task 13, inline-image integration for Notes and Tasks.
+
+## V2 Task 13: Inline Images in Notes and Tasks
+
+- **Status:** complete
+- **Completed:** 2026-07-18
+- Added transactional image insert, delete, resolve, save status, and failure handling to Notes and Tasks controllers.
+- Replaced both raw Markdown fields and previews with the shared embedded editor and attachment renderer.
+- Added cancellation-safe note debouncing that preserves `createdAt` and flushes cross-note pending edits.
+- Added a non-blocking Android recovery banner with explicit current-note/current-task targets and no automatic attachment.
+- **Verification:** `flutter analyze` passed; `flutter test` passed with 184 tests.
+- **Next:** V2 Task 14, disable V1 sync in production and record Phase 1 acceptance.

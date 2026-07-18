@@ -211,3 +211,27 @@
 
 - V2 Task 12 is complete.
 - V2 Task 13 is next: inline images in Notes and Tasks.
+
+## Session: 2026-07-18 - V2 Task 13
+
+### Implementation
+
+- Added note and task controller operations for inline image insertion, deletion, attachment resolution, recovered-image import, save state, and retryable error messages.
+- Added merged note edit debouncing, immutable note creation timestamps, pending-edit flushing, and cross-note edit protection.
+- Replaced Note and Task Markdown fields with `EmbeddedMarkdownEditor` and previews with `EmbeddedMarkdownView`.
+- Added task edit/preview switching that flushes pending description text before image insertion or preview.
+- Replaced the modal lost-image notice with a non-blocking banner that offers explicit current-note and current-task targets.
+- Added real Drift/file-store integration tests for insertion, cancellation, deletion, failure, recovery, metadata, and physical files.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/notes/notes_controller_test.dart test/notes/note_inline_image_test.dart test/tasks/tasks_controller_test.dart test/tasks/task_inline_image_test.dart test/tasks/tasks_page_test.dart test/attachments/pending_attachment_recovery_prompt_test.dart test/widget_test.dart` | Pass, 25 tests |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 184 tests |
+
+### Handoff
+
+- V2 Task 13 is complete.
+- V2 Task 14 is next: disable V1 sync in production and record Phase 1 acceptance.

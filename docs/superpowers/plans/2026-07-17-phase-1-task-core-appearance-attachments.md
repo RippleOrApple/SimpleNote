@@ -2285,7 +2285,7 @@ git commit -m "feat: add inline markdown image editor"
 - Keeps note `createdAt` immutable while image insertion changes `updatedAt`.
 - Surfaces file, Android gallery, and Android camera options in both editors.
 
-- [ ] **Step 1: Write failing controller integration tests**
+- [x] **Step 1: Write failing controller integration tests**
 
 Note assertions:
 
@@ -2306,7 +2306,7 @@ Task assertions mirror the note test but verify `descriptionMarkdown`.
 
 Add cancellation tests where the picker returns null and neither Markdown nor timestamps change.
 
-- [ ] **Step 2: Run focused tests and verify the red state**
+- [x] **Step 2: Run focused tests and verify the red state**
 
 Run:
 
@@ -2316,7 +2316,7 @@ flutter test test/notes/note_inline_image_test.dart test/tasks/task_inline_image
 
 Expected: FAIL because controllers do not expose image operations.
 
-- [ ] **Step 3: Integrate service calls into controllers**
+- [x] **Step 3: Integrate service calls into controllers**
 
 Exact signatures:
 
@@ -2342,7 +2342,7 @@ Flow:
 
 Use provider overrides in tests for fake picker, file store root, and deterministic clock.
 
-- [ ] **Step 4: Replace both raw Markdown fields with shared widgets**
+- [x] **Step 4: Replace both raw Markdown fields with shared widgets**
 
 For notes:
 
@@ -2360,7 +2360,7 @@ For task descriptions, use the same widget with key `task-description-field`. Bo
 
 Show file source on Windows. On Android show files, gallery, and camera. If the app starts with `retrieveLostData()` results, display a non-blocking prompt that lets the user choose the target currently-open note or task; do not auto-attach.
 
-- [ ] **Step 5: Verify created-date invariance and widget flows**
+- [x] **Step 5: Verify created-date invariance and widget flows**
 
 Run:
 
@@ -2371,7 +2371,7 @@ flutter test test/notes/notes_controller_test.dart test/notes/note_inline_image_
 
 Expected: note and task controller tests, image integrations, and main widget flows pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add lib/features/notes lib/features/tasks lib/main.dart test/notes test/tasks test/widget_test.dart

@@ -11,6 +11,7 @@ final notesRepositoryProvider = Provider<NotesRepository>((ref) {
 abstract class NotesRepository {
   Future<List<Note>> watchActiveNotes();
   Future<List<Note>> search(String query);
+  Future<Note?> findById(String id);
   Future<List<String>> noteIdsForTag(String tagId);
   Future<Map<String, List<String>>> tagIdsByNoteId();
   Future<void> upsert(Note note);
@@ -34,6 +35,12 @@ class DriftNotesRepository implements NotesRepository {
   Future<List<Note>> search(String query) async {
     final rows = await _database.notesDao.searchActive(query);
     return rows.map(_fromRow).toList();
+  }
+
+  @override
+  Future<Note?> findById(String id) async {
+    final row = await _database.notesDao.findById(id);
+    return row == null ? null : _fromRow(row);
   }
 
   @override
