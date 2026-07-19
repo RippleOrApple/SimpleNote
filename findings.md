@@ -167,3 +167,12 @@
 - Production backup currently uses `latestSchemaVersion = 3`, so schema 3 databases do not yet receive a pre-v4 backup.
 - Drift table classes already use custom constraints for enum-like and boolean-like validation; habits should follow that pattern.
 - Task 22 should not add a repository yet; the approved plan keeps repository and statistics foundation for Task 23.
+
+## V2 Task 23 Findings
+
+- Existing feature repositories use `abstract Repository`, `Drift...Repository`, and a Riverpod provider in the data file.
+- Habit schema v4 already has active-day uniqueness through a partial index on `(habit_id, checkin_day)` where `deleted_at IS NULL`.
+- Task 23 should not add controller or UI; Task 24 owns application state and pages.
+- Day-plan queries should filter active, unarchived habits in Dart after loading active rows because schedule rules are stored as JSON.
+- Streaks should be calculated across scheduled occurrences, not every calendar day, so weekly and interval schedules can skip non-planned days without breaking continuity.
+- `dart format --set-exit-if-changed` can repeatedly report a file as changed even when its SHA-256 stays identical; `dart format --output=show` exposes the exact layout it expects.

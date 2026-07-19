@@ -538,3 +538,41 @@
 
 - V2 Task 22 is complete.
 - V2 Task 23 is next: habit repository and statistics calculation foundation.
+
+## Session: 2026-07-19 - Commit before Task 23
+
+- Committed completed V2 Task 22 habit schema and domain model work.
+- Commit: `fc04c85 Add habit schema and domain models`.
+
+## Session: 2026-07-19 - V2 Task 23
+
+### Planning
+
+- Updated `GOAL.md` for habit repository and statistics calculation foundation.
+- Confirmed Task 23 scope stops at data/domain behavior; controller, UI, Calendar integration, and Statistics page are later tasks.
+- Confirmed existing repository pattern is `abstract Repository` plus `Drift...Repository` and a Riverpod provider.
+- Chose to calculate habit schedule membership and streak continuity in the repository/domain layer so later UI can reuse the same behavior.
+
+### Implementation
+
+- Added failing `test/habits/habits_repository_test.dart` for habit CRUD, day-plan queries, checkin idempotency, soft-delete cancellation, re-checkin after cancellation, and statistics.
+- Confirmed the red state was caused by missing `lib/features/habits/data/habits_repository.dart` and `DriftHabitsRepository`.
+- Added `HabitStatistics`.
+- Added `HabitsRepository` and `DriftHabitsRepository` with active habit queries, schedule filtering, checkin writes, cancellation, and statistics calculation.
+- Fixed one test date assumption: 2026-07-21 is Tuesday, so the post-archive weekday-only assertion now uses 2026-07-22.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/habits/habits_repository_test.dart` | Red first for missing repository, then pass with 4 tests |
+| `flutter test test/habits/habit_domain_test.dart test/habits/habits_repository_test.dart` | Pass, 8 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reported `habits_repository.dart` as changed repeatedly; pass after matching formatter's switch-arm layout |
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/habits/habit_domain_test.dart test/habits/habits_repository_test.dart test/database/schema_v2_test.dart test/database/migration_v2_test.dart` | Pass, 17 tests |
+| `flutter test` | Pass, 230 tests |
+
+### Handoff
+
+- V2 Task 23 is complete.
+- V2 Task 24 is next: habit application state and Windows/Android UI.

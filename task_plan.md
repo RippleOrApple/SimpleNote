@@ -10,6 +10,43 @@ Complete
 
 ## Phases
 
+### V2 Task 23 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Read approved Phase 3/4 plan
+- [x] Inspect current habit domain models and schema v4 tables
+- [x] Inspect existing repository and test patterns
+- **Status:** complete
+
+### V2 Task 23 Phase 2: Test-First Contract
+
+- [x] Add failing repository tests for habit CRUD and day-plan queries
+- [x] Add failing repository tests for checkin idempotency, cancellation, and re-checkin after cancellation
+- [x] Add failing statistics tests for completion rate, cross-week/month streaks, and interval schedules
+- **Status:** complete
+
+### V2 Task 23 Phase 3: Implementation
+
+- [x] Add `HabitStatistics`
+- [x] Add `HabitsRepository` and Drift implementation
+- [x] Add schedule day matching and planned-day iteration helpers
+- [x] Add checkin idempotency and soft-delete cancellation behavior
+- **Status:** complete
+
+### V2 Task 23 Phase 4: Testing & Verification
+
+- [x] Run focused habits tests
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
+- [x] Run `flutter analyze`
+- [x] Run broader relevant tests
+- **Status:** complete
+
+### V2 Task 23 Phase 5: Delivery
+
+- [x] Update `GOAL.md` acceptance checkboxes
+- [x] Update planning files with final results
+- **Status:** complete
+
 ### Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
@@ -60,6 +97,8 @@ Complete
 | Ship an agenda-style first Calendar page | Matches Task 21's minimum page requirement while leaving month/week/day views for later |
 | Keep Task 22 below repository layer | The approved plan separates schema/domain from repository/controller/UI in Task 23/24 |
 | Store schedule as `schedule_type` plus JSON payload | Matches the approved database design and keeps future schedule variants extensible |
+| Keep Task 23 below controller/UI | The approved split assigns application state and pages to Task 24 |
+| Compute streaks over planned occurrences | Daily, weekly, weekdays, and interval schedules have different calendar gaps; streaks should count consecutive scheduled opportunities, not raw calendar days |
 
 ## Errors Encountered
 
@@ -71,6 +110,7 @@ Complete
 | PowerShell rejected `git add -A && git status --short && git commit ...` | 1 | Ran the Git commands separately |
 | Drift table DSL rejected `length(trim(name))` inside a column check | 1 | Moved the non-empty habit-name validation to a table-level SQL `CHECK` constraint |
 | Formatter repeatedly changed mixed-line-ending files after Git checkout/write | 2 | Normalized touched Dart files to LF and reran formatter until stable |
+| `dart format --set-exit-if-changed` repeatedly reported `habits_repository.dart` as changed even though the file hash stayed identical | 2 | Used `dart format --output=show` to identify the switch-arm layout it expected, then applied that layout manually |
 
 ## V2 Task 22: Habit Schema and Domain Models
 
