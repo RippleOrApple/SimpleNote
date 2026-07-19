@@ -615,3 +615,45 @@
 
 - V2 Task 24 is complete.
 - V2 Task 25 is next: Statistics aggregation and page.
+
+## Session: 2026-07-19 - Commit before Task 25
+
+- Committed completed V2 Task 24 habit controller and page work.
+- Commit: `fd7fe32 Add habits controller and page`.
+
+## Session: 2026-07-19 - V2 Task 25
+
+### Planning
+
+- Updated `GOAL.md` for Statistics aggregation and page.
+- Confirmed Statistics currently routes to `PlaceholderModulePage`.
+- Confirmed task completion statistics should count active `task_completions` plus non-recurring tasks with `completed_at`.
+- Confirmed habit statistics should count active checkins and planned days for active, unarchived habits only.
+
+### Implementation
+
+- Added failing `statistics_repository_test.dart` for task completion counts, habit checkins, planned days, deletion/archival exclusions, and empty summary zero values.
+- Added `StatisticsRange`, `StatisticsSummary`, and `DriftStatisticsRepository`.
+- Added failing `statistics_controller_test.dart` for default month loading and week/month/year switching.
+- Added `StatisticsController` and `StatisticsState`.
+- Added failing `statistics_page_test.dart` for replacing the Statistics placeholder and range switching.
+- Added `StatisticsPage` with range segmented controls, task completion metric, habit checkin metric, habit completion rate, current streak, longest streak, and planned/completed overview.
+- Routed `AppModuleKey.statistics` to `StatisticsPage` in `AdaptiveAppShell`.
+- Removed the now-unreachable fallback switch case from `AdaptiveAppShell` because every `AppModuleKey` is explicitly handled.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/statistics/statistics_repository_test.dart` | Red first for missing statistics domain/repository, then pass with 2 tests |
+| `flutter test test/statistics/statistics_controller_test.dart` | Red first for missing controller, then pass with 1 test |
+| `flutter test test/statistics/statistics_page_test.dart` | Red first for missing page, then pass with 2 tests |
+| `flutter test test/statistics test/navigation/adaptive_app_shell_test.dart` | Pass, 11 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reported `statistics_repository.dart` as changed repeatedly; pass after matching formatter's long-expression layouts |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 239 tests |
+
+### Handoff
+
+- V2 Task 25 is complete.
+- V2 Task 26 is next: habits in Calendar and Phase 3 acceptance.

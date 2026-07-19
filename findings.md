@@ -183,3 +183,10 @@
 - `TasksController` is the closest application-state pattern: `AsyncNotifier`, immutable state, repository provider injection, selected item state, and write status.
 - `TasksPage` uses the shared adaptive breakpoints and `AppShellEmbedScope`; Habits can mirror a simpler two-zone layout without adding a new shell abstraction.
 - Task 24 should not make UI call Drift directly; all writes and reloads should go through `HabitsController`.
+
+## V2 Task 25 Findings
+
+- Statistics is still routed to `PlaceholderModulePage` from `AdaptiveAppShell`.
+- Task completions have two sources in the approved plan: active `task_completions` rows and non-recurring completed tasks with `completed_at`.
+- Habit statistics can reuse the schedule semantics from `HabitsRepository`, but the global summary should aggregate across active, unarchived habits only.
+- Empty statistics should display neutral zero values rather than treating 0% completion as a failure state.

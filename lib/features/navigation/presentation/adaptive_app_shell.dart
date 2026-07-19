@@ -7,11 +7,11 @@ import '../../calendar/presentation/calendar_page.dart';
 import '../../habits/presentation/habits_page.dart';
 import '../../notes/presentation/notes_page.dart';
 import '../../settings/presentation/settings_page.dart';
+import '../../statistics/presentation/statistics_page.dart';
 import '../../sync/data/sync_repository.dart';
 import '../../tasks/presentation/tasks_page.dart';
 import '../application/navigation_controller.dart';
 import '../domain/app_module.dart';
-import 'placeholder_module_page.dart';
 import 'rounded_icon_navigation.dart';
 
 class AdaptiveAppShell extends ConsumerStatefulWidget {
@@ -103,9 +103,9 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
       AppModuleKey.calendar => const CalendarPage(),
       AppModuleKey.habits => const HabitsPage(),
       AppModuleKey.notes => const NotesPage(),
+      AppModuleKey.statistics => const StatisticsPage(),
       AppModuleKey.settings => const SettingsPage(),
       AppModuleKey.more => const SettingsPage(),
-      _ => PlaceholderModulePage(module: module),
     };
   }
 }

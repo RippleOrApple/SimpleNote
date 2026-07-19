@@ -10,6 +10,45 @@ Complete
 
 ## Phases
 
+### V2 Task 25 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Inspect approved Phase 3/4 Task 25 scope
+- [x] Inspect task completion and habit checkin data sources
+- [x] Inspect navigation placeholder integration point
+- **Status:** complete
+
+### V2 Task 25 Phase 2: Test-First Contract
+
+- [x] Add failing statistics repository tests
+- [x] Add failing statistics controller tests
+- [x] Add failing statistics page/navigation tests
+- **Status:** complete
+
+### V2 Task 25 Phase 3: Implementation
+
+- [x] Add statistics domain models
+- [x] Add Drift statistics repository
+- [x] Add statistics controller
+- [x] Add statistics page
+- [x] Route `AppModuleKey.statistics` to `StatisticsPage`
+- **Status:** complete
+
+### V2 Task 25 Phase 4: Testing & Verification
+
+- [x] Run focused statistics tests
+- [x] Run relevant navigation/widget tests
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
+- [x] Run `flutter analyze`
+- [x] Run broader relevant tests
+- **Status:** complete
+
+### V2 Task 25 Phase 5: Delivery
+
+- [x] Update `GOAL.md` acceptance checkboxes
+- [x] Update planning files with final results
+- **Status:** complete
+
 ### V2 Task 24 Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
@@ -147,6 +186,7 @@ Complete
 | Formatter repeatedly changed mixed-line-ending files after Git checkout/write | 2 | Normalized touched Dart files to LF and reran formatter until stable |
 | `dart format --set-exit-if-changed` repeatedly reported `habits_repository.dart` as changed even though the file hash stayed identical | 2 | Used `dart format --output=show` to identify the switch-arm layout it expected, then applied that layout manually |
 | `dart format --set-exit-if-changed` repeatedly reported new Task 24 Dart files as changed while SHA-256 stayed identical | 3 | Used `dart format --output=json` to locate expression-layout differences and manually matched the formatter output |
+| `dart format --set-exit-if-changed` repeatedly reported `statistics_repository.dart` as changed while SHA-256 stayed identical | 2 | Used `dart format --output=json` to locate long expression layout differences and manually matched the formatter output |
 
 ## V2 Task 22: Habit Schema and Domain Models
 
