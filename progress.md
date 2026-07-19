@@ -263,7 +263,7 @@
 ### Handoff
 
 - V2 Task 14 and the Phase 1 automated acceptance gate are complete.
-- Physical Android camera/gallery/haptic checks and Windows process-restart checks remain release QA, as recorded in `docs/V2_PHASE_1_ACCEPTANCE.md`.
+- Physical Android camera/gallery/haptic checks and Windows process-restart checks remain release QA, as recorded in `docs/acceptance/V2_PHASE_1_ACCEPTANCE.md`.
 
 ## Session: 2026-07-18 - PR Merge Conflict Resolution
 
@@ -466,3 +466,235 @@
 
 - V2 Task 20 is complete.
 - V2 Task 21 scope was not found in repository docs; confirm the next task title before starting it.
+
+## Session: 2026-07-19 - V2 Task 21
+
+### Planning
+
+- Updated `GOAL.md` for Calendar page completion.
+- Confirmed the approved Phase 3/4 plan now defines Task 21 as replacing the Calendar placeholder with a real page.
+- Confirmed existing Calendar domain, repository, and controller already cover the 30-day data source and task/note aggregation.
+- Scoped this task to a read-only Calendar page plus task/note selection handoff.
+
+### Implementation
+
+- Added `test/calendar/calendar_page_test.dart` and confirmed the expected red state against the placeholder Calendar module.
+- Added `CalendarPage` with loading, error, empty, 30-day header, day grouping, task/note source indicators, and entry tap handling.
+- Routed `AppModuleKey.calendar` in `AdaptiveAppShell` to the new Calendar page.
+- Wired task entry taps to the all-tasks query plus `TasksController.selectTask`.
+- Wired note entry taps to `NotesController.selectNote`.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/calendar/calendar_page_test.dart` | Red first for missing Calendar page, then pass with 3 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially failed because `adaptive_app_shell.dart` had mixed CRLF/LF line endings; passed after normalizing that file |
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/calendar test/navigation/adaptive_app_shell_test.dart` | Pass, 12 tests |
+| `flutter test` | Pass, 220 tests |
+
+### Handoff
+
+- V2 Task 21 is complete.
+- V2 Task 22 is next: schema 4 and habit domain models.
+
+## Session: 2026-07-19 - Commit before Task 22
+
+- Committed completed documentation restructuring and V2 Task 21 Calendar baseline.
+- Commit: `3612a2d Complete phase 3 calendar baseline`.
+- PowerShell rejected a chained `&&` Git command; reran `git add`, `git status`, and `git commit` as separate commands.
+
+## Session: 2026-07-19 - V2 Task 22
+
+### Planning
+
+- Updated `GOAL.md` for schema 4 and habit domain models.
+- Confirmed current `AppDatabase.schemaVersion` is 3.
+- Confirmed Task 22 should stop at tables, migration, backup, and domain models.
+
+### Implementation
+
+- Added failing domain tests for `HabitSchedule`, `Habit`, and `HabitCheckin` JSON behavior.
+- Added failing database tests for schema v4 tables, constraints, active-checkin uniqueness, and schema 3 -> 4 backup.
+- Added `habits` and `habit_checkins` Drift tables.
+- Added `SchemaV4Migration` with habit indexes and active-checkin uniqueness.
+- Bumped `AppDatabase.schemaVersion` to 4 and wired create/upgrade paths.
+- Updated `DatabaseBackupService` so schema 3 production databases receive a `pre-v4` backup.
+- Added `HabitSchedule`, `Habit`, and `HabitCheckin` domain models.
+- Regenerated Drift code with `build_runner`.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/habits/habit_domain_test.dart test/database/schema_v2_test.dart test/database/migration_v2_test.dart` | Red first for missing habit domain/schema, then pass with 13 tests |
+| `dart run build_runner build --delete-conflicting-outputs` | Pass; tool reported the option is ignored by current build_runner but generated Drift outputs successfully |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reformatted touched files and exposed line-ending churn, then pass with 0 changed files |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 226 tests |
+
+### Handoff
+
+- V2 Task 22 is complete.
+- V2 Task 23 is next: habit repository and statistics calculation foundation.
+
+## Session: 2026-07-19 - Commit before Task 23
+
+- Committed completed V2 Task 22 habit schema and domain model work.
+- Commit: `fc04c85 Add habit schema and domain models`.
+
+## Session: 2026-07-19 - V2 Task 23
+
+### Planning
+
+- Updated `GOAL.md` for habit repository and statistics calculation foundation.
+- Confirmed Task 23 scope stops at data/domain behavior; controller, UI, Calendar integration, and Statistics page are later tasks.
+- Confirmed existing repository pattern is `abstract Repository` plus `Drift...Repository` and a Riverpod provider.
+- Chose to calculate habit schedule membership and streak continuity in the repository/domain layer so later UI can reuse the same behavior.
+
+### Implementation
+
+- Added failing `test/habits/habits_repository_test.dart` for habit CRUD, day-plan queries, checkin idempotency, soft-delete cancellation, re-checkin after cancellation, and statistics.
+- Confirmed the red state was caused by missing `lib/features/habits/data/habits_repository.dart` and `DriftHabitsRepository`.
+- Added `HabitStatistics`.
+- Added `HabitsRepository` and `DriftHabitsRepository` with active habit queries, schedule filtering, checkin writes, cancellation, and statistics calculation.
+- Fixed one test date assumption: 2026-07-21 is Tuesday, so the post-archive weekday-only assertion now uses 2026-07-22.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/habits/habits_repository_test.dart` | Red first for missing repository, then pass with 4 tests |
+| `flutter test test/habits/habit_domain_test.dart test/habits/habits_repository_test.dart` | Pass, 8 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reported `habits_repository.dart` as changed repeatedly; pass after matching formatter's switch-arm layout |
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/habits/habit_domain_test.dart test/habits/habits_repository_test.dart test/database/schema_v2_test.dart test/database/migration_v2_test.dart` | Pass, 17 tests |
+| `flutter test` | Pass, 230 tests |
+
+### Handoff
+
+- V2 Task 23 is complete.
+- V2 Task 24 is next: habit application state and Windows/Android UI.
+
+## Session: 2026-07-19 - Commit before Task 24
+
+- Committed completed V2 Task 23 habit repository and statistics work.
+- Commit: `894a78c Add habit repository and statistics`.
+
+## Session: 2026-07-19 - V2 Task 24
+
+### Planning
+
+- Updated `GOAL.md` for habit application state and Windows/Android UI.
+- Confirmed Habits currently routes to `PlaceholderModulePage` in `AdaptiveAppShell`.
+- Confirmed Task 24 should add controller and page only; reminders, Calendar integration, and global Statistics remain later tasks.
+- Chose to mirror the existing Tasks module pattern: `AsyncNotifier` state plus repository-backed writes and adaptive page layout.
+
+### Implementation
+
+- Added failing `HabitsController` tests for create, edit, select, check in, cancel checkin, archive, unarchive, delete, existing-plan load, and selected statistics.
+- Added `HabitsController`, `HabitsState`, and `HabitSaveStatus`.
+- Added failing `HabitsPage` tests for replacing the Habits placeholder, Windows two-pane layout, compact list/detail navigation, and today checkin action.
+- Added `HabitsPage` with adaptive list/detail layout, empty state, quick create, edit/rename action, archive/delete actions, today checkin/cancel action, metrics, and recent checkins.
+- Routed `AppModuleKey.habits` to `HabitsPage` in `AdaptiveAppShell`.
+- Fixed controller today-checkin collection to include all active habits, not only habits planned today, so manual checkins remain visible on non-planned days.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/habits/habits_controller_test.dart` | Red first for missing controller, then pass with 2 tests |
+| `flutter test test/habits/habits_page_test.dart` | Red first for missing page, then pass with 2 tests |
+| `flutter test test/habits test/navigation/adaptive_app_shell_test.dart` | Pass, 18 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reported new Task 24 files as changed repeatedly; pass after matching formatter's expression layouts |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 234 tests |
+
+### Handoff
+
+- V2 Task 24 is complete.
+- V2 Task 25 is next: Statistics aggregation and page.
+
+## Session: 2026-07-19 - Commit before Task 25
+
+- Committed completed V2 Task 24 habit controller and page work.
+- Commit: `fd7fe32 Add habits controller and page`.
+
+## Session: 2026-07-19 - V2 Task 25
+
+### Planning
+
+- Updated `GOAL.md` for Statistics aggregation and page.
+- Confirmed Statistics currently routes to `PlaceholderModulePage`.
+- Confirmed task completion statistics should count active `task_completions` plus non-recurring tasks with `completed_at`.
+- Confirmed habit statistics should count active checkins and planned days for active, unarchived habits only.
+
+### Implementation
+
+- Added failing `statistics_repository_test.dart` for task completion counts, habit checkins, planned days, deletion/archival exclusions, and empty summary zero values.
+- Added `StatisticsRange`, `StatisticsSummary`, and `DriftStatisticsRepository`.
+- Added failing `statistics_controller_test.dart` for default month loading and week/month/year switching.
+- Added `StatisticsController` and `StatisticsState`.
+- Added failing `statistics_page_test.dart` for replacing the Statistics placeholder and range switching.
+- Added `StatisticsPage` with range segmented controls, task completion metric, habit checkin metric, habit completion rate, current streak, longest streak, and planned/completed overview.
+- Routed `AppModuleKey.statistics` to `StatisticsPage` in `AdaptiveAppShell`.
+- Removed the now-unreachable fallback switch case from `AdaptiveAppShell` because every `AppModuleKey` is explicitly handled.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/statistics/statistics_repository_test.dart` | Red first for missing statistics domain/repository, then pass with 2 tests |
+| `flutter test test/statistics/statistics_controller_test.dart` | Red first for missing controller, then pass with 1 test |
+| `flutter test test/statistics/statistics_page_test.dart` | Red first for missing page, then pass with 2 tests |
+| `flutter test test/statistics test/navigation/adaptive_app_shell_test.dart` | Pass, 11 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reported `statistics_repository.dart` as changed repeatedly; pass after matching formatter's long-expression layouts |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 239 tests |
+
+### Handoff
+
+- V2 Task 25 is complete.
+- V2 Task 26 is next: habits in Calendar and Phase 3 acceptance.
+
+## Session: 2026-07-19 - Commit before Task 26
+
+- Committed completed V2 Task 25 statistics aggregation and page work.
+- Commit: `46a31b5 Add statistics aggregation and page`.
+
+## Session: 2026-07-19 - V2 Task 26
+
+### Planning
+
+- Updated `GOAL.md` for habits in Calendar, Phase 3 acceptance, README, release notes, and release preparation.
+- Confirmed approved Task 26 scope: Calendar habit aggregation, Phase 3 acceptance document, full tests, Windows release build, and Android release build.
+- Confirmed Calendar currently supports task and note sources only.
+- Confirmed Habits controller can select a habit after the Habits provider loads.
+
+### Implementation
+
+- Added failing Calendar repository coverage for habit plan entries, active checkin completion state, archived/deleted exclusions, habit count, and habit color.
+- Added failing Calendar page coverage for visible habit entries, day habit count, and tapping a habit entry to open Habits with selection.
+- Extended Calendar domain with `CalendarEntrySource.habit`, `CalendarEntryKind.habitPlanned`, optional entry color, and `CalendarDay.habitCount`.
+- Extended Drift Calendar repository to aggregate active, unarchived habit schedules and active checkins over the requested range.
+- Extended Calendar page to display habit counts, habit-colored entry icons, habit subtitles, completion state, and Habits navigation handoff.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/calendar/calendar_repository_test.dart test/calendar/calendar_page_test.dart` | Red first for missing habit Calendar source/kind/color/count, then pass with 7 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially changed `calendar_repository.dart` repeatedly; pass after matching formatter's expected expression layout |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 241 tests |
+| `flutter build windows --release` | Pass, produced `build/windows/x64/runner/Release/simple_note.exe` |
+| `flutter build apk --release` | Pass, produced `build/app/outputs/flutter-apk/app-release.apk`; Gradle, AGP, KGP, and SDK XML warnings were non-fatal |
+
+### Handoff
+
+- Created release assets:
+  - `dist/SimpleNote-v2.1.0+4-windows-x64.zip`
+  - `dist/SimpleNote-v2.1.0+4-android-release.apk`
+- Prepared final release documentation for GitHub tag `v2.1.0+4`.
+- Commit, push, and GitHub release are the remaining shell actions.

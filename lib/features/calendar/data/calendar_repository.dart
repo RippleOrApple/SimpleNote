@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../database/app_database.dart';
+import '../../habits/domain/habit_schedule.dart';
 import '../../tasks/domain/task_recurrence.dart';
 import '../domain/calendar_entry.dart';
 
@@ -70,6 +73,7 @@ class DriftCalendarRepository implements CalendarRepository {
         dayStart: _dayStart(note.createdAt),
       ));
     }
+    entries.addAll(await _habitEntries(from: from, before: before));
     entries.sort(_entryComparator);
     return entries;
   }
@@ -211,6 +215,59 @@ class DriftCalendarRepository implements CalendarRepository {
       completed: task.completed,
     );
   }
+
+  Future<List<CalendarEntry>> _habitEntries({
+    required int from,
+    required int before,
+  }) async {
+    final habitRows = await (_database.select(_database.habits)
+          ..where(
+            (habit) => habit.deletedAt.isNull() & habit.archived.equals(false),
+          ))
+        .get();
+    if (habitRows.isEmpty) return const [];
+
+    final checkinRows = await (_database.select(_database.habitCheckins)
+          ..where(
+            (checkin) =>
+                checkin.deletedAt.isNull() &
+                checkin.checkinDay.isBiggerOrEqualValue(_dayStart(from)) &
+                checkin.checkinDay.isSmallerThanValue(before),
+          ))
+        .get();
+    final completedDaysByHabit = <String, Set<int>>{};
+    for (final checkin in checkinRows) {
+      completedDaysByHabit
+          .putIfAbsent(checkin.habitId, () => <int>{})
+          .add(checkin.checkinDay);
+    }
+
+    final entries = <CalendarEntry>[];
+    var day = _dayStart(from);
+    while (day < before) {
+      for (final habit in habitRows) {
+        final schedule = HabitSchedule.fromJson(
+          habit.scheduleType,
+          (jsonDecode(habit.scheduleJson) as Map).cast<String, Object?>(),
+        );
+        if (!_isHabitScheduledOn(schedule, day)) continue;
+        entries.add(CalendarEntry(
+          id: 'habit:${habit.id}:habitPlanned:$day',
+          sourceId: habit.id,
+          source: CalendarEntrySource.habit,
+          kind: CalendarEntryKind.habitPlanned,
+          title: habit.name,
+          scheduledAt: day,
+          dayStart: day,
+          allDay: true,
+          completed: completedDaysByHabit[habit.id]?.contains(day) ?? false,
+          color: habit.color,
+        ));
+      }
+      day += _dayMillis;
+    }
+    return entries;
+  }
 }
 
 bool _inRange(int value, int from, int before) {
@@ -233,3 +290,26 @@ int _dayStart(int value) {
   final date = DateTime.fromMillisecondsSinceEpoch(value);
   return DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
 }
+
+bool _isHabitScheduledOn(HabitSchedule schedule, int dayStart) {
+  final weekday = DateTime.fromMillisecondsSinceEpoch(dayStart).weekday;
+  return switch (schedule.type) {
+    HabitScheduleType.daily => true,
+    HabitScheduleType.weekdays =>
+      weekday >= DateTime.monday && weekday <= DateTime.friday,
+    HabitScheduleType.weekly => schedule.weekdays.contains(weekday),
+    HabitScheduleType.interval => _matchesHabitInterval(schedule, dayStart),
+  };
+}
+
+bool _matchesHabitInterval(HabitSchedule schedule, int dayStart) {
+  final everyDays = schedule.everyDays;
+  final anchorDay = schedule.anchorDay;
+  if (everyDays == null || anchorDay == null || dayStart < anchorDay) {
+    return false;
+  }
+  final deltaDays = (dayStart - _dayStart(anchorDay)) ~/ _dayMillis;
+  return deltaDays % everyDays == 0;
+}
+
+const _dayMillis = 24 * 60 * 60 * 1000;

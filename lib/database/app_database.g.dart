@@ -9398,6 +9398,1191 @@ class DeviceAppearanceProfilesCompanion
   }
 }
 
+class $HabitsTable extends Habits with TableInfo<$HabitsTable, HabitRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HabitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _promptMeta = const VerificationMeta('prompt');
+  @override
+  late final GeneratedColumn<String> prompt = GeneratedColumn<String>(
+      'prompt', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _iconKeyMeta =
+      const VerificationMeta('iconKey');
+  @override
+  late final GeneratedColumn<String> iconKey = GeneratedColumn<String>(
+      'icon_key', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<int> color = GeneratedColumn<int>(
+      'color', aliasedName, false,
+      check: () => ComparableExpr(color).isBetweenValues(0, 0xFFFFFF),
+      type: DriftSqlType.int,
+      requiredDuringInsert: true);
+  static const VerificationMeta _scheduleTypeMeta =
+      const VerificationMeta('scheduleType');
+  @override
+  late final GeneratedColumn<String> scheduleType = GeneratedColumn<String>(
+      'schedule_type', aliasedName, false,
+      check: () =>
+          scheduleType.isIn(const ['daily', 'weekdays', 'weekly', 'interval']),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _scheduleJsonMeta =
+      const VerificationMeta('scheduleJson');
+  @override
+  late final GeneratedColumn<String> scheduleJson = GeneratedColumn<String>(
+      'schedule_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _archivedMeta =
+      const VerificationMeta('archived');
+  @override
+  late final GeneratedColumn<bool> archived = GeneratedColumn<bool>(
+      'archived', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("archived" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        prompt,
+        iconKey,
+        color,
+        scheduleType,
+        scheduleJson,
+        sortOrder,
+        archived,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habits';
+  @override
+  VerificationContext validateIntegrity(Insertable<HabitRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('prompt')) {
+      context.handle(_promptMeta,
+          prompt.isAcceptableOrUnknown(data['prompt']!, _promptMeta));
+    }
+    if (data.containsKey('icon_key')) {
+      context.handle(_iconKeyMeta,
+          iconKey.isAcceptableOrUnknown(data['icon_key']!, _iconKeyMeta));
+    } else if (isInserting) {
+      context.missing(_iconKeyMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    } else if (isInserting) {
+      context.missing(_colorMeta);
+    }
+    if (data.containsKey('schedule_type')) {
+      context.handle(
+          _scheduleTypeMeta,
+          scheduleType.isAcceptableOrUnknown(
+              data['schedule_type']!, _scheduleTypeMeta));
+    } else if (isInserting) {
+      context.missing(_scheduleTypeMeta);
+    }
+    if (data.containsKey('schedule_json')) {
+      context.handle(
+          _scheduleJsonMeta,
+          scheduleJson.isAcceptableOrUnknown(
+              data['schedule_json']!, _scheduleJsonMeta));
+    } else if (isInserting) {
+      context.missing(_scheduleJsonMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    if (data.containsKey('archived')) {
+      context.handle(_archivedMeta,
+          archived.isAcceptableOrUnknown(data['archived']!, _archivedMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HabitRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      prompt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}prompt'])!,
+      iconKey: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}icon_key'])!,
+      color: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
+      scheduleType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}schedule_type'])!,
+      scheduleJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}schedule_json'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      archived: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}archived'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $HabitsTable createAlias(String alias) {
+    return $HabitsTable(attachedDatabase, alias);
+  }
+}
+
+class HabitRow extends DataClass implements Insertable<HabitRow> {
+  final String id;
+  final String name;
+  final String prompt;
+  final String iconKey;
+  final int color;
+  final String scheduleType;
+  final String scheduleJson;
+  final int sortOrder;
+  final bool archived;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const HabitRow(
+      {required this.id,
+      required this.name,
+      required this.prompt,
+      required this.iconKey,
+      required this.color,
+      required this.scheduleType,
+      required this.scheduleJson,
+      required this.sortOrder,
+      required this.archived,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['prompt'] = Variable<String>(prompt);
+    map['icon_key'] = Variable<String>(iconKey);
+    map['color'] = Variable<int>(color);
+    map['schedule_type'] = Variable<String>(scheduleType);
+    map['schedule_json'] = Variable<String>(scheduleJson);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['archived'] = Variable<bool>(archived);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  HabitsCompanion toCompanion(bool nullToAbsent) {
+    return HabitsCompanion(
+      id: Value(id),
+      name: Value(name),
+      prompt: Value(prompt),
+      iconKey: Value(iconKey),
+      color: Value(color),
+      scheduleType: Value(scheduleType),
+      scheduleJson: Value(scheduleJson),
+      sortOrder: Value(sortOrder),
+      archived: Value(archived),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory HabitRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HabitRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      prompt: serializer.fromJson<String>(json['prompt']),
+      iconKey: serializer.fromJson<String>(json['iconKey']),
+      color: serializer.fromJson<int>(json['color']),
+      scheduleType: serializer.fromJson<String>(json['scheduleType']),
+      scheduleJson: serializer.fromJson<String>(json['scheduleJson']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      archived: serializer.fromJson<bool>(json['archived']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'prompt': serializer.toJson<String>(prompt),
+      'iconKey': serializer.toJson<String>(iconKey),
+      'color': serializer.toJson<int>(color),
+      'scheduleType': serializer.toJson<String>(scheduleType),
+      'scheduleJson': serializer.toJson<String>(scheduleJson),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'archived': serializer.toJson<bool>(archived),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  HabitRow copyWith(
+          {String? id,
+          String? name,
+          String? prompt,
+          String? iconKey,
+          int? color,
+          String? scheduleType,
+          String? scheduleJson,
+          int? sortOrder,
+          bool? archived,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      HabitRow(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        prompt: prompt ?? this.prompt,
+        iconKey: iconKey ?? this.iconKey,
+        color: color ?? this.color,
+        scheduleType: scheduleType ?? this.scheduleType,
+        scheduleJson: scheduleJson ?? this.scheduleJson,
+        sortOrder: sortOrder ?? this.sortOrder,
+        archived: archived ?? this.archived,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  HabitRow copyWithCompanion(HabitsCompanion data) {
+    return HabitRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      prompt: data.prompt.present ? data.prompt.value : this.prompt,
+      iconKey: data.iconKey.present ? data.iconKey.value : this.iconKey,
+      color: data.color.present ? data.color.value : this.color,
+      scheduleType: data.scheduleType.present
+          ? data.scheduleType.value
+          : this.scheduleType,
+      scheduleJson: data.scheduleJson.present
+          ? data.scheduleJson.value
+          : this.scheduleJson,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      archived: data.archived.present ? data.archived.value : this.archived,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('prompt: $prompt, ')
+          ..write('iconKey: $iconKey, ')
+          ..write('color: $color, ')
+          ..write('scheduleType: $scheduleType, ')
+          ..write('scheduleJson: $scheduleJson, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('archived: $archived, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      name,
+      prompt,
+      iconKey,
+      color,
+      scheduleType,
+      scheduleJson,
+      sortOrder,
+      archived,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      deviceId,
+      version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HabitRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.prompt == this.prompt &&
+          other.iconKey == this.iconKey &&
+          other.color == this.color &&
+          other.scheduleType == this.scheduleType &&
+          other.scheduleJson == this.scheduleJson &&
+          other.sortOrder == this.sortOrder &&
+          other.archived == this.archived &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class HabitsCompanion extends UpdateCompanion<HabitRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> prompt;
+  final Value<String> iconKey;
+  final Value<int> color;
+  final Value<String> scheduleType;
+  final Value<String> scheduleJson;
+  final Value<int> sortOrder;
+  final Value<bool> archived;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const HabitsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.prompt = const Value.absent(),
+    this.iconKey = const Value.absent(),
+    this.color = const Value.absent(),
+    this.scheduleType = const Value.absent(),
+    this.scheduleJson = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.archived = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HabitsCompanion.insert({
+    required String id,
+    required String name,
+    this.prompt = const Value.absent(),
+    required String iconKey,
+    required int color,
+    required String scheduleType,
+    required String scheduleJson,
+    this.sortOrder = const Value.absent(),
+    this.archived = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        iconKey = Value(iconKey),
+        color = Value(color),
+        scheduleType = Value(scheduleType),
+        scheduleJson = Value(scheduleJson),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<HabitRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? prompt,
+    Expression<String>? iconKey,
+    Expression<int>? color,
+    Expression<String>? scheduleType,
+    Expression<String>? scheduleJson,
+    Expression<int>? sortOrder,
+    Expression<bool>? archived,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (prompt != null) 'prompt': prompt,
+      if (iconKey != null) 'icon_key': iconKey,
+      if (color != null) 'color': color,
+      if (scheduleType != null) 'schedule_type': scheduleType,
+      if (scheduleJson != null) 'schedule_json': scheduleJson,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (archived != null) 'archived': archived,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HabitsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? prompt,
+      Value<String>? iconKey,
+      Value<int>? color,
+      Value<String>? scheduleType,
+      Value<String>? scheduleJson,
+      Value<int>? sortOrder,
+      Value<bool>? archived,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return HabitsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      prompt: prompt ?? this.prompt,
+      iconKey: iconKey ?? this.iconKey,
+      color: color ?? this.color,
+      scheduleType: scheduleType ?? this.scheduleType,
+      scheduleJson: scheduleJson ?? this.scheduleJson,
+      sortOrder: sortOrder ?? this.sortOrder,
+      archived: archived ?? this.archived,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (prompt.present) {
+      map['prompt'] = Variable<String>(prompt.value);
+    }
+    if (iconKey.present) {
+      map['icon_key'] = Variable<String>(iconKey.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<int>(color.value);
+    }
+    if (scheduleType.present) {
+      map['schedule_type'] = Variable<String>(scheduleType.value);
+    }
+    if (scheduleJson.present) {
+      map['schedule_json'] = Variable<String>(scheduleJson.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (archived.present) {
+      map['archived'] = Variable<bool>(archived.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('prompt: $prompt, ')
+          ..write('iconKey: $iconKey, ')
+          ..write('color: $color, ')
+          ..write('scheduleType: $scheduleType, ')
+          ..write('scheduleJson: $scheduleJson, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('archived: $archived, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HabitCheckinsTable extends HabitCheckins
+    with TableInfo<$HabitCheckinsTable, HabitCheckinRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HabitCheckinsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _habitIdMeta =
+      const VerificationMeta('habitId');
+  @override
+  late final GeneratedColumn<String> habitId = GeneratedColumn<String>(
+      'habit_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _checkinDayMeta =
+      const VerificationMeta('checkinDay');
+  @override
+  late final GeneratedColumn<int> checkinDay = GeneratedColumn<int>(
+      'checkin_day', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+      'status', aliasedName, false,
+      check: () => status.isIn(const ['done']),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+      'note', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        habitId,
+        checkinDay,
+        status,
+        note,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        deviceId,
+        version
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habit_checkins';
+  @override
+  VerificationContext validateIntegrity(Insertable<HabitCheckinRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('habit_id')) {
+      context.handle(_habitIdMeta,
+          habitId.isAcceptableOrUnknown(data['habit_id']!, _habitIdMeta));
+    } else if (isInserting) {
+      context.missing(_habitIdMeta);
+    }
+    if (data.containsKey('checkin_day')) {
+      context.handle(
+          _checkinDayMeta,
+          checkinDay.isAcceptableOrUnknown(
+              data['checkin_day']!, _checkinDayMeta));
+    } else if (isInserting) {
+      context.missing(_checkinDayMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(_statusMeta,
+          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+          _noteMeta, note.isAcceptableOrUnknown(data['note']!, _noteMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HabitCheckinRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitCheckinRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      habitId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
+      checkinDay: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}checkin_day'])!,
+      status: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
+      note: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}note'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deleted_at']),
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $HabitCheckinsTable createAlias(String alias) {
+    return $HabitCheckinsTable(attachedDatabase, alias);
+  }
+}
+
+class HabitCheckinRow extends DataClass implements Insertable<HabitCheckinRow> {
+  final String id;
+  final String habitId;
+  final int checkinDay;
+  final String status;
+  final String note;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  final String deviceId;
+  final int version;
+  const HabitCheckinRow(
+      {required this.id,
+      required this.habitId,
+      required this.checkinDay,
+      required this.status,
+      required this.note,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.deviceId,
+      required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['habit_id'] = Variable<String>(habitId);
+    map['checkin_day'] = Variable<int>(checkinDay);
+    map['status'] = Variable<String>(status);
+    map['note'] = Variable<String>(note);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  HabitCheckinsCompanion toCompanion(bool nullToAbsent) {
+    return HabitCheckinsCompanion(
+      id: Value(id),
+      habitId: Value(habitId),
+      checkinDay: Value(checkinDay),
+      status: Value(status),
+      note: Value(note),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      deviceId: Value(deviceId),
+      version: Value(version),
+    );
+  }
+
+  factory HabitCheckinRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HabitCheckinRow(
+      id: serializer.fromJson<String>(json['id']),
+      habitId: serializer.fromJson<String>(json['habitId']),
+      checkinDay: serializer.fromJson<int>(json['checkinDay']),
+      status: serializer.fromJson<String>(json['status']),
+      note: serializer.fromJson<String>(json['note']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'habitId': serializer.toJson<String>(habitId),
+      'checkinDay': serializer.toJson<int>(checkinDay),
+      'status': serializer.toJson<String>(status),
+      'note': serializer.toJson<String>(note),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  HabitCheckinRow copyWith(
+          {String? id,
+          String? habitId,
+          int? checkinDay,
+          String? status,
+          String? note,
+          int? createdAt,
+          int? updatedAt,
+          Value<int?> deletedAt = const Value.absent(),
+          String? deviceId,
+          int? version}) =>
+      HabitCheckinRow(
+        id: id ?? this.id,
+        habitId: habitId ?? this.habitId,
+        checkinDay: checkinDay ?? this.checkinDay,
+        status: status ?? this.status,
+        note: note ?? this.note,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        deviceId: deviceId ?? this.deviceId,
+        version: version ?? this.version,
+      );
+  HabitCheckinRow copyWithCompanion(HabitCheckinsCompanion data) {
+    return HabitCheckinRow(
+      id: data.id.present ? data.id.value : this.id,
+      habitId: data.habitId.present ? data.habitId.value : this.habitId,
+      checkinDay:
+          data.checkinDay.present ? data.checkinDay.value : this.checkinDay,
+      status: data.status.present ? data.status.value : this.status,
+      note: data.note.present ? data.note.value : this.note,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitCheckinRow(')
+          ..write('id: $id, ')
+          ..write('habitId: $habitId, ')
+          ..write('checkinDay: $checkinDay, ')
+          ..write('status: $status, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, habitId, checkinDay, status, note,
+      createdAt, updatedAt, deletedAt, deviceId, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HabitCheckinRow &&
+          other.id == this.id &&
+          other.habitId == this.habitId &&
+          other.checkinDay == this.checkinDay &&
+          other.status == this.status &&
+          other.note == this.note &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.deviceId == this.deviceId &&
+          other.version == this.version);
+}
+
+class HabitCheckinsCompanion extends UpdateCompanion<HabitCheckinRow> {
+  final Value<String> id;
+  final Value<String> habitId;
+  final Value<int> checkinDay;
+  final Value<String> status;
+  final Value<String> note;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<String> deviceId;
+  final Value<int> version;
+  final Value<int> rowid;
+  const HabitCheckinsCompanion({
+    this.id = const Value.absent(),
+    this.habitId = const Value.absent(),
+    this.checkinDay = const Value.absent(),
+    this.status = const Value.absent(),
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HabitCheckinsCompanion.insert({
+    required String id,
+    required String habitId,
+    required int checkinDay,
+    required String status,
+    this.note = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String deviceId,
+    this.version = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        habitId = Value(habitId),
+        checkinDay = Value(checkinDay),
+        status = Value(status),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId);
+  static Insertable<HabitCheckinRow> custom({
+    Expression<String>? id,
+    Expression<String>? habitId,
+    Expression<int>? checkinDay,
+    Expression<String>? status,
+    Expression<String>? note,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<String>? deviceId,
+    Expression<int>? version,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (habitId != null) 'habit_id': habitId,
+      if (checkinDay != null) 'checkin_day': checkinDay,
+      if (status != null) 'status': status,
+      if (note != null) 'note': note,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (version != null) 'version': version,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HabitCheckinsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? habitId,
+      Value<int>? checkinDay,
+      Value<String>? status,
+      Value<String>? note,
+      Value<int>? createdAt,
+      Value<int>? updatedAt,
+      Value<int?>? deletedAt,
+      Value<String>? deviceId,
+      Value<int>? version,
+      Value<int>? rowid}) {
+    return HabitCheckinsCompanion(
+      id: id ?? this.id,
+      habitId: habitId ?? this.habitId,
+      checkinDay: checkinDay ?? this.checkinDay,
+      status: status ?? this.status,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      deviceId: deviceId ?? this.deviceId,
+      version: version ?? this.version,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (habitId.present) {
+      map['habit_id'] = Variable<String>(habitId.value);
+    }
+    if (checkinDay.present) {
+      map['checkin_day'] = Variable<int>(checkinDay.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitCheckinsCompanion(')
+          ..write('id: $id, ')
+          ..write('habitId: $habitId, ')
+          ..write('checkinDay: $checkinDay, ')
+          ..write('status: $status, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('version: $version, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -9423,6 +10608,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $BackgroundImagesTable(this);
   late final $DeviceAppearanceProfilesTable deviceAppearanceProfiles =
       $DeviceAppearanceProfilesTable(this);
+  late final $HabitsTable habits = $HabitsTable(this);
+  late final $HabitCheckinsTable habitCheckins = $HabitCheckinsTable(this);
   late final NotesDao notesDao = NotesDao(this as AppDatabase);
   late final TodosDao todosDao = TodosDao(this as AppDatabase);
   late final TagsDao tagsDao = TagsDao(this as AppDatabase);
@@ -9460,7 +10647,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         contentAttachments,
         customColors,
         backgroundImages,
-        deviceAppearanceProfiles
+        deviceAppearanceProfiles,
+        habits,
+        habitCheckins
       ];
 }
 
@@ -13959,6 +15148,556 @@ typedef $$DeviceAppearanceProfilesTableProcessedTableManager
         ),
         DeviceAppearanceProfileRow,
         PrefetchHooks Function()>;
+typedef $$HabitsTableCreateCompanionBuilder = HabitsCompanion Function({
+  required String id,
+  required String name,
+  Value<String> prompt,
+  required String iconKey,
+  required int color,
+  required String scheduleType,
+  required String scheduleJson,
+  Value<int> sortOrder,
+  Value<bool> archived,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$HabitsTableUpdateCompanionBuilder = HabitsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> prompt,
+  Value<String> iconKey,
+  Value<int> color,
+  Value<String> scheduleType,
+  Value<String> scheduleJson,
+  Value<int> sortOrder,
+  Value<bool> archived,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$HabitsTableFilterComposer
+    extends Composer<_$AppDatabase, $HabitsTable> {
+  $$HabitsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get prompt => $composableBuilder(
+      column: $table.prompt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get iconKey => $composableBuilder(
+      column: $table.iconKey, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get scheduleType => $composableBuilder(
+      column: $table.scheduleType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get scheduleJson => $composableBuilder(
+      column: $table.scheduleJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get archived => $composableBuilder(
+      column: $table.archived, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$HabitsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HabitsTable> {
+  $$HabitsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get prompt => $composableBuilder(
+      column: $table.prompt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get iconKey => $composableBuilder(
+      column: $table.iconKey, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get scheduleType => $composableBuilder(
+      column: $table.scheduleType,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get scheduleJson => $composableBuilder(
+      column: $table.scheduleJson,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get archived => $composableBuilder(
+      column: $table.archived, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$HabitsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HabitsTable> {
+  $$HabitsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get prompt =>
+      $composableBuilder(column: $table.prompt, builder: (column) => column);
+
+  GeneratedColumn<String> get iconKey =>
+      $composableBuilder(column: $table.iconKey, builder: (column) => column);
+
+  GeneratedColumn<int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<String> get scheduleType => $composableBuilder(
+      column: $table.scheduleType, builder: (column) => column);
+
+  GeneratedColumn<String> get scheduleJson => $composableBuilder(
+      column: $table.scheduleJson, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<bool> get archived =>
+      $composableBuilder(column: $table.archived, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$HabitsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HabitsTable,
+    HabitRow,
+    $$HabitsTableFilterComposer,
+    $$HabitsTableOrderingComposer,
+    $$HabitsTableAnnotationComposer,
+    $$HabitsTableCreateCompanionBuilder,
+    $$HabitsTableUpdateCompanionBuilder,
+    (HabitRow, BaseReferences<_$AppDatabase, $HabitsTable, HabitRow>),
+    HabitRow,
+    PrefetchHooks Function()> {
+  $$HabitsTableTableManager(_$AppDatabase db, $HabitsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HabitsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HabitsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HabitsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> prompt = const Value.absent(),
+            Value<String> iconKey = const Value.absent(),
+            Value<int> color = const Value.absent(),
+            Value<String> scheduleType = const Value.absent(),
+            Value<String> scheduleJson = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<bool> archived = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitsCompanion(
+            id: id,
+            name: name,
+            prompt: prompt,
+            iconKey: iconKey,
+            color: color,
+            scheduleType: scheduleType,
+            scheduleJson: scheduleJson,
+            sortOrder: sortOrder,
+            archived: archived,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            Value<String> prompt = const Value.absent(),
+            required String iconKey,
+            required int color,
+            required String scheduleType,
+            required String scheduleJson,
+            Value<int> sortOrder = const Value.absent(),
+            Value<bool> archived = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitsCompanion.insert(
+            id: id,
+            name: name,
+            prompt: prompt,
+            iconKey: iconKey,
+            color: color,
+            scheduleType: scheduleType,
+            scheduleJson: scheduleJson,
+            sortOrder: sortOrder,
+            archived: archived,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$HabitsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $HabitsTable,
+    HabitRow,
+    $$HabitsTableFilterComposer,
+    $$HabitsTableOrderingComposer,
+    $$HabitsTableAnnotationComposer,
+    $$HabitsTableCreateCompanionBuilder,
+    $$HabitsTableUpdateCompanionBuilder,
+    (HabitRow, BaseReferences<_$AppDatabase, $HabitsTable, HabitRow>),
+    HabitRow,
+    PrefetchHooks Function()>;
+typedef $$HabitCheckinsTableCreateCompanionBuilder = HabitCheckinsCompanion
+    Function({
+  required String id,
+  required String habitId,
+  required int checkinDay,
+  required String status,
+  Value<String> note,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  required String deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+typedef $$HabitCheckinsTableUpdateCompanionBuilder = HabitCheckinsCompanion
+    Function({
+  Value<String> id,
+  Value<String> habitId,
+  Value<int> checkinDay,
+  Value<String> status,
+  Value<String> note,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<String> deviceId,
+  Value<int> version,
+  Value<int> rowid,
+});
+
+class $$HabitCheckinsTableFilterComposer
+    extends Composer<_$AppDatabase, $HabitCheckinsTable> {
+  $$HabitCheckinsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get habitId => $composableBuilder(
+      column: $table.habitId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get checkinDay => $composableBuilder(
+      column: $table.checkinDay, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$HabitCheckinsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HabitCheckinsTable> {
+  $$HabitCheckinsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get habitId => $composableBuilder(
+      column: $table.habitId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get checkinDay => $composableBuilder(
+      column: $table.checkinDay, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$HabitCheckinsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HabitCheckinsTable> {
+  $$HabitCheckinsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get habitId =>
+      $composableBuilder(column: $table.habitId, builder: (column) => column);
+
+  GeneratedColumn<int> get checkinDay => $composableBuilder(
+      column: $table.checkinDay, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$HabitCheckinsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HabitCheckinsTable,
+    HabitCheckinRow,
+    $$HabitCheckinsTableFilterComposer,
+    $$HabitCheckinsTableOrderingComposer,
+    $$HabitCheckinsTableAnnotationComposer,
+    $$HabitCheckinsTableCreateCompanionBuilder,
+    $$HabitCheckinsTableUpdateCompanionBuilder,
+    (
+      HabitCheckinRow,
+      BaseReferences<_$AppDatabase, $HabitCheckinsTable, HabitCheckinRow>
+    ),
+    HabitCheckinRow,
+    PrefetchHooks Function()> {
+  $$HabitCheckinsTableTableManager(_$AppDatabase db, $HabitCheckinsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HabitCheckinsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HabitCheckinsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HabitCheckinsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> habitId = const Value.absent(),
+            Value<int> checkinDay = const Value.absent(),
+            Value<String> status = const Value.absent(),
+            Value<String> note = const Value.absent(),
+            Value<int> createdAt = const Value.absent(),
+            Value<int> updatedAt = const Value.absent(),
+            Value<int?> deletedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitCheckinsCompanion(
+            id: id,
+            habitId: habitId,
+            checkinDay: checkinDay,
+            status: status,
+            note: note,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String habitId,
+            required int checkinDay,
+            required String status,
+            Value<String> note = const Value.absent(),
+            required int createdAt,
+            required int updatedAt,
+            Value<int?> deletedAt = const Value.absent(),
+            required String deviceId,
+            Value<int> version = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitCheckinsCompanion.insert(
+            id: id,
+            habitId: habitId,
+            checkinDay: checkinDay,
+            status: status,
+            note: note,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            deviceId: deviceId,
+            version: version,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$HabitCheckinsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $HabitCheckinsTable,
+    HabitCheckinRow,
+    $$HabitCheckinsTableFilterComposer,
+    $$HabitCheckinsTableOrderingComposer,
+    $$HabitCheckinsTableAnnotationComposer,
+    $$HabitCheckinsTableCreateCompanionBuilder,
+    $$HabitCheckinsTableUpdateCompanionBuilder,
+    (
+      HabitCheckinRow,
+      BaseReferences<_$AppDatabase, $HabitCheckinsTable, HabitCheckinRow>
+    ),
+    HabitCheckinRow,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -13999,6 +15738,10 @@ class $AppDatabaseManager {
   $$DeviceAppearanceProfilesTableTableManager get deviceAppearanceProfiles =>
       $$DeviceAppearanceProfilesTableTableManager(
           _db, _db.deviceAppearanceProfiles);
+  $$HabitsTableTableManager get habits =>
+      $$HabitsTableTableManager(_db, _db.habits);
+  $$HabitCheckinsTableTableManager get habitCheckins =>
+      $$HabitCheckinsTableTableManager(_db, _db.habitCheckins);
 }
 
 mixin _$NotesDaoMixin on DatabaseAccessor<AppDatabase> {

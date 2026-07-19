@@ -25,7 +25,7 @@ class DatabaseBackupService {
       database.close();
     }
 
-    const latestSchemaVersion = 3;
+    const latestSchemaVersion = 4;
     if (currentVersion < 1 || currentVersion >= latestSchemaVersion) {
       return null;
     }

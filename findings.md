@@ -150,3 +150,51 @@
 - Scheduling hooks belong in controller writes because controller methods already coordinate repository writes and UI save state.
 - Relative reminder creation needs a task anchor; the detail pane can keep controls enabled only when `dueAt` or `startAt` exists.
 - Reminder reconciliation should run after the repository write completes so the scheduler sees current task/reminder state.
+
+## V2 Task 21 Findings
+
+- The approved Phase 3/4 plan defines Task 21 as Calendar page completion before habits, because habit entries later need a visible Calendar integration point.
+- `CalendarController` already defaults to a 30-day range from the local day start and delegates all data loading to `CalendarRepository`.
+- `CalendarRepository` already aggregates top-level task start/due markers, recurring task occurrences, completed task markers, and note creation dates.
+- `AdaptiveAppShell` still routes `AppModuleKey.calendar` to `PlaceholderModulePage`; this is the main user-facing gap.
+- `TasksController.selectTask` and `NotesController.selectNote` already provide the selection behavior needed after tapping a calendar entry.
+- Calendar UI should remain read-only in Task 21; drag-to-reschedule and habit entries belong to later tasks.
+
+## V2 Task 22 Findings
+
+- Current production schema version is 3; Task 22 must upgrade it to 4.
+- Existing migrations are implemented as `part` files under `lib/database/migrations/` and are invoked from `AppDatabase.migration`.
+- Production backup currently uses `latestSchemaVersion = 3`, so schema 3 databases do not yet receive a pre-v4 backup.
+- Drift table classes already use custom constraints for enum-like and boolean-like validation; habits should follow that pattern.
+- Task 22 should not add a repository yet; the approved plan keeps repository and statistics foundation for Task 23.
+
+## V2 Task 23 Findings
+
+- Existing feature repositories use `abstract Repository`, `Drift...Repository`, and a Riverpod provider in the data file.
+- Habit schema v4 already has active-day uniqueness through a partial index on `(habit_id, checkin_day)` where `deleted_at IS NULL`.
+- Task 23 should not add controller or UI; Task 24 owns application state and pages.
+- Day-plan queries should filter active, unarchived habits in Dart after loading active rows because schedule rules are stored as JSON.
+- Streaks should be calculated across scheduled occurrences, not every calendar day, so weekly and interval schedules can skip non-planned days without breaking continuity.
+- `dart format --set-exit-if-changed` can repeatedly report a file as changed even when its SHA-256 stays identical; `dart format --output=show` exposes the exact layout it expects.
+
+## V2 Task 24 Findings
+
+- `AdaptiveAppShell` currently routes `AppModuleKey.habits` to `PlaceholderModulePage`; replacing this switch arm is the navigation integration point.
+- `TasksController` is the closest application-state pattern: `AsyncNotifier`, immutable state, repository provider injection, selected item state, and write status.
+- `TasksPage` uses the shared adaptive breakpoints and `AppShellEmbedScope`; Habits can mirror a simpler two-zone layout without adding a new shell abstraction.
+- Task 24 should not make UI call Drift directly; all writes and reloads should go through `HabitsController`.
+
+## V2 Task 25 Findings
+
+- Statistics is still routed to `PlaceholderModulePage` from `AdaptiveAppShell`.
+- Task completions have two sources in the approved plan: active `task_completions` rows and non-recurring completed tasks with `completed_at`.
+- Habit statistics can reuse the schedule semantics from `HabitsRepository`, but the global summary should aggregate across active, unarchived habits only.
+- Empty statistics should display neutral zero values rather than treating 0% completion as a failure state.
+
+## V2 Task 26 Findings
+
+- `CalendarEntrySource` and `CalendarEntryKind` were intentionally left expandable in Task 21; adding habit as a third source fits the existing model.
+- Habit schedules are stored as `schedule_type` plus `schedule_json`; Calendar can reuse the same daily/weekdays/weekly/interval semantics without adding schema.
+- Calendar should only include active, unarchived habits. Archived habits remain accessible in Habits but should not clutter future planning.
+- Habit checkins are day-granularity records. A matching active checkin for the same habit/day is enough for Calendar to mark the habit entry completed.
+- Habit colors are stored as RGB values; presentation must convert them to opaque ARGB before constructing Flutter `Color`.

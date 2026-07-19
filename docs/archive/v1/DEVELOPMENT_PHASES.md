@@ -1,5 +1,9 @@
 # SimpleNote 分阶段开发计划
 
+> **历史文档。**
+>
+> 本文是 v1/MVP 阶段的开发计划，P0-P7 已完成。当前后续开发不是继续执行本文的旧阶段，而是沿用 V2 设计蓝本和 `../../superpowers/plans/2026-07-19-phase-3-4-habits-statistics-sync-plan-DO-NOT-DELETE.md`。
+
 ## 1. 总体节奏
 
 SimpleNote 建议拆成 8 个小阶段开发。每个阶段都应该产出一个可以验证的结果，避免一开始同时做笔记、待办、主题、同步和打包，导致项目变得混乱。

@@ -175,7 +175,65 @@ void main() {
 
     final version =
         await database.customSelect('PRAGMA user_version').getSingle();
-    expect(version.read<int>('user_version'), 3);
+    expect(version.read<int>('user_version'), 4);
+  });
+
+  test('production open backs up schema 3 and migrates habits tables',
+      () async {
+    final supportDirectory =
+        await Directory.systemTemp.createTemp('simple_note_v4_migration_');
+    addTearDown(() => supportDirectory.delete(recursive: true));
+    final databaseFile =
+        File(p.join(supportDirectory.path, AppConstants.databaseName));
+    _seedV3Database(databaseFile);
+
+    _mockApplicationSupportDirectory(supportDirectory.path);
+
+    final database = AppDatabase();
+    addTearDown(database.close);
+    await database.open();
+
+    final version =
+        await database.customSelect('PRAGMA user_version').getSingle();
+    expect(version.read<int>('user_version'), 4);
+
+    final existingTask = await database
+        .customSelect(
+          "SELECT title FROM tasks_v2 WHERE id = 'existing-v3-task'",
+        )
+        .getSingle();
+    expect(existingTask.read<String>('title'), 'Existing V3 Task');
+
+    final existingNote = await database
+        .customSelect(
+          "SELECT title FROM notes WHERE id = 'existing-note'",
+        )
+        .getSingle();
+    expect(existingNote.read<String>('title'), 'Existing note');
+
+    await database.customStatement(
+      'INSERT INTO habits '
+      '(id, name, icon_key, color, schedule_type, schedule_json, '
+      'created_at, updated_at, device_id) '
+      "VALUES ('habit', 'Read', 'book', 1, 'daily', '{}', 1, 1, 'device')",
+    );
+
+    final backupDirectory = Directory(p.join(supportDirectory.path, 'backups'));
+    final backupFiles = backupDirectory
+        .listSync()
+        .whereType<File>()
+        .where(
+          (file) => p.basename(file.path).startsWith('simple_note.pre-v4.'),
+        )
+        .toList();
+    expect(backupFiles, hasLength(1));
+
+    final backup = sqlite.sqlite3.open(
+      backupFiles.single.path,
+      mode: sqlite.OpenMode.readOnly,
+    );
+    addTearDown(backup.close);
+    expect(backup.userVersion, 3);
   });
 
   test('production open backs up schema 2 and migrates reminders table',
@@ -195,7 +253,7 @@ void main() {
 
     final version =
         await database.customSelect('PRAGMA user_version').getSingle();
-    expect(version.read<int>('user_version'), 3);
+    expect(version.read<int>('user_version'), 4);
 
     final existing = await database
         .customSelect(
@@ -413,6 +471,97 @@ void _seedV2Database(File file) {
       )
     ''');
     database.userVersion = 2;
+  } finally {
+    database.close();
+  }
+}
+
+void _seedV3Database(File file) {
+  final database = sqlite.sqlite3.open(file.path);
+  try {
+    database.execute('''
+      CREATE TABLE notes (
+        id TEXT NOT NULL PRIMARY KEY,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        deleted_at INTEGER,
+        pinned INTEGER NOT NULL DEFAULT 0 CHECK (pinned IN (0, 1)),
+        device_id TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1
+      )
+    ''');
+    database.execute('''
+      CREATE TABLE tasks_v2 (
+        id TEXT NOT NULL,
+        parent_id TEXT,
+        list_id TEXT,
+        title TEXT NOT NULL,
+        description_markdown TEXT NOT NULL DEFAULT '',
+        completed INTEGER NOT NULL DEFAULT 0 CHECK (completed IN (0, 1)),
+        priority INTEGER NOT NULL DEFAULT 0 CHECK (priority BETWEEN 0 AND 3),
+        start_at INTEGER,
+        due_at INTEGER,
+        all_day INTEGER NOT NULL DEFAULT 0 CHECK (all_day IN (0, 1)),
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        recurrence_rule TEXT,
+        recurrence_end_at INTEGER,
+        recurrence_count INTEGER,
+        completed_at INTEGER,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        deleted_at INTEGER,
+        device_id TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1,
+        PRIMARY KEY (id)
+      )
+    ''');
+    database.execute('''
+      CREATE TABLE task_completions (
+        id TEXT NOT NULL PRIMARY KEY,
+        task_id TEXT NOT NULL,
+        scheduled_at INTEGER NOT NULL,
+        completed_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        deleted_at INTEGER,
+        device_id TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1
+      )
+    ''');
+    database.execute('''
+      CREATE TABLE task_reminders (
+        id TEXT NOT NULL PRIMARY KEY,
+        task_id TEXT NOT NULL,
+        trigger_at INTEGER,
+        offset_minutes INTEGER,
+        fired_at INTEGER,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        deleted_at INTEGER,
+        device_id TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1,
+        CHECK ((trigger_at IS NULL) != (offset_minutes IS NULL))
+      )
+    ''');
+    database.execute('''
+      INSERT INTO notes (
+        id, title, content, created_at, updated_at, device_id
+      ) VALUES (
+        'existing-note', 'Existing note', '', 1, 1, 'device'
+      )
+    ''');
+    database.execute('''
+      INSERT INTO tasks_v2 (
+        id, title, description_markdown, completed, priority, all_day,
+        sort_order, created_at, updated_at, device_id, version
+      ) VALUES (
+        'existing-v3-task', 'Existing V3 Task', '', 0, 0, 0, 0, 1, 1,
+        'device', 1
+      )
+    ''');
+    database.userVersion = 3;
   } finally {
     database.close();
   }

@@ -1,43 +1,198 @@
-# Task Plan: SimpleNote Phase 7 Experience Polish
+# Task Plan: SimpleNote V2 Phase 3
 
 ## Goal
 
-Improve day-to-day usability with compact editor back actions, delete confirmations, success feedback, cleaner visible text, and tests.
+建立习惯能力的数据基础：schema 4、习惯表、打卡表、迁移和领域模型。
 
 ## Current Phase
 
-Complete
+V2 Task 26 in progress
 
 ## Phases
+
+### V2 Task 26 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Read approved Phase 3/4 plan Task 26 scope
+- [x] Inspect Calendar domain/repository/page tests
+- [x] Inspect Habits repository/controller selection APIs
+- **Status:** complete
+
+### V2 Task 26 Phase 2: Test-First Contract
+
+- [x] Add failing Calendar repository test for habit plan/checkin entries
+- [x] Add failing Calendar page test for habit visibility and navigation
+- **Status:** complete
+
+### V2 Task 26 Phase 3: Implementation
+
+- [x] Extend Calendar domain with habit source/kind/color/count
+- [x] Extend Calendar repository with habit schedule/checkin aggregation
+- [x] Extend Calendar page habit display and tap handoff
+- **Status:** complete
+
+### V2 Task 26 Phase 4: Documentation & Release Prep
+
+- [x] Create Phase 3 acceptance document
+- [x] Update README and docs indexes
+- [x] Add Phase 3 release notes
+- [x] Bump release version
+- **Status:** complete
+
+### V2 Task 26 Phase 5: Verification & Delivery
+
+- [x] Run formatter
+- [x] Run analyzer
+- [x] Run full tests
+- [x] Run Windows release build
+- [x] Run Android release APK build
+- [x] Commit Task 26
+- [x] Push branch to GitHub
+- [x] Create GitHub release and upload artifacts
+- **Status:** complete
+
+### V2 Task 25 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Inspect approved Phase 3/4 Task 25 scope
+- [x] Inspect task completion and habit checkin data sources
+- [x] Inspect navigation placeholder integration point
+- **Status:** complete
+
+### V2 Task 25 Phase 2: Test-First Contract
+
+- [x] Add failing statistics repository tests
+- [x] Add failing statistics controller tests
+- [x] Add failing statistics page/navigation tests
+- **Status:** complete
+
+### V2 Task 25 Phase 3: Implementation
+
+- [x] Add statistics domain models
+- [x] Add Drift statistics repository
+- [x] Add statistics controller
+- [x] Add statistics page
+- [x] Route `AppModuleKey.statistics` to `StatisticsPage`
+- **Status:** complete
+
+### V2 Task 25 Phase 4: Testing & Verification
+
+- [x] Run focused statistics tests
+- [x] Run relevant navigation/widget tests
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
+- [x] Run `flutter analyze`
+- [x] Run broader relevant tests
+- **Status:** complete
+
+### V2 Task 25 Phase 5: Delivery
+
+- [x] Update `GOAL.md` acceptance checkboxes
+- [x] Update planning files with final results
+- **Status:** complete
+
+### V2 Task 24 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Inspect Task 24 scope in approved Phase 3/4 plan
+- [x] Inspect navigation shell, Tasks controller/page patterns, and Habits repository
+- **Status:** complete
+
+### V2 Task 24 Phase 2: Test-First Contract
+
+- [x] Add failing `HabitsController` workflow tests
+- [x] Add failing `HabitsPage` navigation/layout tests
+- **Status:** complete
+
+### V2 Task 24 Phase 3: Implementation
+
+- [x] Add habits application state/controller
+- [x] Add Habits page/list/detail/editor widgets
+- [x] Route `AppModuleKey.habits` to `HabitsPage`
+- **Status:** complete
+
+### V2 Task 24 Phase 4: Testing & Verification
+
+- [x] Run focused habits tests
+- [x] Run relevant navigation/widget tests
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
+- [x] Run `flutter analyze`
+- [x] Run broader relevant tests
+- **Status:** complete
+
+### V2 Task 24 Phase 5: Delivery
+
+- [x] Update `GOAL.md` acceptance checkboxes
+- [x] Update planning files with final results
+- **Status:** complete
+
+### V2 Task 23 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Read approved Phase 3/4 plan
+- [x] Inspect current habit domain models and schema v4 tables
+- [x] Inspect existing repository and test patterns
+- **Status:** complete
+
+### V2 Task 23 Phase 2: Test-First Contract
+
+- [x] Add failing repository tests for habit CRUD and day-plan queries
+- [x] Add failing repository tests for checkin idempotency, cancellation, and re-checkin after cancellation
+- [x] Add failing statistics tests for completion rate, cross-week/month streaks, and interval schedules
+- **Status:** complete
+
+### V2 Task 23 Phase 3: Implementation
+
+- [x] Add `HabitStatistics`
+- [x] Add `HabitsRepository` and Drift implementation
+- [x] Add schedule day matching and planned-day iteration helpers
+- [x] Add checkin idempotency and soft-delete cancellation behavior
+- **Status:** complete
+
+### V2 Task 23 Phase 4: Testing & Verification
+
+- [x] Run focused habits tests
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
+- [x] Run `flutter analyze`
+- [x] Run broader relevant tests
+- **Status:** complete
+
+### V2 Task 23 Phase 5: Delivery
+
+- [x] Update `GOAL.md` acceptance checkboxes
+- [x] Update planning files with final results
+- **Status:** complete
 
 ### Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
-- [x] Inspect notes/todos presentation and controller patterns
-- [x] Inspect existing widget tests
+- [x] Read approved V2 design and Phase 3/4 plan
+- [x] Inspect current schema v3 database and migrations
+- [x] Inspect existing database/domain test patterns
+- [x] Inspect generated Drift update requirements
 - **Status:** complete
 
 ### Phase 2: Planning & Structure
 
-- [x] Choose compact editor back action approach
-- [x] Choose delete confirmation flow
-- [x] Choose test coverage
+- [x] Choose table definitions and constraints
+- [x] Choose `HabitSchedule` JSON shape
+- [x] Choose migration coverage
 - **Status:** complete
 
 ### Phase 3: Implementation
 
-- [x] Add clear selection actions to notes and todos controllers
-- [x] Add compact back buttons to note and todo editors
-- [x] Add note delete confirmation and success snackbar
-- [x] Add todo delete confirmation and success snackbar
-- [x] Clean todo subtitle separator text
+- [x] Add failing schema/domain tests
+- [x] Add habit database tables and schema v4 migration
+- [x] Add habit domain models
+- [x] Run Drift code generation
 - **Status:** complete
 
 ### Phase 4: Testing & Verification
 
-- [x] Add/update widget tests for polish behavior
+- [x] Run focused database/habits tests
+- [x] Run `dart run build_runner build --delete-conflicting-outputs`
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
 - [x] Run `flutter analyze`
-- [x] Run `flutter test`
+- [x] Run relevant broader tests
 - [x] Verify acceptance criteria against `GOAL.md`
 - **Status:** complete
 
@@ -45,17 +200,20 @@ Complete
 
 - [x] Update `GOAL.md` acceptance checkboxes
 - [x] Update planning files with final results
-- [x] Submit PR with `scripts/update_pr.ps1`
 - **Status:** complete
 
 ## Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Add controller `clearSelection` methods | Keeps compact back navigation in state instead of route hacks |
-| Use Material confirmation dialogs | Native, dependency-free, and easy to test |
-| Use SnackBar for success feedback | Lightweight and familiar |
-| Keep undo out of scope | P7 is polish, not full history/restore |
+| Start Phase 3 with Task 21 | The approved plan says Calendar UI should be completed before habit entries are added |
+| Use existing `CalendarController` | Calendar aggregation already exists and keeps UI away from direct database access |
+| Use existing task/note controllers for selection | Avoids adding a calendar-owned detail state |
+| Ship an agenda-style first Calendar page | Matches Task 21's minimum page requirement while leaving month/week/day views for later |
+| Keep Task 22 below repository layer | The approved plan separates schema/domain from repository/controller/UI in Task 23/24 |
+| Store schedule as `schedule_type` plus JSON payload | Matches the approved database design and keeps future schedule variants extensible |
+| Keep Task 23 below controller/UI | The approved split assigns application state and pages to Task 24 |
+| Compute streaks over planned occurrences | Daily, weekly, weekdays, and interval schedules have different calendar gaps; streaks should count consecutive scheduled opportunities, not raw calendar days |
 
 ## Errors Encountered
 
@@ -63,6 +221,36 @@ Complete
 |-------|---------|------------|
 | Compact back action did not really clear selected item because selected getters returned the first item when no id was selected | 1 | Updated selected getters to return null when no selected id exists |
 | Todo compact delete test could not find the edit tooltip before the selected getter fix | 1 | Fixed selected state behavior, then reran widget tests |
+| `dart format --set-exit-if-changed` repeatedly changed `adaptive_app_shell.dart` | 3 | Found mixed CRLF/LF line endings and rewrote the file with consistent LF line endings before rerunning format |
+| PowerShell rejected `git add -A && git status --short && git commit ...` | 1 | Ran the Git commands separately |
+| Drift table DSL rejected `length(trim(name))` inside a column check | 1 | Moved the non-empty habit-name validation to a table-level SQL `CHECK` constraint |
+| Formatter repeatedly changed mixed-line-ending files after Git checkout/write | 2 | Normalized touched Dart files to LF and reran formatter until stable |
+| `dart format --set-exit-if-changed` repeatedly reported `habits_repository.dart` as changed even though the file hash stayed identical | 2 | Used `dart format --output=show` to identify the switch-arm layout it expected, then applied that layout manually |
+| `dart format --set-exit-if-changed` repeatedly reported new Task 24 Dart files as changed while SHA-256 stayed identical | 3 | Used `dart format --output=json` to locate expression-layout differences and manually matched the formatter output |
+| `dart format --set-exit-if-changed` repeatedly reported `statistics_repository.dart` as changed while SHA-256 stayed identical | 2 | Used `dart format --output=json` to locate long expression layout differences and manually matched the formatter output |
+
+## V2 Task 22: Habit Schema and Domain Models
+
+- **Status:** complete
+- **Started:** 2026-07-19
+- Add schema 4 tables for habits and habit checkins.
+- Add schema 4 migration and production pre-v4 backup.
+- Add `Habit`, `HabitCheckin`, and `HabitSchedule`.
+- Cover schema creation, constraints, migrations, and JSON round-trips.
+- **Verification:** build_runner, formatter, `flutter analyze`, focused database/habits tests, and full `flutter test` passed with 226 tests.
+- **Next:** V2 Task 23, habit repository and statistics calculation foundation.
+
+## V2 Task 21: Calendar Page Completion
+
+- **Status:** complete
+- **Started:** 2026-07-19
+- Replace the Calendar placeholder with a real page.
+- Use the existing read-only calendar aggregation controller.
+- Display task start/due entries, recurring task occurrences, and note creation entries.
+- Select the matching task or note when an entry is tapped.
+- Keep habit source/kind expansion possible for Task 26.
+- **Verification:** formatter, `flutter analyze`, focused calendar/navigation tests, and full `flutter test` passed with 220 tests.
+- **Next:** V2 Task 22, schema 4 and habit domain models.
 
 ## V2 Task 7: Customizable Adaptive Navigation
 

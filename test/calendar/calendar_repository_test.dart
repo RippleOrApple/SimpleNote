@@ -3,6 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/calendar/data/calendar_repository.dart';
 import 'package:simple_note/features/calendar/domain/calendar_entry.dart';
+import 'package:simple_note/features/habits/data/habits_repository.dart';
+import 'package:simple_note/features/habits/domain/habit.dart';
+import 'package:simple_note/features/habits/domain/habit_schedule.dart';
 import 'package:simple_note/features/notes/data/notes_repository.dart';
 import 'package:simple_note/features/notes/domain/note.dart';
 import 'package:simple_note/features/tasks/data/tasks_repository.dart';
@@ -13,12 +16,14 @@ void main() {
   late DriftCalendarRepository calendar;
   late DriftTasksRepository tasks;
   late DriftNotesRepository notes;
+  late DriftHabitsRepository habits;
 
   setUp(() {
     database = AppDatabase(NativeDatabase.memory());
     calendar = DriftCalendarRepository(database);
     tasks = DriftTasksRepository(database);
     notes = DriftNotesRepository(database);
+    habits = DriftHabitsRepository(database);
   });
 
   tearDown(() => database.close());
@@ -137,6 +142,72 @@ void main() {
       [_millis(2026, 7, 18, 10)],
     );
   });
+
+  test('adds scheduled habit entries with checkin completion state', () async {
+    await habits.upsertHabit(_habit(
+      'daily',
+      name: 'Drink water',
+      color: 0x2F80ED,
+      schedule: HabitSchedule.daily(),
+    ));
+    await habits.upsertHabit(_habit(
+      'weekly',
+      name: 'Sunday review',
+      color: 0x27AE60,
+      schedule: HabitSchedule.weekly({DateTime.sunday}),
+    ));
+    await habits.upsertHabit(_habit(
+      'archived',
+      archived: true,
+      schedule: HabitSchedule.daily(),
+    ));
+    await habits.softDeleteHabit('deleted', _millis(2026, 7, 18, 8));
+    await habits.upsertHabit(_habit(
+      'deleted',
+      deletedAt: _millis(2026, 7, 18, 8),
+      schedule: HabitSchedule.daily(),
+    ));
+    await habits.checkInHabit(
+      id: 'checkin-daily',
+      habitId: 'daily',
+      checkinDay: _millis(2026, 7, 19),
+      now: _millis(2026, 7, 19, 9),
+      deviceId: 'device',
+    );
+
+    final days = await calendar.queryDays(
+      from: _millis(2026, 7, 18),
+      before: _millis(2026, 7, 21),
+    );
+    final habitEntries = [
+      for (final day in days)
+        ...day.entries.where(
+          (entry) => entry.source == CalendarEntrySource.habit,
+        ),
+    ];
+
+    expect(habitEntries.map((entry) => entry.id), [
+      'habit:daily:habitPlanned:${_millis(2026, 7, 18)}',
+      'habit:daily:habitPlanned:${_millis(2026, 7, 19)}',
+      'habit:weekly:habitPlanned:${_millis(2026, 7, 19)}',
+      'habit:daily:habitPlanned:${_millis(2026, 7, 20)}',
+    ]);
+    expect(days[1].habitCount, 2);
+    expect(
+      habitEntries
+          .singleWhere((entry) => entry.sourceId == 'daily' && entry.completed)
+          .color,
+      0x2F80ED,
+    );
+    expect(
+      habitEntries.where((entry) => entry.sourceId == 'archived'),
+      isEmpty,
+    );
+    expect(
+      habitEntries.where((entry) => entry.sourceId == 'deleted'),
+      isEmpty,
+    );
+  });
 }
 
 Task _task(
@@ -181,6 +252,28 @@ Note _note(
     content: '',
     createdAt: createdAt,
     updatedAt: createdAt,
+    deletedAt: deletedAt,
+    deviceId: 'device',
+  );
+}
+
+Habit _habit(
+  String id, {
+  String? name,
+  int color = 0xFF0000,
+  bool archived = false,
+  int? deletedAt,
+  required HabitSchedule schedule,
+}) {
+  return Habit(
+    id: id,
+    name: name ?? id,
+    iconKey: 'sparkle',
+    color: color,
+    schedule: schedule,
+    archived: archived,
+    createdAt: 1,
+    updatedAt: 1,
     deletedAt: deletedAt,
     deviceId: 'device',
   );

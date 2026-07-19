@@ -1,5 +1,9 @@
 # SimpleNote 项目架构说明书
 
+> **历史文档。**
+>
+> 本文描述 v1/MVP 架构，包含旧待办、旧主题和 V1 局域网同步设计。当前 V2 架构已经演进到 feature-first 的任务、附件、外观、日历、提醒和后续 V2 同步体系；请优先阅读 `../../superpowers/specs/2026-07-17-ticktick-style-v2-design.md`。
+
 ## 1. 架构目标
 
 SimpleNote 的架构目标是支撑一个 Windows / Android 双端本地优先应用，核心能力包括笔记、待办、Markdown、本地存储、主题自定义和局域网同步。

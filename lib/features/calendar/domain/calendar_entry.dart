@@ -1,6 +1,6 @@
-enum CalendarEntrySource { task, note }
+enum CalendarEntrySource { task, note, habit }
 
-enum CalendarEntryKind { taskStart, taskDue, noteCreated }
+enum CalendarEntryKind { taskStart, taskDue, noteCreated, habitPlanned }
 
 class CalendarEntry {
   const CalendarEntry({
@@ -13,6 +13,7 @@ class CalendarEntry {
     required this.dayStart,
     this.allDay = false,
     this.completed = false,
+    this.color,
   });
 
   final String id;
@@ -24,6 +25,7 @@ class CalendarEntry {
   final int dayStart;
   final bool allDay;
   final bool completed;
+  final int? color;
 }
 
 class CalendarDay {
@@ -43,6 +45,12 @@ class CalendarDay {
 
   int get noteCount => entries
       .where((entry) => entry.source == CalendarEntrySource.note)
+      .map((entry) => entry.sourceId)
+      .toSet()
+      .length;
+
+  int get habitCount => entries
+      .where((entry) => entry.source == CalendarEntrySource.habit)
       .map((entry) => entry.sourceId)
       .toSet()
       .length;

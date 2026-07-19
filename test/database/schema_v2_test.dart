@@ -4,12 +4,12 @@ import 'package:simple_note/database/app_database.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 void main() {
-  test('schema v3 creates phase one and task reminder tables', () async {
+  test('schema v4 creates phase one, reminder, and habit tables', () async {
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
     await database.open();
 
-    expect(database.schemaVersion, 3);
+    expect(database.schemaVersion, 4);
 
     final rows = await database
         .customSelect("SELECT name FROM sqlite_master WHERE type = 'table'")
@@ -30,6 +30,8 @@ void main() {
         'custom_colors',
         'background_images',
         'device_appearance_profiles',
+        'habits',
+        'habit_checkins',
       }),
     );
 
@@ -45,11 +47,14 @@ void main() {
         'tasks_v2_due_active',
         'task_completions_task_active',
         'task_reminders_task_active',
+        'habits_active_order',
+        'habit_checkins_active_day',
+        'habit_checkins_day_active',
       }),
     );
   });
 
-  test('schema v3 accepts legal check-constraint boundary values', () async {
+  test('schema v4 accepts legal check-constraint boundary values', () async {
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
     await database.open();
@@ -70,6 +75,26 @@ void main() {
     await database.customStatement(_attachmentInsert('owner-note', 'note'));
     await database.customStatement(_colorInsert('rgb-min', 0));
     await database.customStatement(_colorInsert('rgb-max', 0xFFFFFF));
+    await database.customStatement(_habitInsert(
+      'habit-min',
+      name: 'Habit min',
+      color: 0,
+      scheduleType: 'daily',
+      archived: 0,
+    ));
+    await database.customStatement(_habitInsert(
+      'habit-max',
+      name: 'Habit max',
+      color: 0xFFFFFF,
+      scheduleType: 'interval',
+      archived: 1,
+    ));
+    await database.customStatement(_checkinInsert(
+      'checkin',
+      habitId: 'habit-min',
+      day: 1000,
+      status: 'done',
+    ));
     await database.customStatement(
       _profileInsert(
         'legal-profile',
@@ -81,7 +106,7 @@ void main() {
     );
   });
 
-  test('schema v3 rejects only check-constraint violations', () async {
+  test('schema v4 rejects only check-constraint violations', () async {
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
     await database.open();
@@ -112,6 +137,65 @@ void main() {
     );
     await _expectCheckFailure(database, _colorInsert('rgb-low', -1));
     await _expectCheckFailure(database, _colorInsert('rgb-high', 0x1000000));
+    await _expectCheckFailure(
+      database,
+      _habitInsert(
+        'habit-empty-name',
+        name: '   ',
+        color: 1,
+        scheduleType: 'daily',
+        archived: 0,
+      ),
+    );
+    await _expectCheckFailure(
+      database,
+      _habitInsert(
+        'habit-low-color',
+        name: 'Habit',
+        color: -1,
+        scheduleType: 'daily',
+        archived: 0,
+      ),
+    );
+    await _expectCheckFailure(
+      database,
+      _habitInsert(
+        'habit-high-color',
+        name: 'Habit',
+        color: 0x1000000,
+        scheduleType: 'daily',
+        archived: 0,
+      ),
+    );
+    await _expectCheckFailure(
+      database,
+      _habitInsert(
+        'habit-bad-schedule',
+        name: 'Habit',
+        color: 1,
+        scheduleType: 'monthly',
+        archived: 0,
+      ),
+    );
+    await _expectCheckFailure(
+      database,
+      _habitInsert(
+        'habit-bad-archive',
+        name: 'Habit',
+        color: 1,
+        scheduleType: 'daily',
+        archived: 2,
+      ),
+    );
+    await _expectCheckFailure(
+      database,
+      _checkinInsert(
+        'bad-checkin',
+        habitId: 'habit',
+        day: 1000,
+        status: 'skipped',
+      ),
+    );
     await _expectCheckFailure(
       database,
       _profileInsert(
@@ -152,6 +236,46 @@ void main() {
         blur: -0.1,
       ),
     );
+  });
+
+  test('schema v4 permits one active checkin per habit and day', () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    await database.open();
+
+    await database.customStatement(_habitInsert(
+      'habit',
+      name: 'Habit',
+      color: 1,
+      scheduleType: 'daily',
+      archived: 0,
+    ));
+    await database.customStatement(_checkinInsert(
+      'first',
+      habitId: 'habit',
+      day: 1000,
+      status: 'done',
+    ));
+
+    await expectLater(
+      database.customStatement(_checkinInsert(
+        'duplicate',
+        habitId: 'habit',
+        day: 1000,
+        status: 'done',
+      )),
+      throwsA(isA<sqlite.SqliteException>()),
+    );
+
+    await database.customStatement(
+      "UPDATE habit_checkins SET deleted_at = 2000 WHERE id = 'first'",
+    );
+    await database.customStatement(_checkinInsert(
+      'second',
+      habitId: 'habit',
+      day: 1000,
+      status: 'done',
+    ));
   });
 }
 
@@ -196,6 +320,32 @@ String _colorInsert(String id, int rgb) {
   return 'INSERT INTO custom_colors '
       '(id, name, rgb, sort_order, created_at, updated_at, device_id) '
       "VALUES ('$id', '$id', $rgb, 0, 1, 1, 'device')";
+}
+
+String _habitInsert(
+  String id, {
+  required String name,
+  required int color,
+  required String scheduleType,
+  required int archived,
+}) {
+  return 'INSERT INTO habits '
+      '(id, name, prompt, icon_key, color, schedule_type, schedule_json, '
+      'sort_order, archived, created_at, updated_at, device_id, version) '
+      "VALUES ('$id', '$name', '', 'book', $color, '$scheduleType', "
+      "'{}', 0, $archived, 1, 1, 'device', 1)";
+}
+
+String _checkinInsert(
+  String id, {
+  required String habitId,
+  required int day,
+  required String status,
+}) {
+  return 'INSERT INTO habit_checkins '
+      '(id, habit_id, checkin_day, status, note, created_at, updated_at, '
+      'device_id, version) '
+      "VALUES ('$id', '$habitId', $day, '$status', '', 1, 1, 'device', 1)";
 }
 
 String _profileInsert(
