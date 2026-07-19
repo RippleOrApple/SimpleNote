@@ -1,5 +1,9 @@
 # SimpleNote 产品需求文档
 
+> **历史文档。**
+>
+> 本文描述 v1/MVP 阶段的产品范围，保留用于回溯项目演进。当前 V2 开发请以 `../../superpowers/specs/2026-07-17-ticktick-style-v2-design.md` 和 `../../superpowers/plans/2026-07-19-phase-3-4-habits-statistics-sync-plan-DO-NOT-DELETE.md` 为准。文中关于旧待办和 V1 局域网同步的内容不代表当前生产状态。
+
 ## 1. 项目定位
 
 SimpleNote 是一款面向个人用户的 Windows / Android 双端本地笔记与待办应用。它强调离线可用、界面简洁、主题高度自定义，并支持同一局域网内的设备数据同步。

@@ -150,3 +150,12 @@
 - Scheduling hooks belong in controller writes because controller methods already coordinate repository writes and UI save state.
 - Relative reminder creation needs a task anchor; the detail pane can keep controls enabled only when `dueAt` or `startAt` exists.
 - Reminder reconciliation should run after the repository write completes so the scheduler sees current task/reminder state.
+
+## V2 Task 21 Findings
+
+- The approved Phase 3/4 plan defines Task 21 as Calendar page completion before habits, because habit entries later need a visible Calendar integration point.
+- `CalendarController` already defaults to a 30-day range from the local day start and delegates all data loading to `CalendarRepository`.
+- `CalendarRepository` already aggregates top-level task start/due markers, recurring task occurrences, completed task markers, and note creation dates.
+- `AdaptiveAppShell` still routes `AppModuleKey.calendar` to `PlaceholderModulePage`; this is the main user-facing gap.
+- `TasksController.selectTask` and `NotesController.selectNote` already provide the selection behavior needed after tapping a calendar entry.
+- Calendar UI should remain read-only in Task 21; drag-to-reschedule and habit entries belong to later tasks.

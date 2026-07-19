@@ -263,7 +263,7 @@
 ### Handoff
 
 - V2 Task 14 and the Phase 1 automated acceptance gate are complete.
-- Physical Android camera/gallery/haptic checks and Windows process-restart checks remain release QA, as recorded in `docs/V2_PHASE_1_ACCEPTANCE.md`.
+- Physical Android camera/gallery/haptic checks and Windows process-restart checks remain release QA, as recorded in `docs/acceptance/V2_PHASE_1_ACCEPTANCE.md`.
 
 ## Session: 2026-07-18 - PR Merge Conflict Resolution
 
@@ -466,3 +466,35 @@
 
 - V2 Task 20 is complete.
 - V2 Task 21 scope was not found in repository docs; confirm the next task title before starting it.
+
+## Session: 2026-07-19 - V2 Task 21
+
+### Planning
+
+- Updated `GOAL.md` for Calendar page completion.
+- Confirmed the approved Phase 3/4 plan now defines Task 21 as replacing the Calendar placeholder with a real page.
+- Confirmed existing Calendar domain, repository, and controller already cover the 30-day data source and task/note aggregation.
+- Scoped this task to a read-only Calendar page plus task/note selection handoff.
+
+### Implementation
+
+- Added `test/calendar/calendar_page_test.dart` and confirmed the expected red state against the placeholder Calendar module.
+- Added `CalendarPage` with loading, error, empty, 30-day header, day grouping, task/note source indicators, and entry tap handling.
+- Routed `AppModuleKey.calendar` in `AdaptiveAppShell` to the new Calendar page.
+- Wired task entry taps to the all-tasks query plus `TasksController.selectTask`.
+- Wired note entry taps to `NotesController.selectNote`.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/calendar/calendar_page_test.dart` | Red first for missing Calendar page, then pass with 3 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially failed because `adaptive_app_shell.dart` had mixed CRLF/LF line endings; passed after normalizing that file |
+| `flutter analyze` | Pass, no issues |
+| `flutter test test/calendar test/navigation/adaptive_app_shell_test.dart` | Pass, 12 tests |
+| `flutter test` | Pass, 220 tests |
+
+### Handoff
+
+- V2 Task 21 is complete.
+- V2 Task 22 is next: schema 4 and habit domain models.

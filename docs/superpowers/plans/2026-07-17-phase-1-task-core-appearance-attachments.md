@@ -2389,7 +2389,7 @@ git commit -m "feat: add inline images to notes and tasks"
 - Modify: `test/sync/sync_http_test.dart`
 - Modify: `test/widget_test.dart`
 - Modify: `README.md`
-- Create: `docs/V2_PHASE_1_ACCEPTANCE.md`
+- Create: `docs/acceptance/V2_PHASE_1_ACCEPTANCE.md`
 
 **Interfaces:**
 - Produces `legacySyncEnabledProvider`, defaulting to false in the application.
@@ -2463,7 +2463,7 @@ Do not render peer address, start, stop, or sync buttons in production.
 
 - [x] **Step 5: Update documentation and acceptance matrix**
 
-`docs/V2_PHASE_1_ACCEPTANCE.md` records:
+`docs/acceptance/V2_PHASE_1_ACCEPTANCE.md` records:
 
 ```text
 Database migration and backup
@@ -2528,7 +2528,7 @@ Android:
 - [x] **Step 8: Commit**
 
 ```powershell
-git add lib/features/sync lib/features/settings lib/features/navigation test/sync test/widget_test.dart README.md docs/V2_PHASE_1_ACCEPTANCE.md
+git add lib/features/sync lib/features/settings lib/features/navigation test/sync test/widget_test.dart README.md docs/acceptance/V2_PHASE_1_ACCEPTANCE.md
 git commit -m "chore: verify v2 phase one"
 ```
 

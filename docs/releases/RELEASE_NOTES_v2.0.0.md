@@ -23,7 +23,7 @@
 - Android Release APK 构建通过。
 - Android 模拟器启动、Today 首屏、纯图标导航及同步升级提示检查通过。
 
-完整记录见 [V2 Phase 1 验收文档](V2_PHASE_1_ACCEPTANCE.md)。
+完整记录见 [V2 Phase 1 验收文档](../acceptance/V2_PHASE_1_ACCEPTANCE.md)。
 
 ## 安装说明
 

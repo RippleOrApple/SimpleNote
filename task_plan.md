@@ -1,8 +1,8 @@
-# Task Plan: SimpleNote Phase 7 Experience Polish
+# Task Plan: SimpleNote V2 Phase 3 Task 21 Calendar Page
 
 ## Goal
 
-Improve day-to-day usability with compact editor back actions, delete confirmations, success feedback, cleaner visible text, and tests.
+补齐 Calendar 真实页面，用已有 Calendar 聚合数据层展示任务/笔记日程，并为后续习惯 entry 接入留出扩展点。
 
 ## Current Phase
 
@@ -13,31 +13,33 @@ Complete
 ### Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
-- [x] Inspect notes/todos presentation and controller patterns
-- [x] Inspect existing widget tests
+- [x] Read approved V2 design and Phase 3/4 plan
+- [x] Inspect calendar controller/repository/domain
+- [x] Inspect navigation shell and task/note selection APIs
+- [x] Inspect existing widget test harnesses
 - **Status:** complete
 
 ### Phase 2: Planning & Structure
 
-- [x] Choose compact editor back action approach
-- [x] Choose delete confirmation flow
-- [x] Choose test coverage
+- [x] Choose Calendar page layout
+- [x] Choose entry click handoff behavior
+- [x] Choose focused test coverage
 - **Status:** complete
 
 ### Phase 3: Implementation
 
-- [x] Add clear selection actions to notes and todos controllers
-- [x] Add compact back buttons to note and todo editors
-- [x] Add note delete confirmation and success snackbar
-- [x] Add todo delete confirmation and success snackbar
-- [x] Clean todo subtitle separator text
+- [x] Add failing Calendar page/navigation tests
+- [x] Add `CalendarPage`
+- [x] Route `AppModuleKey.calendar` to `CalendarPage`
+- [x] Wire task/note entry taps through existing controllers and navigation
 - **Status:** complete
 
 ### Phase 4: Testing & Verification
 
-- [x] Add/update widget tests for polish behavior
+- [x] Run focused calendar/navigation tests
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
 - [x] Run `flutter analyze`
-- [x] Run `flutter test`
+- [x] Run relevant broader tests
 - [x] Verify acceptance criteria against `GOAL.md`
 - **Status:** complete
 
@@ -45,17 +47,16 @@ Complete
 
 - [x] Update `GOAL.md` acceptance checkboxes
 - [x] Update planning files with final results
-- [x] Submit PR with `scripts/update_pr.ps1`
 - **Status:** complete
 
 ## Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Add controller `clearSelection` methods | Keeps compact back navigation in state instead of route hacks |
-| Use Material confirmation dialogs | Native, dependency-free, and easy to test |
-| Use SnackBar for success feedback | Lightweight and familiar |
-| Keep undo out of scope | P7 is polish, not full history/restore |
+| Start Phase 3 with Task 21 | The approved plan says Calendar UI should be completed before habit entries are added |
+| Use existing `CalendarController` | Calendar aggregation already exists and keeps UI away from direct database access |
+| Use existing task/note controllers for selection | Avoids adding a calendar-owned detail state |
+| Ship an agenda-style first Calendar page | Matches Task 21's minimum page requirement while leaving month/week/day views for later |
 
 ## Errors Encountered
 
@@ -63,6 +64,19 @@ Complete
 |-------|---------|------------|
 | Compact back action did not really clear selected item because selected getters returned the first item when no id was selected | 1 | Updated selected getters to return null when no selected id exists |
 | Todo compact delete test could not find the edit tooltip before the selected getter fix | 1 | Fixed selected state behavior, then reran widget tests |
+| `dart format --set-exit-if-changed` repeatedly changed `adaptive_app_shell.dart` | 3 | Found mixed CRLF/LF line endings and rewrote the file with consistent LF line endings before rerunning format |
+
+## V2 Task 21: Calendar Page Completion
+
+- **Status:** complete
+- **Started:** 2026-07-19
+- Replace the Calendar placeholder with a real page.
+- Use the existing read-only calendar aggregation controller.
+- Display task start/due entries, recurring task occurrences, and note creation entries.
+- Select the matching task or note when an entry is tapped.
+- Keep habit source/kind expansion possible for Task 26.
+- **Verification:** formatter, `flutter analyze`, focused calendar/navigation tests, and full `flutter test` passed with 220 tests.
+- **Next:** V2 Task 22, schema 4 and habit domain models.
 
 ## V2 Task 7: Customizable Adaptive Navigation
 
