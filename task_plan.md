@@ -1,4 +1,4 @@
-# Task Plan: SimpleNote V2 Phase 3 Task 22 Habit Schema
+# Task Plan: SimpleNote V2 Phase 3
 
 ## Goal
 
@@ -6,9 +6,50 @@
 
 ## Current Phase
 
-Complete
+V2 Task 26 in progress
 
 ## Phases
+
+### V2 Task 26 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Read approved Phase 3/4 plan Task 26 scope
+- [x] Inspect Calendar domain/repository/page tests
+- [x] Inspect Habits repository/controller selection APIs
+- **Status:** complete
+
+### V2 Task 26 Phase 2: Test-First Contract
+
+- [x] Add failing Calendar repository test for habit plan/checkin entries
+- [x] Add failing Calendar page test for habit visibility and navigation
+- **Status:** complete
+
+### V2 Task 26 Phase 3: Implementation
+
+- [x] Extend Calendar domain with habit source/kind/color/count
+- [x] Extend Calendar repository with habit schedule/checkin aggregation
+- [x] Extend Calendar page habit display and tap handoff
+- **Status:** complete
+
+### V2 Task 26 Phase 4: Documentation & Release Prep
+
+- [x] Create Phase 3 acceptance document
+- [x] Update README and docs indexes
+- [x] Add Phase 3 release notes
+- [x] Bump release version
+- **Status:** complete
+
+### V2 Task 26 Phase 5: Verification & Delivery
+
+- [x] Run formatter
+- [x] Run analyzer
+- [x] Run full tests
+- [x] Run Windows release build
+- [x] Run Android release APK build
+- [x] Commit Task 26
+- [x] Push branch to GitHub
+- [x] Create GitHub release and upload artifacts
+- **Status:** complete
 
 ### V2 Task 25 Phase 1: Requirements & Discovery
 

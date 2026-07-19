@@ -4,8 +4,8 @@
 
 - [V2 Phase 1 Acceptance](V2_PHASE_1_ACCEPTANCE.md)
 - [V2 Phase 2 Acceptance](V2_PHASE_2_ACCEPTANCE.md)
+- [V2 Phase 3 Acceptance](V2_PHASE_3_ACCEPTANCE.md)
 
 后续阶段应继续在本目录新增：
 
-- `V2_PHASE_3_ACCEPTANCE.md`
 - `V2_PHASE_4_ACCEPTANCE.md`

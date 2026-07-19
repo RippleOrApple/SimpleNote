@@ -4,9 +4,9 @@
 
 ## 当前状态
 
-- 当前发布基线：`v2.0.0+3`
-- 已完成：V2 Phase 1、V2 Phase 2 Task 15-20
-- 当前后续重点：Phase 3 习惯与统计、Phase 4 V2 局域网同步
+- 当前发布基线：`v2.1.0+4`
+- 已完成：V2 Phase 1、V2 Phase 2 Task 15-20、V2 Phase 3 Task 21-26
+- 当前后续重点：Phase 4 V2 局域网同步、备份、导入导出与最终交付
 - 生产环境仍禁用旧 V1 同步入口；V2 同步在 Phase 4 重新实现
 
 ## 当前应优先阅读
@@ -15,7 +15,9 @@
 - [V2 Phase 3/4 详细设计与实施计划](superpowers/plans/2026-07-19-phase-3-4-habits-statistics-sync-plan-DO-NOT-DELETE.md)
 - [V2 Phase 1 验收记录](acceptance/V2_PHASE_1_ACCEPTANCE.md)
 - [V2 Phase 2 验收记录](acceptance/V2_PHASE_2_ACCEPTANCE.md)
+- [V2 Phase 3 验收记录](acceptance/V2_PHASE_3_ACCEPTANCE.md)
 - [v2.0.0+3 发布说明](releases/RELEASE_NOTES_v2.0.0+3.md)
+- [v2.1.0+4 发布说明](releases/RELEASE_NOTES_v2.1.0+4.md)
 
 ## 目录结构
 

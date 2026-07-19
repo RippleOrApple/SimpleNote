@@ -5,6 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/database/app_database.dart';
 import 'package:simple_note/features/calendar/data/calendar_repository.dart';
 import 'package:simple_note/features/calendar/domain/calendar_entry.dart';
+import 'package:simple_note/features/habits/application/habits_controller.dart';
+import 'package:simple_note/features/habits/data/habits_repository.dart';
+import 'package:simple_note/features/habits/domain/habit.dart';
+import 'package:simple_note/features/habits/domain/habit_schedule.dart';
 import 'package:simple_note/features/navigation/application/navigation_controller.dart';
 import 'package:simple_note/features/navigation/domain/app_module.dart';
 import 'package:simple_note/features/navigation/presentation/adaptive_app_shell.dart';
@@ -27,6 +31,7 @@ void main() {
         _day(dayStart, [
           _taskEntry('task-a', 'Write report', dayStart + _hour(9)),
           _noteEntry('note-a', 'Research note', dayStart + _hour(11)),
+          _habitEntry('habit-a', 'Drink water', dayStart, completed: true),
         ]),
       ]),
       seed: (database) async {
@@ -40,6 +45,11 @@ void main() {
           'Research note',
           createdAt: dayStart + _hour(11),
         ));
+        await DriftHabitsRepository(database).upsertHabit(_habit(
+          'habit-a',
+          'Drink water',
+          schedule: HabitSchedule.daily(),
+        ));
       },
     );
     addTearDown(harness.dispose);
@@ -48,6 +58,8 @@ void main() {
     expect(find.textContaining('planned for a later phase'), findsNothing);
     expect(find.text('Write report'), findsOneWidget);
     expect(find.text('Research note'), findsOneWidget);
+    expect(find.text('Drink water'), findsOneWidget);
+    expect(find.textContaining('1 habits'), findsOneWidget);
     expect(find.byKey(Key('calendar-day-$dayStart')), findsOneWidget);
   });
 
@@ -116,6 +128,40 @@ void main() {
     expect(
       (await container.read(notesControllerProvider.future)).selectedNoteId,
       'note-a',
+    );
+  });
+
+  testWidgets('tapping a habit entry switches to habits and selects the habit',
+      (tester) async {
+    final dayStart = _todayStart();
+    final harness = await _pumpCalendarShell(
+      tester,
+      repository: _FakeCalendarRepository([
+        _day(dayStart, [
+          _habitEntry('habit-a', 'Drink water', dayStart),
+        ]),
+      ]),
+      seed: (database) async {
+        await DriftHabitsRepository(database).upsertHabit(_habit(
+          'habit-a',
+          'Drink water',
+          schedule: HabitSchedule.daily(),
+        ));
+      },
+    );
+    addTearDown(harness.dispose);
+
+    await tester.tap(find.byKey(const Key('calendar-entry-habit-a')));
+    await tester.pumpAndSettle();
+
+    final container = harness.container;
+    expect(
+      container.read(navigationControllerProvider).selectedModule,
+      AppModuleKey.habits,
+    );
+    expect(
+      (await container.read(habitsControllerProvider.future)).selectedHabitId,
+      'habit-a',
     );
   });
 }
@@ -218,6 +264,26 @@ CalendarEntry _noteEntry(String id, String title, int scheduledAt) {
   );
 }
 
+CalendarEntry _habitEntry(
+  String id,
+  String title,
+  int scheduledAt, {
+  bool completed = false,
+}) {
+  return CalendarEntry(
+    id: 'habit:$id:habitPlanned:$scheduledAt',
+    sourceId: id,
+    source: CalendarEntrySource.habit,
+    kind: CalendarEntryKind.habitPlanned,
+    title: title,
+    scheduledAt: scheduledAt,
+    dayStart: _dayStart(scheduledAt),
+    allDay: true,
+    completed: completed,
+    color: 0x2F80ED,
+  );
+}
+
 Task _task(String id, String title, {int? dueAt}) {
   return Task(
     id: id,
@@ -236,6 +302,23 @@ Note _note(String id, String title, {required int createdAt}) {
     content: '',
     createdAt: createdAt,
     updatedAt: createdAt,
+    deviceId: 'device',
+  );
+}
+
+Habit _habit(
+  String id,
+  String name, {
+  required HabitSchedule schedule,
+}) {
+  return Habit(
+    id: id,
+    name: name,
+    iconKey: 'sparkle',
+    color: 0x2F80ED,
+    schedule: schedule,
+    createdAt: 1,
+    updatedAt: 1,
     deviceId: 'device',
   );
 }

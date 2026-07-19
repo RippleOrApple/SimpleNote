@@ -190,3 +190,11 @@
 - Task completions have two sources in the approved plan: active `task_completions` rows and non-recurring completed tasks with `completed_at`.
 - Habit statistics can reuse the schedule semantics from `HabitsRepository`, but the global summary should aggregate across active, unarchived habits only.
 - Empty statistics should display neutral zero values rather than treating 0% completion as a failure state.
+
+## V2 Task 26 Findings
+
+- `CalendarEntrySource` and `CalendarEntryKind` were intentionally left expandable in Task 21; adding habit as a third source fits the existing model.
+- Habit schedules are stored as `schedule_type` plus `schedule_json`; Calendar can reuse the same daily/weekdays/weekly/interval semantics without adding schema.
+- Calendar should only include active, unarchived habits. Archived habits remain accessible in Habits but should not clutter future planning.
+- Habit checkins are day-granularity records. A matching active checkin for the same habit/day is enough for Calendar to mark the habit entry completed.
+- Habit colors are stored as RGB values; presentation must convert them to opaque ARGB before constructing Flutter `Color`.

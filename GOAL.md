@@ -2,62 +2,60 @@
 
 ## Objective
 
-完成 V2 Phase 3 Task 25：Statistics 聚合与页面。
+完成 V2 Phase 3 Task 26：习惯进入 Calendar、阶段验收、README 与发布准备。
 
-Task 24 已经完成习惯应用状态与 Habits 页面。本任务实现全局统计模块：聚合任务完成事件与习惯打卡数据，提供本周、本月、本年范围，替换导航中的 Statistics 占位页。
+Task 25 已经完成 Statistics 聚合与页面。本任务收尾 Phase 3：让 Calendar 同时显示任务、笔记和习惯计划/打卡状态，补齐 Phase 3 验收文档，更新 README 与 release notes，并准备 GitHub release。
 
 ## Scope
 
-- 新增 `lib/features/statistics/`。
-- 新增 `StatisticsRange`，支持本周、本月、本年。
-- 新增 `StatisticsSummary` 领域模型。
-- 新增 `StatisticsRepository` 与 Drift 实现。
-- 聚合任务完成数：
-  - `task_completions` active 记录。
-  - 非重复任务的 `completed_at`。
-- 聚合习惯统计：
-  - active `habit_checkins`。
-  - active、未归档习惯在范围内的计划天数。
-  - 习惯完成率、当前连续周期、最长连续周期。
-- 新增 `StatisticsController`。
-- 新增 `StatisticsPage`。
-- 替换 `AdaptiveAppShell` 中 Statistics 的占位页。
-- 添加 repository、controller、page 测试。
-- 更新 `task_plan.md`、`findings.md` 和 `progress.md`。
+- 扩展 `CalendarEntrySource` 与 `CalendarEntryKind`，加入习惯来源。
+- Calendar 聚合 active、未归档、未删除的习惯计划。
+- Calendar 识别 active `habit_checkins`，把当天已打卡习惯显示为已完成。
+- Calendar entry 保留习惯主题色，用于 UI 区分。
+- Calendar day summary 显示 task、note、habit 计数。
+- 点击习惯 entry 后切换到 Habits 页面并选中对应习惯。
+- 新增或更新 Calendar repository/widget 测试。
+- 创建 `docs/acceptance/V2_PHASE_3_ACCEPTANCE.md`。
+- 更新 `docs/acceptance/README.md`、`docs/README.md`、`README.md`。
+- 新增 Phase 3 release notes。
+- 将应用版本推进到本次 Phase 3 release。
+- 运行全量测试与 Windows/Android release build。
 
 ## Non-goals
 
-- 不实现复杂图表库。
-- 不实现自定义时间范围。
-- 不实现 AI 总结。
-- 不实现云端统计。
-- 不修改同步协议。
+- 不实现 Phase 4 V2 局域网同步。
+- 不恢复旧版 V1 同步入口。
+- 不新增 Calendar 月视图/周视图/拖拽编辑。
+- 不实现平台原生通知插件。
 - 不新增 schema。
-- 不接入 Calendar。
 
 ## Acceptance Criteria
 
-- [x] Repository 可按本周、本月、本年范围返回统计摘要。
-- [x] 任务完成数包含 active `task_completions`。
-- [x] 任务完成数包含非重复任务的 `completed_at`。
-- [x] 已删除任务、已删除 completion 不参与统计。
-- [x] 习惯打卡数只包含 active `habit_checkins`。
-- [x] 已删除习惯、已归档习惯、已软删除打卡不参与统计。
-- [x] 习惯完成率在空数据时为 0%，不显示失败感。
-- [x] Controller 可切换本周、本月、本年并重新加载摘要。
-- [x] Statistics 导航不再显示占位页。
-- [x] Statistics 页面显示任务完成数、习惯打卡数、习惯完成率、当前连续周期、最长连续周期。
+- [x] Calendar 可区分任务、笔记、习惯三类 entry。
+- [x] Calendar 显示范围内应打卡的 active 习惯计划。
+- [x] 已归档、已删除习惯不进入 Calendar。
+- [x] active `habit_checkins` 会让对应习惯 entry 显示完成状态。
+- [x] 习惯 entry 使用习惯主题色。
+- [x] Calendar day summary 显示 habits 计数。
+- [x] 点击习惯 entry 会进入 Habits 页面并选中该习惯。
+- [x] Phase 3 acceptance 文档记录自动化命令和平台构建结果。
+- [x] README 说明当前 Phase 3 能力、运行验证方式和后续 Phase 4 边界。
+- [x] Release notes 描述本次 Phase 3 交付。
 - [x] `dart format --output=none --set-exit-if-changed lib test` 通过。
 - [x] `flutter analyze` 通过。
-- [x] 相关 statistics/navigation/widget 测试通过。
+- [x] `flutter test` 通过。
+- [x] `flutter build windows --release` 通过。
+- [x] `flutter build apk --release` 通过。
+- [x] GitHub release 创建并上传 Windows zip 与 Android APK。
 
 ## Constraints
 
 - 继续使用 Drift + SQLite。
-- 统计页面不直接访问 Drift 数据库。
-- 首版页面使用轻量指标与趋势列表，不引入重型图表依赖。
-- 日期范围使用本地日开始 epoch milliseconds，范围上界为 exclusive。
+- Calendar 页面不直接访问 Drift 数据库。
+- 继续保持本地优先，不引入账号服务器或云同步。
+- V1 同步入口继续保持生产禁用，Phase 4 完成前不恢复。
 
 ## Notes
 
-- Task 26 会把习惯计划和打卡状态接入 Calendar，并创建 Phase 3 验收文档。
+- 本次 release 推荐版本：`v2.1.0+4`。
+- Task 27 将进入 Phase 4：V2 同步协议骨架与握手。

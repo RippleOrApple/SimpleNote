@@ -657,3 +657,44 @@
 
 - V2 Task 25 is complete.
 - V2 Task 26 is next: habits in Calendar and Phase 3 acceptance.
+
+## Session: 2026-07-19 - Commit before Task 26
+
+- Committed completed V2 Task 25 statistics aggregation and page work.
+- Commit: `46a31b5 Add statistics aggregation and page`.
+
+## Session: 2026-07-19 - V2 Task 26
+
+### Planning
+
+- Updated `GOAL.md` for habits in Calendar, Phase 3 acceptance, README, release notes, and release preparation.
+- Confirmed approved Task 26 scope: Calendar habit aggregation, Phase 3 acceptance document, full tests, Windows release build, and Android release build.
+- Confirmed Calendar currently supports task and note sources only.
+- Confirmed Habits controller can select a habit after the Habits provider loads.
+
+### Implementation
+
+- Added failing Calendar repository coverage for habit plan entries, active checkin completion state, archived/deleted exclusions, habit count, and habit color.
+- Added failing Calendar page coverage for visible habit entries, day habit count, and tapping a habit entry to open Habits with selection.
+- Extended Calendar domain with `CalendarEntrySource.habit`, `CalendarEntryKind.habitPlanned`, optional entry color, and `CalendarDay.habitCount`.
+- Extended Drift Calendar repository to aggregate active, unarchived habit schedules and active checkins over the requested range.
+- Extended Calendar page to display habit counts, habit-colored entry icons, habit subtitles, completion state, and Habits navigation handoff.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/calendar/calendar_repository_test.dart test/calendar/calendar_page_test.dart` | Red first for missing habit Calendar source/kind/color/count, then pass with 7 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially changed `calendar_repository.dart` repeatedly; pass after matching formatter's expected expression layout |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 241 tests |
+| `flutter build windows --release` | Pass, produced `build/windows/x64/runner/Release/simple_note.exe` |
+| `flutter build apk --release` | Pass, produced `build/app/outputs/flutter-apk/app-release.apk`; Gradle, AGP, KGP, and SDK XML warnings were non-fatal |
+
+### Handoff
+
+- Created release assets:
+  - `dist/SimpleNote-v2.1.0+4-windows-x64.zip`
+  - `dist/SimpleNote-v2.1.0+4-android-release.apk`
+- Prepared final release documentation for GitHub tag `v2.1.0+4`.
+- Commit, push, and GitHub release are the remaining shell actions.

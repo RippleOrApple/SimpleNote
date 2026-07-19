@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/empty_state.dart';
+import '../../habits/application/habits_controller.dart';
 import '../../navigation/application/navigation_controller.dart';
 import '../../navigation/domain/app_module.dart';
 import '../../notes/application/notes_controller.dart';
@@ -118,6 +119,12 @@ class _CalendarAgenda extends ConsumerWidget {
         ref.read(navigationControllerProvider.notifier).select(
               AppModuleKey.notes,
             );
+      case CalendarEntrySource.habit:
+        await ref.read(habitsControllerProvider.future);
+        ref.read(habitsControllerProvider.notifier).selectHabit(entry.sourceId);
+        ref.read(navigationControllerProvider.notifier).select(
+              AppModuleKey.habits,
+            );
     }
   }
 }
@@ -151,7 +158,8 @@ class _CalendarDaySection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${day.taskCount} tasks · ${day.noteCount} notes',
+                  '${day.taskCount} tasks · ${day.noteCount} notes · '
+                  '${day.habitCount} habits',
                   style: textTheme.labelMedium,
                 ),
               ],
@@ -196,6 +204,8 @@ class _CalendarEntryTile extends StatelessWidget {
     final sourceColor = switch (entry.source) {
       CalendarEntrySource.task => colorScheme.primary,
       CalendarEntrySource.note => colorScheme.tertiary,
+      CalendarEntrySource.habit =>
+        Color(0xFF000000 | (entry.color ?? 0x2F80ED)),
     };
     return ListTile(
       key: Key('calendar-entry-${entry.sourceId}'),
@@ -226,6 +236,7 @@ IconData _entryIcon(CalendarEntryKind kind) {
     CalendarEntryKind.taskStart => Icons.play_circle_outline_rounded,
     CalendarEntryKind.taskDue => Icons.flag_outlined,
     CalendarEntryKind.noteCreated => Icons.article_outlined,
+    CalendarEntryKind.habitPlanned => Icons.check_circle_outline_rounded,
   };
 }
 
@@ -236,6 +247,7 @@ String _entrySubtitle(CalendarEntry entry) {
       CalendarEntryKind.taskStart => '任务开始',
       CalendarEntryKind.taskDue => '任务截止',
       CalendarEntryKind.noteCreated => '笔记创建',
+      CalendarEntryKind.habitPlanned => '习惯计划',
     },
     if (entry.completed) '已完成',
   ];
