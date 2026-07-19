@@ -10,6 +10,41 @@ Complete
 
 ## Phases
 
+### V2 Task 24 Phase 1: Requirements & Discovery
+
+- [x] Read `GOAL.md`
+- [x] Inspect Task 24 scope in approved Phase 3/4 plan
+- [x] Inspect navigation shell, Tasks controller/page patterns, and Habits repository
+- **Status:** complete
+
+### V2 Task 24 Phase 2: Test-First Contract
+
+- [x] Add failing `HabitsController` workflow tests
+- [x] Add failing `HabitsPage` navigation/layout tests
+- **Status:** complete
+
+### V2 Task 24 Phase 3: Implementation
+
+- [x] Add habits application state/controller
+- [x] Add Habits page/list/detail/editor widgets
+- [x] Route `AppModuleKey.habits` to `HabitsPage`
+- **Status:** complete
+
+### V2 Task 24 Phase 4: Testing & Verification
+
+- [x] Run focused habits tests
+- [x] Run relevant navigation/widget tests
+- [x] Run `dart format --output=none --set-exit-if-changed lib test`
+- [x] Run `flutter analyze`
+- [x] Run broader relevant tests
+- **Status:** complete
+
+### V2 Task 24 Phase 5: Delivery
+
+- [x] Update `GOAL.md` acceptance checkboxes
+- [x] Update planning files with final results
+- **Status:** complete
+
 ### V2 Task 23 Phase 1: Requirements & Discovery
 
 - [x] Read `GOAL.md`
@@ -111,6 +146,7 @@ Complete
 | Drift table DSL rejected `length(trim(name))` inside a column check | 1 | Moved the non-empty habit-name validation to a table-level SQL `CHECK` constraint |
 | Formatter repeatedly changed mixed-line-ending files after Git checkout/write | 2 | Normalized touched Dart files to LF and reran formatter until stable |
 | `dart format --set-exit-if-changed` repeatedly reported `habits_repository.dart` as changed even though the file hash stayed identical | 2 | Used `dart format --output=show` to identify the switch-arm layout it expected, then applied that layout manually |
+| `dart format --set-exit-if-changed` repeatedly reported new Task 24 Dart files as changed while SHA-256 stayed identical | 3 | Used `dart format --output=json` to locate expression-layout differences and manually matched the formatter output |
 
 ## V2 Task 22: Habit Schema and Domain Models
 

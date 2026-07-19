@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/widgets/app_shell_embed_scope.dart';
 import '../../../shared/widgets/frosted_surface.dart';
 import '../../calendar/presentation/calendar_page.dart';
+import '../../habits/presentation/habits_page.dart';
 import '../../notes/presentation/notes_page.dart';
 import '../../settings/presentation/settings_page.dart';
 import '../../sync/data/sync_repository.dart';
@@ -100,6 +101,7 @@ class _AdaptiveAppShellState extends ConsumerState<AdaptiveAppShell> {
     return switch (module) {
       AppModuleKey.today => const TasksPage(),
       AppModuleKey.calendar => const CalendarPage(),
+      AppModuleKey.habits => const HabitsPage(),
       AppModuleKey.notes => const NotesPage(),
       AppModuleKey.settings => const SettingsPage(),
       AppModuleKey.more => const SettingsPage(),

@@ -576,3 +576,42 @@
 
 - V2 Task 23 is complete.
 - V2 Task 24 is next: habit application state and Windows/Android UI.
+
+## Session: 2026-07-19 - Commit before Task 24
+
+- Committed completed V2 Task 23 habit repository and statistics work.
+- Commit: `894a78c Add habit repository and statistics`.
+
+## Session: 2026-07-19 - V2 Task 24
+
+### Planning
+
+- Updated `GOAL.md` for habit application state and Windows/Android UI.
+- Confirmed Habits currently routes to `PlaceholderModulePage` in `AdaptiveAppShell`.
+- Confirmed Task 24 should add controller and page only; reminders, Calendar integration, and global Statistics remain later tasks.
+- Chose to mirror the existing Tasks module pattern: `AsyncNotifier` state plus repository-backed writes and adaptive page layout.
+
+### Implementation
+
+- Added failing `HabitsController` tests for create, edit, select, check in, cancel checkin, archive, unarchive, delete, existing-plan load, and selected statistics.
+- Added `HabitsController`, `HabitsState`, and `HabitSaveStatus`.
+- Added failing `HabitsPage` tests for replacing the Habits placeholder, Windows two-pane layout, compact list/detail navigation, and today checkin action.
+- Added `HabitsPage` with adaptive list/detail layout, empty state, quick create, edit/rename action, archive/delete actions, today checkin/cancel action, metrics, and recent checkins.
+- Routed `AppModuleKey.habits` to `HabitsPage` in `AdaptiveAppShell`.
+- Fixed controller today-checkin collection to include all active habits, not only habits planned today, so manual checkins remain visible on non-planned days.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/habits/habits_controller_test.dart` | Red first for missing controller, then pass with 2 tests |
+| `flutter test test/habits/habits_page_test.dart` | Red first for missing page, then pass with 2 tests |
+| `flutter test test/habits test/navigation/adaptive_app_shell_test.dart` | Pass, 18 tests |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reported new Task 24 files as changed repeatedly; pass after matching formatter's expression layouts |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 234 tests |
+
+### Handoff
+
+- V2 Task 24 is complete.
+- V2 Task 25 is next: Statistics aggregation and page.

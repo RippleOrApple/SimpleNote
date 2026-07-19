@@ -176,3 +176,10 @@
 - Day-plan queries should filter active, unarchived habits in Dart after loading active rows because schedule rules are stored as JSON.
 - Streaks should be calculated across scheduled occurrences, not every calendar day, so weekly and interval schedules can skip non-planned days without breaking continuity.
 - `dart format --set-exit-if-changed` can repeatedly report a file as changed even when its SHA-256 stays identical; `dart format --output=show` exposes the exact layout it expects.
+
+## V2 Task 24 Findings
+
+- `AdaptiveAppShell` currently routes `AppModuleKey.habits` to `PlaceholderModulePage`; replacing this switch arm is the navigation integration point.
+- `TasksController` is the closest application-state pattern: `AsyncNotifier`, immutable state, repository provider injection, selected item state, and write status.
+- `TasksPage` uses the shared adaptive breakpoints and `AppShellEmbedScope`; Habits can mirror a simpler two-zone layout without adding a new shell abstraction.
+- Task 24 should not make UI call Drift directly; all writes and reloads should go through `HabitsController`.
