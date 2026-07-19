@@ -1,8 +1,8 @@
-# Task Plan: SimpleNote V2 Phase 3 Task 21 Calendar Page
+# Task Plan: SimpleNote V2 Phase 3 Task 22 Habit Schema
 
 ## Goal
 
-补齐 Calendar 真实页面，用已有 Calendar 聚合数据层展示任务/笔记日程，并为后续习惯 entry 接入留出扩展点。
+建立习惯能力的数据基础：schema 4、习惯表、打卡表、迁移和领域模型。
 
 ## Current Phase
 
@@ -14,29 +14,30 @@ Complete
 
 - [x] Read `GOAL.md`
 - [x] Read approved V2 design and Phase 3/4 plan
-- [x] Inspect calendar controller/repository/domain
-- [x] Inspect navigation shell and task/note selection APIs
-- [x] Inspect existing widget test harnesses
+- [x] Inspect current schema v3 database and migrations
+- [x] Inspect existing database/domain test patterns
+- [x] Inspect generated Drift update requirements
 - **Status:** complete
 
 ### Phase 2: Planning & Structure
 
-- [x] Choose Calendar page layout
-- [x] Choose entry click handoff behavior
-- [x] Choose focused test coverage
+- [x] Choose table definitions and constraints
+- [x] Choose `HabitSchedule` JSON shape
+- [x] Choose migration coverage
 - **Status:** complete
 
 ### Phase 3: Implementation
 
-- [x] Add failing Calendar page/navigation tests
-- [x] Add `CalendarPage`
-- [x] Route `AppModuleKey.calendar` to `CalendarPage`
-- [x] Wire task/note entry taps through existing controllers and navigation
+- [x] Add failing schema/domain tests
+- [x] Add habit database tables and schema v4 migration
+- [x] Add habit domain models
+- [x] Run Drift code generation
 - **Status:** complete
 
 ### Phase 4: Testing & Verification
 
-- [x] Run focused calendar/navigation tests
+- [x] Run focused database/habits tests
+- [x] Run `dart run build_runner build --delete-conflicting-outputs`
 - [x] Run `dart format --output=none --set-exit-if-changed lib test`
 - [x] Run `flutter analyze`
 - [x] Run relevant broader tests
@@ -57,6 +58,8 @@ Complete
 | Use existing `CalendarController` | Calendar aggregation already exists and keeps UI away from direct database access |
 | Use existing task/note controllers for selection | Avoids adding a calendar-owned detail state |
 | Ship an agenda-style first Calendar page | Matches Task 21's minimum page requirement while leaving month/week/day views for later |
+| Keep Task 22 below repository layer | The approved plan separates schema/domain from repository/controller/UI in Task 23/24 |
+| Store schedule as `schedule_type` plus JSON payload | Matches the approved database design and keeps future schedule variants extensible |
 
 ## Errors Encountered
 
@@ -65,6 +68,20 @@ Complete
 | Compact back action did not really clear selected item because selected getters returned the first item when no id was selected | 1 | Updated selected getters to return null when no selected id exists |
 | Todo compact delete test could not find the edit tooltip before the selected getter fix | 1 | Fixed selected state behavior, then reran widget tests |
 | `dart format --set-exit-if-changed` repeatedly changed `adaptive_app_shell.dart` | 3 | Found mixed CRLF/LF line endings and rewrote the file with consistent LF line endings before rerunning format |
+| PowerShell rejected `git add -A && git status --short && git commit ...` | 1 | Ran the Git commands separately |
+| Drift table DSL rejected `length(trim(name))` inside a column check | 1 | Moved the non-empty habit-name validation to a table-level SQL `CHECK` constraint |
+| Formatter repeatedly changed mixed-line-ending files after Git checkout/write | 2 | Normalized touched Dart files to LF and reran formatter until stable |
+
+## V2 Task 22: Habit Schema and Domain Models
+
+- **Status:** complete
+- **Started:** 2026-07-19
+- Add schema 4 tables for habits and habit checkins.
+- Add schema 4 migration and production pre-v4 backup.
+- Add `Habit`, `HabitCheckin`, and `HabitSchedule`.
+- Cover schema creation, constraints, migrations, and JSON round-trips.
+- **Verification:** build_runner, formatter, `flutter analyze`, focused database/habits tests, and full `flutter test` passed with 226 tests.
+- **Next:** V2 Task 23, habit repository and statistics calculation foundation.
 
 ## V2 Task 21: Calendar Page Completion
 

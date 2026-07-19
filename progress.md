@@ -498,3 +498,43 @@
 
 - V2 Task 21 is complete.
 - V2 Task 22 is next: schema 4 and habit domain models.
+
+## Session: 2026-07-19 - Commit before Task 22
+
+- Committed completed documentation restructuring and V2 Task 21 Calendar baseline.
+- Commit: `3612a2d Complete phase 3 calendar baseline`.
+- PowerShell rejected a chained `&&` Git command; reran `git add`, `git status`, and `git commit` as separate commands.
+
+## Session: 2026-07-19 - V2 Task 22
+
+### Planning
+
+- Updated `GOAL.md` for schema 4 and habit domain models.
+- Confirmed current `AppDatabase.schemaVersion` is 3.
+- Confirmed Task 22 should stop at tables, migration, backup, and domain models.
+
+### Implementation
+
+- Added failing domain tests for `HabitSchedule`, `Habit`, and `HabitCheckin` JSON behavior.
+- Added failing database tests for schema v4 tables, constraints, active-checkin uniqueness, and schema 3 -> 4 backup.
+- Added `habits` and `habit_checkins` Drift tables.
+- Added `SchemaV4Migration` with habit indexes and active-checkin uniqueness.
+- Bumped `AppDatabase.schemaVersion` to 4 and wired create/upgrade paths.
+- Updated `DatabaseBackupService` so schema 3 production databases receive a `pre-v4` backup.
+- Added `HabitSchedule`, `Habit`, and `HabitCheckin` domain models.
+- Regenerated Drift code with `build_runner`.
+
+### Verification
+
+| Command | Result |
+|---------|--------|
+| `flutter test test/habits/habit_domain_test.dart test/database/schema_v2_test.dart test/database/migration_v2_test.dart` | Red first for missing habit domain/schema, then pass with 13 tests |
+| `dart run build_runner build --delete-conflicting-outputs` | Pass; tool reported the option is ignored by current build_runner but generated Drift outputs successfully |
+| `dart format --output=none --set-exit-if-changed lib test` | Initially reformatted touched files and exposed line-ending churn, then pass with 0 changed files |
+| `flutter analyze` | Pass, no issues |
+| `flutter test` | Pass, 226 tests |
+
+### Handoff
+
+- V2 Task 22 is complete.
+- V2 Task 23 is next: habit repository and statistics calculation foundation.

@@ -159,3 +159,11 @@
 - `AdaptiveAppShell` still routes `AppModuleKey.calendar` to `PlaceholderModulePage`; this is the main user-facing gap.
 - `TasksController.selectTask` and `NotesController.selectNote` already provide the selection behavior needed after tapping a calendar entry.
 - Calendar UI should remain read-only in Task 21; drag-to-reschedule and habit entries belong to later tasks.
+
+## V2 Task 22 Findings
+
+- Current production schema version is 3; Task 22 must upgrade it to 4.
+- Existing migrations are implemented as `part` files under `lib/database/migrations/` and are invoked from `AppDatabase.migration`.
+- Production backup currently uses `latestSchemaVersion = 3`, so schema 3 databases do not yet receive a pre-v4 backup.
+- Drift table classes already use custom constraints for enum-like and boolean-like validation; habits should follow that pattern.
+- Task 22 should not add a repository yet; the approved plan keeps repository and statistics foundation for Task 23.

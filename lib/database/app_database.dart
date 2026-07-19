@@ -12,6 +12,8 @@ import 'tables/background_images_table.dart';
 import 'tables/content_attachments_table.dart';
 import 'tables/custom_colors_table.dart';
 import 'tables/device_appearance_profiles_table.dart';
+import 'tables/habit_checkins_table.dart';
+import 'tables/habits_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/note_tags_table.dart';
 import 'tables/notes_table.dart';
@@ -30,6 +32,7 @@ import 'tables/todos_table.dart';
 part 'app_database.g.dart';
 part 'migrations/schema_v2_migration.dart';
 part 'migrations/schema_v3_migration.dart';
+part 'migrations/schema_v4_migration.dart';
 part 'daos/appearance_dao.dart';
 part 'daos/app_settings_dao.dart';
 part 'daos/attachments_dao.dart';
@@ -68,6 +71,8 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
     CustomColors,
     BackgroundImages,
     DeviceAppearanceProfiles,
+    Habits,
+    HabitCheckins,
   ],
   daos: [
     NotesDao,
@@ -87,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -95,6 +100,7 @@ class AppDatabase extends _$AppDatabase {
           await migrator.createAll();
           await SchemaV2Migration.createIndexes(this);
           await SchemaV3Migration.createIndexes(this);
+          await SchemaV4Migration.createIndexes(this);
         },
         onUpgrade: (migrator, from, to) async {
           if (from < 2) {
@@ -102,6 +108,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 3) {
             await SchemaV3Migration.run(this, migrator);
+          }
+          if (from < 4) {
+            await SchemaV4Migration.run(this, migrator);
           }
         },
       );

@@ -2,51 +2,59 @@
 
 ## Objective
 
-完成 V2 Phase 3 Task 21：补齐 Calendar 页面。
+完成 V2 Phase 3 Task 22：schema 4 与习惯领域模型。
 
-当前项目已经有 Calendar 聚合数据层和 `CalendarController`，但导航中的 Calendar 仍停留在占位页。本任务先补一个可用的最小日历页面，为后续习惯计划、习惯打卡状态和统计入口打基础。
+Task 21 已经补齐 Calendar 入口。Task 22 只建立习惯能力的数据基础：新增 `habits`、`habit_checkins`、schema v4 migration，以及 `Habit`、`HabitCheckin`、`HabitSchedule` 领域模型。
 
 ## Scope
 
-- 新增真实 `CalendarPage`，替换 Calendar 占位页。
-- 使用已有 `CalendarController` 默认加载 30 天范围。
-- 显示任务开始、任务截止、重复任务实例和笔记创建日期 entry。
-- 按日期分组显示条目，并区分任务/笔记来源与 entry 类型。
-- 点击任务 entry 后切到任务模块，并选中对应任务。
-- 点击笔记 entry 后切到笔记模块，并选中对应笔记。
-- 保留 `source`/`kind` 扩展点，方便后续习惯 entry 接入。
-- 添加 Calendar widget/navigation 测试。
+- 将数据库 schema version 从 3 升级到 4。
+- 新增 `habits` 表。
+- 新增 `habit_checkins` 表。
+- 新增 schema v4 migration。
+- 新增 schema 4 索引和约束。
+- 扩展生产数据库升级前备份，使 schema 3 -> 4 前生成 `pre-v4` 备份。
+- 新增 `Habit` 领域模型。
+- 新增 `HabitCheckin` 领域模型。
+- 新增 `HabitSchedule` 领域模型。
+- 覆盖 schema 1/2/3 -> 4 的迁移路径。
+- 添加数据库和领域模型测试。
 - 更新 `task_plan.md`、`findings.md` 和 `progress.md`。
 
 ## Non-goals
 
-- 不新增习惯数据库表。
-- 不实现月/周/日完整复杂视图。
-- 不实现拖拽改期。
-- 不实现习惯 entry。
+- 不实现习惯仓库 CRUD。
+- 不实现习惯 controller。
+- 不实现习惯 UI。
+- 不实现习惯提醒调度。
+- 不把习惯接入 Calendar。
+- 不实现 Statistics。
 - 不改同步协议。
-- 不接入真实原生通知插件。
 
 ## Acceptance Criteria
 
-- [x] Windows 和 Android 导航进入 Calendar 后不再显示占位文案。
-- [x] Calendar 页面默认使用 `CalendarController` 的 30 天范围。
-- [x] Calendar 页面能显示任务、重复任务和笔记 entry。
-- [x] Calendar entry 按日期分组显示。
-- [x] 点击任务 entry 可以切到任务模块并选中对应任务。
-- [x] 点击笔记 entry 可以切到笔记模块并选中对应笔记。
-- [x] 页面结构为后续习惯 entry 保留来源/类型扩展点。
+- [x] 新数据库创建时包含 `habits` 和 `habit_checkins`。
+- [x] schema version 为 4。
+- [x] `habits` 约束能拒绝空名称、非法颜色、非法计划类型和非法归档值。
+- [x] `habit_checkins` 约束能拒绝非法状态。
+- [x] 同一未删除习惯同一天只能有一条 active checkin。
+- [x] schema 1 -> 4、schema 2 -> 4、schema 3 -> 4 迁移后旧任务、笔记、外观和附件基础表不丢失。
+- [x] schema 3 生产升级前会创建 `pre-v4` 备份。
+- [x] `Habit`、`HabitCheckin`、`HabitSchedule` 支持 JSON round-trip。
+- [x] `HabitSchedule` 支持 `daily`、`weekdays`、`weekly`、`interval`。
+- [x] `dart run build_runner build --delete-conflicting-outputs` 通过。
 - [x] `dart format --output=none --set-exit-if-changed lib test` 通过。
 - [x] `flutter analyze` 通过。
-- [x] 相关 calendar/navigation/widget 测试通过。
+- [x] 相关 database/habits 测试通过。
 
 ## Constraints
 
-- 继续使用 feature-first 结构。
-- UI 不直接访问数据库。
-- 页面复用现有 Riverpod provider、controller 和导航状态。
-- 仅做文档规划中 Task 21 的范围，不提前做 Task 22-26。
+- 继续使用 Drift + SQLite。
+- `checkinDay` 使用本地日开始 epoch milliseconds。
+- 删除继续使用软删除字段。
+- 领域模型不依赖 UI。
+- Task 22 只建立数据与领域基础，不提前做 Task 23。
 
 ## Notes
 
-- Phase 3 的后续任务仍按不可删除规划推进：schema 4 与习惯领域模型、习惯仓库、习惯 UI、统计、Calendar 习惯集成与验收。
+- 后续 Task 23 会基于这些表和领域模型实现习惯仓库、打卡、取消打卡、补卡和基础统计计算。
