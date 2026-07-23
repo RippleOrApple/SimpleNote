@@ -122,7 +122,7 @@ void main() {
         isA<StateError>().having(
           (error) => error.message,
           'message',
-          'My Colors supports at most 24 colors.',
+          '我的颜色最多支持 24 个。',
         ),
       ),
     );

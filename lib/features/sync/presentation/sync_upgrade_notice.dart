@@ -34,7 +34,7 @@ class SyncUpgradeNotice extends StatelessWidget {
                     const SizedBox(height: 6),
                     const Text(
                       'V2 任务、外观和正文图片无法由旧协议安全识别。'
-                      'Phase 4 完成前，本版本不会开启旧同步服务；'
+                      '第四阶段完成前，本版本不会开启旧同步服务；'
                       '所有本地功能仍可离线使用。',
                     ),
                   ],

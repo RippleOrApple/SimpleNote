@@ -41,7 +41,7 @@ void main() {
     ]) {
       expect(find.byKey(Key(key)), findsOneWidget, reason: key);
     }
-    expect(find.textContaining('Navigation'), findsOneWidget);
+    expect(find.textContaining('导航'), findsOneWidget);
   });
 
   testWidgets('malformed RGB and HEX never replace the previous color',

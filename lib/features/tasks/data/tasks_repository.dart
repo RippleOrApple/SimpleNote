@@ -224,14 +224,14 @@ class DriftTasksRepository implements TasksRepository {
       var normalized = task;
       if (task.parentId != null) {
         if (task.parentId == task.id) {
-          throw StateError('A task cannot be its own parent.');
+          throw StateError('任务不能把自己设为父任务。');
         }
         final parent = await _database.tasksV2Dao.findById(task.parentId!);
         if (parent == null || parent.deletedAt != null) {
-          throw StateError('Task parent does not exist or is deleted.');
+          throw StateError('父任务不存在或已删除。');
         }
         if (parent.parentId != null) {
-          throw StateError('Only one subtask level is supported.');
+          throw StateError('目前只支持一层子任务。');
         }
         normalized = task.copyWith(
           listId: parent.listId,
@@ -250,7 +250,7 @@ class DriftTasksRepository implements TasksRepository {
   }) async {
     final row = await _database.tasksV2Dao.findById(id);
     if (row == null || row.deletedAt != null) {
-      throw StateError('Cannot complete a missing or deleted task.');
+      throw StateError('无法完成不存在或已删除的任务。');
     }
     final task = _fromRow(row);
     final existingCompletions = await listTaskCompletions(id);
@@ -288,7 +288,7 @@ class DriftTasksRepository implements TasksRepository {
   Future<void> uncompleteTask(String id, int updatedAt) async {
     final row = await _database.tasksV2Dao.findById(id);
     if (row == null || row.deletedAt != null) {
-      throw StateError('Cannot uncomplete a missing or deleted task.');
+      throw StateError('无法取消完成不存在或已删除的任务。');
     }
     await _database.transaction(() async {
       await _database.tasksV2Dao.upsertTask(_toCompanion(
@@ -327,7 +327,7 @@ class DriftTasksRepository implements TasksRepository {
     await _database.transaction(() async {
       final task = await _database.tasksV2Dao.findById(reminder.taskId);
       if (task == null || task.deletedAt != null) {
-        throw StateError('Cannot create a reminder for a missing task.');
+        throw StateError('无法为不存在的任务创建提醒。');
       }
       await _database.into(_database.taskReminders).insertOnConflictUpdate(
             _toReminderCompanion(reminder),
@@ -415,12 +415,12 @@ class DriftTasksRepository implements TasksRepository {
     await _database.transaction(() async {
       final task = await _database.tasksV2Dao.findById(taskId);
       if (task == null || task.deletedAt != null) {
-        throw StateError('Cannot tag a missing or deleted task.');
+        throw StateError('无法为不存在或已删除的任务设置标签。');
       }
       for (final tagId in ids) {
         final tag = await _database.taskTaxonomyDao.findTagById(tagId);
         if (tag == null || tag.deletedAt != null) {
-          throw StateError('Task tag does not exist or is deleted.');
+          throw StateError('任务标签不存在或已删除。');
         }
       }
       final now = Clock.nowMillis();
@@ -824,7 +824,7 @@ class DriftTasksRepository implements TasksRepository {
 
   static void _validateReminderTrigger(TaskReminder reminder) {
     if ((reminder.triggerAt == null) == (reminder.offsetMinutes == null)) {
-      throw StateError('A reminder must use exactly one trigger type.');
+      throw StateError('提醒必须且只能使用一种触发方式。');
     }
   }
 

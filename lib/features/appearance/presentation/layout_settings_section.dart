@@ -36,13 +36,12 @@ class LayoutSettingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Layout and effects',
-            style: Theme.of(context).textTheme.titleLarge),
+        Text('布局与效果', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 10),
         DropdownButtonFormField<AppBrightnessMode>(
           key: const Key('appearance-brightness-mode'),
           initialValue: settings.brightnessMode,
-          decoration: const InputDecoration(labelText: 'Brightness'),
+          decoration: const InputDecoration(labelText: '明暗模式'),
           items: [
             for (final mode in AppBrightnessMode.values)
               DropdownMenuItem(
@@ -60,7 +59,7 @@ class LayoutSettingsSection extends StatelessWidget {
         DropdownButtonFormField<LayoutDensity>(
           key: const Key('appearance-density'),
           initialValue: profile.density,
-          decoration: const InputDecoration(labelText: 'Layout density'),
+          decoration: const InputDecoration(labelText: '布局密度'),
           items: [
             for (final density in LayoutDensity.values)
               DropdownMenuItem(
@@ -76,26 +75,26 @@ class LayoutSettingsSection extends StatelessWidget {
         ),
         _EffectSlider(
           key: const Key('appearance-tint-slider'),
-          label: 'Tint',
+          label: '染色',
           value: settings.tintStrength,
           onChanged: onTintChanged,
         ),
         _EffectSlider(
           key: const Key('appearance-glass-slider'),
-          label: 'Glass',
+          label: '玻璃',
           value: settings.glassOpacity,
           onChanged: onGlassChanged,
         ),
         _EffectSlider(
           key: const Key('appearance-dark-overlay-slider'),
-          label: 'Dark overlay',
+          label: '暗色遮罩',
           value: settings.darkOverlay,
           onChanged: onDarkOverlayChanged,
         ),
         DropdownButtonFormField<MotionLevel>(
           key: const Key('appearance-motion-level'),
           initialValue: settings.motion,
-          decoration: const InputDecoration(labelText: 'Motion'),
+          decoration: const InputDecoration(labelText: '动效'),
           items: [
             for (final level in MotionLevel.values)
               DropdownMenuItem(
@@ -113,7 +112,7 @@ class LayoutSettingsSection extends StatelessWidget {
         DropdownButtonFormField<HapticsMode>(
           key: const Key('appearance-haptics-mode'),
           initialValue: profile.hapticsMode,
-          decoration: const InputDecoration(labelText: 'Haptics'),
+          decoration: const InputDecoration(labelText: '触感'),
           items: [
             for (final mode in HapticsMode.values)
               DropdownMenuItem(
@@ -132,7 +131,7 @@ class LayoutSettingsSection extends StatelessWidget {
         if (!isAndroid)
           const Padding(
             padding: EdgeInsets.only(top: 6),
-            child: Text('Haptic feedback is available only on Android.'),
+            child: Text('触感反馈仅在 Android 上可用。'),
           ),
       ],
     );
@@ -169,13 +168,26 @@ class _EffectSlider extends StatelessWidget {
 }
 
 String _label(String name) {
-  return '${name[0].toUpperCase()}${name.substring(1)}';
+  return switch (name) {
+    'system' => '跟随系统',
+    'light' => '浅色',
+    'dark' => '深色',
+    'compact' => '紧凑',
+    'comfortable' => '舒适',
+    'spacious' => '宽松',
+    'relaxed' => '宽松',
+    'reduced' => '减少',
+    'standard' => '标准',
+    'natural' => '自然',
+    'expressive' => '丰富',
+    _ => name,
+  };
 }
 
 String _hapticsLabel(HapticsMode mode) {
   return switch (mode) {
-    HapticsMode.off => 'Off',
-    HapticsMode.keyActions => 'Key actions',
-    HapticsMode.rich => 'Rich',
+    HapticsMode.off => '关闭',
+    HapticsMode.keyActions => '关键操作',
+    HapticsMode.rich => '丰富',
   };
 }

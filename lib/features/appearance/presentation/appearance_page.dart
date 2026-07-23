@@ -20,37 +20,50 @@ class AppearancePage extends ConsumerWidget {
   const AppearancePage({
     super.key,
     this.embedded = false,
+    this.onBeforeChange,
   });
 
   final bool embedded;
+  final VoidCallback? onBeforeChange;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(appearanceControllerProvider);
+    final previous = state.valueOrNull;
+    if (previous != null) {
+      return _buildLoaded(context, ref, previous);
+    }
     return state.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => Center(
-        child: Text('Appearance settings could not be loaded: $error'),
+        child: Text('外观设置加载失败：$error'),
       ),
-      data: (appearance) {
-        final content = _AppearanceContent(
-          state: appearance,
-          ref: ref,
-        );
-        if (embedded) {
-          return content;
-        }
-        return SingleChildScrollView(
-          key: const Key('appearance-list'),
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 860),
-              child: content,
-            ),
-          ),
-        );
-      },
+      data: (appearance) => _buildLoaded(context, ref, appearance),
+    );
+  }
+
+  Widget _buildLoaded(
+    BuildContext context,
+    WidgetRef ref,
+    AppearanceState appearance,
+  ) {
+    final content = _AppearanceContent(
+      state: appearance,
+      ref: ref,
+      onBeforeChange: onBeforeChange,
+    );
+    if (embedded) {
+      return content;
+    }
+    return SingleChildScrollView(
+      key: const Key('appearance-list'),
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 860),
+          child: content,
+        ),
+      ),
     );
   }
 }
@@ -59,10 +72,12 @@ class _AppearanceContent extends StatelessWidget {
   const _AppearanceContent({
     required this.state,
     required this.ref,
+    required this.onBeforeChange,
   });
 
   final AppearanceState state;
   final WidgetRef ref;
+  final VoidCallback? onBeforeChange;
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +103,26 @@ class _AppearanceContent extends StatelessWidget {
                 portable.background.color ?? portable.lastPureBackground,
             notePaper: portable.notePaper,
             customColors: state.customColors,
-            onApplyColor: (target, color) =>
-                _applyColor(controller, target, color),
-            onSaveCustomColor: (name, color) =>
-                controller.addCustomColor(name: name, color: color),
-            onRenameCustomColor: controller.renameCustomColor,
-            onReorderCustomColors: controller.reorderCustomColors,
-            onDeleteCustomColor: controller.deleteCustomColor,
+            onApplyColor: (target, color) {
+              onBeforeChange?.call();
+              return _applyColor(controller, target, color);
+            },
+            onSaveCustomColor: (name, color) {
+              onBeforeChange?.call();
+              return controller.addCustomColor(name: name, color: color);
+            },
+            onRenameCustomColor: (id, name) {
+              onBeforeChange?.call();
+              return controller.renameCustomColor(id, name);
+            },
+            onReorderCustomColors: (ids) {
+              onBeforeChange?.call();
+              return controller.reorderCustomColors(ids);
+            },
+            onDeleteCustomColor: (id) {
+              onBeforeChange?.call();
+              return controller.deleteCustomColor(id);
+            },
             onExtractColors: () => _extractColors(ref),
           ),
         ),
@@ -110,17 +138,38 @@ class _AppearanceContent extends StatelessWidget {
             warning: warning,
             imageProviders: catalog?.imageProviders ?? const {},
             unavailableImageIds: catalog?.unavailableImageIds ?? const {},
-            onSelectBundled: (assetPath) => _selectPortableBackground(
-              controller,
-              BackgroundSelection.bundledImage(assetPath),
-            ),
-            onImportImage: (source, syncEnabled) => _importBackground(
-              ref,
-              controller,
-              source,
-              syncEnabled,
-            ),
-            onPresentationChanged: controller.setBackgroundPresentation,
+            onSelectBundled: (assetPath) {
+              onBeforeChange?.call();
+              _selectPortableBackground(
+                controller,
+                BackgroundSelection.bundledImage(assetPath),
+              );
+            },
+            onImportImage: (source, syncEnabled) {
+              onBeforeChange?.call();
+              return _importBackground(
+                ref,
+                controller,
+                source,
+                syncEnabled,
+              );
+            },
+            onPresentationChanged: ({
+              required focusX,
+              required focusY,
+              required zoom,
+              required blur,
+              required overlay,
+            }) {
+              onBeforeChange?.call();
+              return controller.setBackgroundPresentation(
+                focusX: focusX,
+                focusY: focusY,
+                zoom: zoom,
+                blur: blur,
+                overlay: overlay,
+              );
+            },
           ),
         ),
         const SizedBox(height: 20),
@@ -129,7 +178,10 @@ class _AppearanceContent extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: TypographySettingsSection(
             typography: portable.typography,
-            onChanged: controller.setTypography,
+            onChanged: (value) {
+              onBeforeChange?.call();
+              controller.setTypography(value);
+            },
           ),
         ),
         const SizedBox(height: 20),
@@ -140,13 +192,34 @@ class _AppearanceContent extends StatelessWidget {
             settings: portable,
             profile: profile,
             platform: profile.platform,
-            onTintChanged: controller.setTintStrength,
-            onGlassChanged: controller.setGlassOpacity,
-            onDarkOverlayChanged: controller.setDarkOverlay,
-            onDensityChanged: controller.setDensity,
-            onMotionChanged: controller.setMotion,
-            onHapticsChanged: controller.setHaptics,
-            onBrightnessChanged: controller.setBrightnessMode,
+            onTintChanged: (value) {
+              onBeforeChange?.call();
+              controller.setTintStrength(value);
+            },
+            onGlassChanged: (value) {
+              onBeforeChange?.call();
+              controller.setGlassOpacity(value);
+            },
+            onDarkOverlayChanged: (value) {
+              onBeforeChange?.call();
+              controller.setDarkOverlay(value);
+            },
+            onDensityChanged: (value) {
+              onBeforeChange?.call();
+              controller.setDensity(value);
+            },
+            onMotionChanged: (value) {
+              onBeforeChange?.call();
+              controller.setMotion(value);
+            },
+            onHapticsChanged: (value) {
+              onBeforeChange?.call();
+              controller.setHaptics(value);
+            },
+            onBrightnessChanged: (value) {
+              onBeforeChange?.call();
+              controller.setBrightnessMode(value);
+            },
           ),
         ),
         const SizedBox(height: 20),

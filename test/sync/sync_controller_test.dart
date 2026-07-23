@@ -59,7 +59,7 @@ void main() {
     expect(container.read(syncControllerProvider).status, SyncStatus.error);
     expect(
       container.read(syncControllerProvider).errorMessage,
-      contains('V2 同步将在 Phase 4 启用'),
+      contains('V2 同步将在第四阶段启用'),
     );
     expect(container.read(syncControllerProvider).isServerRunning, isFalse);
 
@@ -67,7 +67,7 @@ void main() {
     expect(container.read(syncControllerProvider).status, SyncStatus.error);
     expect(
       container.read(syncControllerProvider).errorMessage,
-      contains('V2 同步将在 Phase 4 启用'),
+      contains('V2 同步将在第四阶段启用'),
     );
   });
 }

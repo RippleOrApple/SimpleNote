@@ -264,7 +264,7 @@ final class AppearanceController extends AsyncNotifier<AppearanceState> {
   AppearanceState _requireState() {
     final current = state.valueOrNull;
     if (current == null) {
-      throw StateError('Appearance settings are not loaded.');
+      throw StateError('外观设置尚未加载。');
     }
     return current;
   }

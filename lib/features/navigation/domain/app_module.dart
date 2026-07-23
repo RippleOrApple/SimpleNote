@@ -55,13 +55,13 @@ abstract final class AppModuleCatalog {
 
 extension AppModuleKeyX on AppModuleKey {
   String get label => switch (this) {
-        AppModuleKey.today => 'Today',
-        AppModuleKey.calendar => 'Calendar',
-        AppModuleKey.habits => 'Habits',
-        AppModuleKey.notes => 'Notes',
-        AppModuleKey.statistics => 'Statistics',
-        AppModuleKey.settings => 'Settings',
-        AppModuleKey.more => 'More',
+        AppModuleKey.today => '今天',
+        AppModuleKey.calendar => '日历',
+        AppModuleKey.habits => '习惯',
+        AppModuleKey.notes => '笔记',
+        AppModuleKey.statistics => '统计',
+        AppModuleKey.settings => '设置',
+        AppModuleKey.more => '更多',
       };
 
   static AppModuleKey? tryParse(String value) {

@@ -30,7 +30,7 @@ class HabitSchedule {
     required int anchorDay,
   }) {
     if (everyDays < 1) {
-      throw const FormatException('everyDays must be positive.');
+      throw const FormatException('everyDays 必须是正数。');
     }
     return HabitSchedule._(
       type: HabitScheduleType.interval,
@@ -96,29 +96,29 @@ class HabitSchedule {
 
 void _validateWeekdays(Set<int> weekdays) {
   if (weekdays.isEmpty) {
-    throw const FormatException('weekly schedules need at least one day.');
+    throw const FormatException('每周计划至少需要选择一天。');
   }
   for (final day in weekdays) {
     if (day < 1 || day > 7) {
-      throw const FormatException('weekday must be between 1 and 7.');
+      throw const FormatException('weekday 必须在 1 到 7 之间。');
     }
   }
 }
 
 Set<int> _intSet(Object? value) {
   if (value is! List) {
-    throw const FormatException('weekdays must be a list.');
+    throw const FormatException('weekdays 必须是列表。');
   }
   return {
     for (final item in value)
-      if (item is int) item else throw const FormatException('bad weekday.'),
+      if (item is int) item else throw const FormatException('weekday 无效。'),
   };
 }
 
 int _requiredInt(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! int) {
-    throw FormatException('$key must be an integer.');
+    throw FormatException('$key 必须是整数。');
   }
   return value;
 }

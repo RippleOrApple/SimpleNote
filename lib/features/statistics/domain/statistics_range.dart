@@ -54,9 +54,9 @@ class StatisticsRange {
   final int before;
 
   String get label => switch (kind) {
-        StatisticsRangeKind.week => 'This week',
-        StatisticsRangeKind.month => 'This month',
-        StatisticsRangeKind.year => 'This year',
+        StatisticsRangeKind.week => '本周',
+        StatisticsRangeKind.month => '本月',
+        StatisticsRangeKind.year => '本年',
       };
 
   @override

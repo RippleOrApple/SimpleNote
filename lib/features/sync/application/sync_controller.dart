@@ -25,7 +25,7 @@ final syncControllerProvider =
   );
 });
 
-const legacySyncUpgradeMessage = 'V2 同步将在 Phase 4 启用；当前版本不会启动旧同步协议。';
+const legacySyncUpgradeMessage = 'V2 同步将在第四阶段启用；当前版本不会启动旧同步协议。';
 
 class SyncState {
   const SyncState({

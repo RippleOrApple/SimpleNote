@@ -16,7 +16,7 @@ class StatisticsPage extends ConsumerWidget {
     return statistics.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => Center(
-        child: Text('Statistics failed to load: $error'),
+        child: Text('统计加载失败：$error'),
       ),
       data: (state) => Material(
         child: _StatisticsContent(
@@ -51,7 +51,7 @@ class _StatisticsContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Statistics',
+                    '统计',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 4),
@@ -64,7 +64,7 @@ class _StatisticsContent extends StatelessWidget {
             ),
             IconButton(
               key: const Key('statistics-refresh-button'),
-              tooltip: 'Refresh statistics',
+              tooltip: '刷新统计',
               onPressed: () => unawaited(
                 controller.selectRange(state.range.kind),
               ),
@@ -81,17 +81,17 @@ class _StatisticsContent extends StatelessWidget {
           segments: const [
             ButtonSegment(
               value: StatisticsRangeKind.week,
-              label: Text('Week', key: Key('statistics-range-week')),
+              label: Text('本周', key: Key('statistics-range-week')),
               icon: Icon(Icons.view_week_outlined),
             ),
             ButtonSegment(
               value: StatisticsRangeKind.month,
-              label: Text('Month', key: Key('statistics-range-month')),
+              label: Text('本月', key: Key('statistics-range-month')),
               icon: Icon(Icons.calendar_month_outlined),
             ),
             ButtonSegment(
               value: StatisticsRangeKind.year,
-              label: Text('Year', key: Key('statistics-range-year')),
+              label: Text('本年', key: Key('statistics-range-year')),
               icon: Icon(Icons.event_available_outlined),
             ),
           ],
@@ -103,27 +103,27 @@ class _StatisticsContent extends StatelessWidget {
           children: [
             _MetricTile(
               key: const Key('statistics-task-completions'),
-              label: 'Task completions',
+              label: '任务完成',
               value: '${summary.taskCompletions}',
             ),
             _MetricTile(
               key: const Key('statistics-habit-checkins'),
-              label: 'Habit checkins',
+              label: '习惯打卡',
               value: '${summary.habitCheckins}',
             ),
             _MetricTile(
               key: const Key('statistics-habit-completion'),
-              label: 'Habit completion',
+              label: '习惯完成率',
               value: _percent(summary.habitCompletionRate),
             ),
             _MetricTile(
               key: const Key('statistics-current-streak'),
-              label: 'Current streak',
+              label: '当前连续',
               value: '${summary.currentHabitStreak}',
             ),
             _MetricTile(
               key: const Key('statistics-longest-streak'),
-              label: 'Longest streak',
+              label: '最长连续',
               value: '${summary.longestHabitStreak}',
             ),
           ],
@@ -188,11 +188,11 @@ class _SummaryBand extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Range overview', style: textTheme.titleMedium),
+            Text('范围概览', style: textTheme.titleMedium),
             const SizedBox(height: 8),
             Text(
-              'Planned habit days: ${summary.habitPlannedDays}  ·  '
-              'Completed habit days: ${summary.habitCompletedDays}',
+              '计划习惯天数：${summary.habitPlannedDays}  ·  '
+              '完成习惯天数：${summary.habitCompletedDays}',
               style: textTheme.bodyMedium,
             ),
           ],

@@ -13,13 +13,13 @@ final class RgbColor {
       if (segments.length != 3 ||
           segments.any((segment) => !decimal.hasMatch(segment))) {
         throw const FormatException(
-          'RGB must contain three values from 0 to 255.',
+          'RGB 必须包含 3 个 0 到 255 之间的数值。',
         );
       }
       final parts = segments.map(int.parse).toList();
       if (parts.length != 3 || parts.any((part) => part < 0 || part > 255)) {
         throw const FormatException(
-          'RGB must contain three values from 0 to 255.',
+          'RGB 必须包含 3 个 0 到 255 之间的数值。',
         );
       }
       return RgbColor((parts[0] << 16) | (parts[1] << 8) | parts[2]);
@@ -27,7 +27,7 @@ final class RgbColor {
     final match = RegExp(r'^#?([0-9a-fA-F]{6})$').firstMatch(value);
     if (match == null) {
       throw const FormatException(
-        'HEX must contain exactly six hexadecimal digits.',
+        'HEX 必须正好包含 6 位十六进制字符。',
       );
     }
     return RgbColor(int.parse(match.group(1)!, radix: 16));

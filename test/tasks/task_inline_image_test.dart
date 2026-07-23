@@ -112,7 +112,7 @@ void main() {
     final state = await harness.state;
     expect(
       state.selectedTask!.descriptionMarkdown,
-      matches(r'^!\[recovered image\]\(attachment://[^)]+\)$'),
+      matches(r'^!\[恢复的图片\]\(attachment://[^)]+\)$'),
     );
     expect(state.saveStatus, TaskSaveStatus.saved);
   });

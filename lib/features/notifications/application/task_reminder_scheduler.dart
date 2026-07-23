@@ -60,7 +60,7 @@ class TaskReminderScheduler {
     return LocalNotificationRequest(
       id: notificationIdFor(schedule.reminder.id),
       title: schedule.task.title,
-      body: 'Task reminder',
+      body: '任务提醒',
       scheduledAt: schedule.fireAt,
       payload: {
         'taskId': schedule.task.id,

@@ -18,19 +18,19 @@ class TypographySettingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Typography', style: Theme.of(context).textTheme.titleLarge),
+        Text('字体', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 10),
         const ListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text('Interface: Resource Han Rounded CN'),
+          title: Text('界面字体：Resource Han Rounded CN'),
           subtitle: Text(
-            'Noto Sans SC is used as a fallback. Notes use LXGW WenKai.',
+            'Noto Sans SC 作为后备字体。笔记正文使用 LXGW WenKai。',
           ),
         ),
         DropdownButtonFormField<UiScale>(
           key: const Key('appearance-ui-scale'),
           initialValue: typography.uiScale,
-          decoration: const InputDecoration(labelText: 'Interface scale'),
+          decoration: const InputDecoration(labelText: '界面缩放'),
           items: [
             for (final scale in UiScale.values)
               DropdownMenuItem(
@@ -46,7 +46,7 @@ class TypographySettingsSection extends StatelessWidget {
         ),
         _TypographySlider(
           key: const Key('appearance-note-size-slider'),
-          label: 'Note size',
+          label: '笔记字号',
           value: typography.noteFontSize,
           min: 14,
           max: 28,
@@ -56,7 +56,7 @@ class TypographySettingsSection extends StatelessWidget {
         ),
         _TypographySlider(
           key: const Key('appearance-note-line-height-slider'),
-          label: 'Line height',
+          label: '行高',
           value: typography.noteLineHeight,
           min: 1.3,
           max: 2.2,
@@ -105,5 +105,10 @@ class _TypographySlider extends StatelessWidget {
 }
 
 String _label(String name) {
-  return '${name[0].toUpperCase()}${name.substring(1)}';
+  return switch (name) {
+    'small' => '小',
+    'medium' => '中',
+    'large' => '大',
+    _ => name,
+  };
 }

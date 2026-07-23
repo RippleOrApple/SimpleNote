@@ -19,12 +19,12 @@ void main() {
 
     expect(find.byType(StatisticsPage), findsOneWidget);
     expect(
-      find.text('Statistics module is planned for a later phase.'),
+      find.text('统计模块将在后续阶段完成。'),
       findsNothing,
     );
-    expect(find.text('Task completions'), findsOneWidget);
-    expect(find.text('Habit checkins'), findsOneWidget);
-    expect(find.text('Habit completion'), findsOneWidget);
+    expect(find.text('任务完成'), findsOneWidget);
+    expect(find.text('习惯打卡'), findsOneWidget);
+    expect(find.text('习惯完成率'), findsOneWidget);
     expect(find.text('1'), findsWidgets);
   });
 
@@ -37,11 +37,11 @@ void main() {
 
     await tester.tap(find.byKey(const Key('statistics-range-week')));
     await tester.pumpAndSettle();
-    expect(find.text('This week'), findsWidgets);
+    expect(find.text('本周'), findsWidgets);
 
     await tester.tap(find.byKey(const Key('statistics-range-year')));
     await tester.pumpAndSettle();
-    expect(find.text('This year'), findsWidgets);
+    expect(find.text('本年'), findsWidgets);
   });
 }
 

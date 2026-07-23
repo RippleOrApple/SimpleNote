@@ -16,7 +16,7 @@ final class AttachmentFileStore {
       throw ArgumentError.value(
         rootDirectory.path,
         'rootDirectory',
-        'Must be an absolute application-support directory.',
+        '必须是绝对路径的应用支持目录。',
       );
     }
   }
@@ -30,14 +30,14 @@ final class AttachmentFileStore {
     final reportedLength = await input.length();
     if (reportedLength > maxByteSize) {
       throw FileSystemException(
-        'Attachment exceeds the 20 MB limit.',
+        '附件超过 20 MB 限制。',
         input.name,
       );
     }
     final bytes = await input.readAsBytes();
     if (bytes.length > maxByteSize) {
       throw FileSystemException(
-        'Attachment exceeds the 20 MB limit.',
+        '附件超过 20 MB 限制。',
         input.name,
       );
     }
@@ -67,7 +67,7 @@ final class AttachmentFileStore {
     try {
       decoder = img.findDecoderForData(bytes);
     } catch (error) {
-      throw FormatException('Image data could not be decoded: $error');
+      throw FormatException('图片数据无法解码：$error');
     }
     final format = switch (decoder?.format) {
       img.ImageFormat.jpg => const _AttachmentFormat('image/jpeg', 'jpg'),
@@ -77,13 +77,13 @@ final class AttachmentFileStore {
     };
     if (decoder == null || format == null) {
       throw const FormatException(
-        'Only decodable JPEG, PNG, and WebP images are supported.',
+        '仅支持可解码的 JPEG、PNG 和 WebP 图片。',
       );
     }
     try {
       final image = decoder.decode(bytes);
       if (image == null) {
-        throw const FormatException('Image data could not be decoded.');
+        throw const FormatException('图片数据无法解码。');
       }
       return _DecodedAttachment(
         image,
@@ -93,7 +93,7 @@ final class AttachmentFileStore {
     } on FormatException {
       rethrow;
     } catch (error) {
-      throw FormatException('Image data could not be decoded: $error');
+      throw FormatException('图片数据无法解码：$error');
     }
   }
 

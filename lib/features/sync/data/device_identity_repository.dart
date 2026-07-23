@@ -50,7 +50,7 @@ final class DeviceIdentityRepository {
 
       final generated = _createId().trim();
       if (generated.isEmpty) {
-        throw StateError('The device ID generator returned a blank value.');
+        throw StateError('设备 ID 生成器返回了空值。');
       }
       final created = DeviceInfo(
         deviceId: 'local-$generated',
@@ -92,13 +92,13 @@ final class DeviceIdentityRepository {
 String _requiredString(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! String || value.trim().isEmpty) {
-    throw FormatException('$key must be a non-blank string.');
+    throw FormatException('$key 必须是非空字符串。');
   }
   return value.trim();
 }
 
 void _requireNonBlank(String value, String name) {
   if (value.trim().isEmpty) {
-    throw ArgumentError.value(value, name, 'Must not be blank.');
+    throw ArgumentError.value(value, name, '不能为空。');
   }
 }

@@ -465,7 +465,7 @@ class _ReminderSection extends StatelessWidget {
     final anchor = task.dueAt ?? task.startAt;
     return InputDecorator(
       key: const Key('task-reminders-section'),
-      decoration: const InputDecoration(labelText: 'Reminders'),
+      decoration: const InputDecoration(labelText: '提醒'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -485,7 +485,7 @@ class _ReminderSection extends StatelessWidget {
                 ),
               if (reminders.isEmpty)
                 Text(
-                  'No reminders',
+                  '暂无提醒',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
             ],
@@ -494,7 +494,7 @@ class _ReminderSection extends StatelessWidget {
           PopupMenuButton<int>(
             key: const Key('task-add-reminder'),
             enabled: anchor != null,
-            tooltip: 'Add reminder',
+            tooltip: '添加提醒',
             onSelected: (value) {
               if (value == 0) {
                 controller.createAbsoluteTaskReminder(
@@ -512,23 +512,23 @@ class _ReminderSection extends StatelessWidget {
               PopupMenuItem(
                 key: Key('task-reminder-absolute'),
                 value: 0,
-                child: Text('At task time'),
+                child: Text('任务时间'),
               ),
               PopupMenuItem(
                 key: Key('task-reminder-relative-10'),
                 value: -10,
-                child: Text('10 minutes before'),
+                child: Text('提前 10 分钟'),
               ),
               PopupMenuItem(
                 key: Key('task-reminder-relative-60'),
                 value: -60,
-                child: Text('1 hour before'),
+                child: Text('提前 1 小时'),
               ),
             ],
             child: TextButton.icon(
               onPressed: null,
               icon: const Icon(Icons.add_alert_outlined),
-              label: Text(anchor == null ? 'Set a time first' : 'Add reminder'),
+              label: Text(anchor == null ? '请先设置时间' : '添加提醒'),
             ),
           ),
         ],
@@ -632,8 +632,9 @@ String _reminderLabel(TaskReminder reminder) {
     return '$month/$day $hour:$minute';
   }
   final offset = reminder.offsetMinutes ?? 0;
-  if (offset == 0) return 'At task time';
+  if (offset == 0) return '任务时间';
   final abs = offset.abs();
-  final unit = abs == 1 ? 'minute' : 'minutes';
-  return offset < 0 ? '$abs $unit before' : '$abs $unit after';
+  final unit = abs >= 60 && abs % 60 == 0 ? '小时' : '分钟';
+  final value = unit == '小时' ? abs ~/ 60 : abs;
+  return offset < 0 ? '提前 $value $unit' : '$value $unit后';
 }

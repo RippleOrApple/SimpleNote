@@ -131,10 +131,10 @@ class TasksState {
 
 class TasksController extends AsyncNotifier<TasksState> {
   static const sources = [
-    TaskSource(key: BuiltInTaskSource.inbox, label: 'Inbox'),
-    TaskSource(key: BuiltInTaskSource.today, label: 'Today'),
-    TaskSource(key: BuiltInTaskSource.nextSevenDays, label: 'Next 7 days'),
-    TaskSource(key: BuiltInTaskSource.all, label: 'All tasks'),
+    TaskSource(key: BuiltInTaskSource.inbox, label: '收集箱'),
+    TaskSource(key: BuiltInTaskSource.today, label: '今天'),
+    TaskSource(key: BuiltInTaskSource.nextSevenDays, label: '未来 7 天'),
+    TaskSource(key: BuiltInTaskSource.all, label: '全部任务'),
   ];
 
   late TasksRepository _repository;
@@ -860,7 +860,7 @@ class TasksController extends AsyncNotifier<TasksState> {
 
 String _recoveredImageAlt(XFile file) {
   final name = file.name.trim();
-  return name.isEmpty ? 'recovered image' : name;
+  return name.isEmpty ? '恢复的图片' : name;
 }
 
 T? _findById<T>(Iterable<T> values, String id) {

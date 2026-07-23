@@ -20,7 +20,7 @@ class HabitsPage extends ConsumerWidget {
     final state = ref.watch(habitsControllerProvider);
     return state.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Center(child: Text('Habits failed to load: $error')),
+      error: (error, _) => Center(child: Text('习惯加载失败：$error')),
       data: (value) => Material(
         child: _HabitsWorkspace(
           state: value,
@@ -90,13 +90,13 @@ class _HabitListPane extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Habits',
+                  '习惯',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
               IconButton(
                 key: const Key('habit-create-button'),
-                tooltip: 'Create habit',
+                tooltip: '创建习惯',
                 onPressed: () => _createQuickHabit(context),
                 icon: const Icon(Icons.add_rounded),
               ),
@@ -106,7 +106,7 @@ class _HabitListPane extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
           child: Text(
-            '${state.todayHabits.length} planned today',
+            '今天计划 ${state.todayHabits.length} 个习惯',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
@@ -115,9 +115,9 @@ class _HabitListPane extends StatelessWidget {
           child: state.habits.isEmpty
               ? EmptyState(
                   icon: Icons.check_circle_outline_rounded,
-                  title: 'No habits yet',
-                  message: 'Create a daily habit to start tracking today.',
-                  actionLabel: 'Create',
+                  title: '还没有习惯',
+                  message: '创建一个每日习惯，从今天开始记录。',
+                  actionLabel: '创建',
                   onActionPressed: () => _createQuickHabit(context),
                 )
               : ListView.builder(
@@ -140,7 +140,7 @@ class _HabitListPane extends StatelessWidget {
 
   void _createQuickHabit(BuildContext context) {
     unawaited(controller.createHabit(
-      name: 'New habit',
+      name: '新习惯',
       prompt: '',
       iconKey: 'sparkle',
       color: Theme.of(context).colorScheme.primary.toARGB32() & 0xFFFFFF,
@@ -178,7 +178,7 @@ class _HabitRow extends StatelessWidget {
         ),
         title: Text(habit.name, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Text(
-          checked ? 'Checked in today' : _scheduleLabel(habit.schedule),
+          checked ? '今天已打卡' : _scheduleLabel(habit.schedule),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -207,8 +207,8 @@ class _HabitDetailPane extends StatelessWidget {
       return const EmptyState(
         key: Key('habit-detail-pane'),
         icon: Icons.spa_outlined,
-        title: 'Select a habit',
-        message: 'Pick a habit to view today, streaks, and recent checkins.',
+        title: '选择一个习惯',
+        message: '选择习惯后查看今日状态、连续周期和最近打卡。',
       );
     }
     final checked = state.isCheckedInToday(habit.id);
@@ -223,7 +223,7 @@ class _HabitDetailPane extends StatelessWidget {
             if (onBack != null)
               IconButton(
                 key: const Key('habit-detail-back'),
-                tooltip: 'Back',
+                tooltip: '返回',
                 onPressed: onBack,
                 icon: const Icon(Icons.arrow_back_rounded),
               ),
@@ -235,13 +235,13 @@ class _HabitDetailPane extends StatelessWidget {
             ),
             IconButton(
               key: const Key('habit-edit-button'),
-              tooltip: 'Edit habit',
+              tooltip: '编辑习惯',
               onPressed: () => _renameHabit(context, habit),
               icon: const Icon(Icons.edit_outlined),
             ),
             IconButton(
               key: const Key('habit-archive-button'),
-              tooltip: habit.archived ? 'Unarchive habit' : 'Archive habit',
+              tooltip: habit.archived ? '取消归档习惯' : '归档习惯',
               onPressed: () => controller.archiveHabit(
                 habit.id,
                 archived: !habit.archived,
@@ -254,7 +254,7 @@ class _HabitDetailPane extends StatelessWidget {
             ),
             IconButton(
               key: const Key('habit-delete-button'),
-              tooltip: 'Delete habit',
+              tooltip: '删除习惯',
               onPressed: () => controller.deleteHabit(habit.id),
               icon: const Icon(Icons.delete_outline_rounded),
             ),
@@ -276,7 +276,7 @@ class _HabitDetailPane extends StatelessWidget {
                 ? Icons.remove_done_outlined
                 : Icons.check_circle_outline_rounded,
           ),
-          label: Text(checked ? 'Checked in today' : 'Check in today'),
+          label: Text(checked ? '今天已打卡' : '今天打卡'),
         ),
         const SizedBox(height: 24),
         Wrap(
@@ -284,25 +284,25 @@ class _HabitDetailPane extends StatelessWidget {
           runSpacing: 12,
           children: [
             _MetricTile(
-              label: 'Current streak',
+              label: '当前连续',
               value: '${statistics?.currentStreak ?? 0}',
             ),
             _MetricTile(
-              label: 'Longest streak',
+              label: '最长连续',
               value: '${statistics?.longestStreak ?? 0}',
             ),
             _MetricTile(
-              label: 'Completion',
+              label: '完成率',
               value: '${(((statistics?.completionRate ?? 0) * 100).round())}%',
             ),
           ],
         ),
         const SizedBox(height: 24),
-        Text('Recent checkins', style: Theme.of(context).textTheme.titleMedium),
+        Text('最近打卡', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         if (state.selectedCheckins.isEmpty)
           Text(
-            'No checkins yet',
+            '还没有打卡记录',
             style: Theme.of(context).textTheme.bodyMedium,
           )
         else
@@ -320,7 +320,7 @@ class _HabitDetailPane extends StatelessWidget {
   void _renameHabit(BuildContext context, Habit habit) {
     unawaited(controller.updateHabit(
       habit.id,
-      name: '${habit.name} updated',
+      name: '${habit.name} 已更新',
       prompt: habit.prompt,
       iconKey: habit.iconKey,
       color: habit.color,
@@ -362,10 +362,10 @@ class _MetricTile extends StatelessWidget {
 
 String _scheduleLabel(HabitSchedule schedule) {
   return switch (schedule.type) {
-    HabitScheduleType.daily => 'Every day',
-    HabitScheduleType.weekdays => 'Weekdays',
-    HabitScheduleType.weekly => 'Weekly',
-    HabitScheduleType.interval => 'Every ${schedule.everyDays} days',
+    HabitScheduleType.daily => '每天',
+    HabitScheduleType.weekdays => '工作日',
+    HabitScheduleType.weekly => '每周',
+    HabitScheduleType.interval => '每 ${schedule.everyDays} 天',
   };
 }
 

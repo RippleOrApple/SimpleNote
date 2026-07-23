@@ -128,7 +128,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const Key('app-background-warning')), findsOneWidget);
-    expect(warning, contains('unavailable'));
+    expect(warning, contains('不可用'));
 
     await tester.pumpWidget(
       MaterialApp(
@@ -147,7 +147,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('app-background-warning')), findsOneWidget);
-    expect(warning, contains('missing or damaged'));
+    expect(warning, contains('丢失或损坏'));
   });
 
   testWidgets('applies blur, zoom and overlays from appearance settings',

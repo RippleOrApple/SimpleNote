@@ -35,7 +35,7 @@ class DriftAttachmentsRepository implements AttachmentsRepository {
       throw ArgumentError.value(
         rootDirectory.path,
         'rootDirectory',
-        'Must be an absolute application-support directory.',
+        '必须是绝对路径的应用支持目录。',
       );
     }
   }
@@ -103,14 +103,14 @@ class DriftAttachmentsRepository implements AttachmentsRepository {
     return _database.transaction(() async {
       final row = await _database.attachmentsDao.findById(attachmentId);
       if (row == null || row.deletedAt != null) {
-        throw StateError('Attachment does not exist or is deleted.');
+        throw StateError('附件不存在或已删除。');
       }
       if (row.ownerType != owner.type.name || row.ownerId != owner.id) {
-        throw StateError('Attachment does not belong to the requested owner.');
+        throw StateError('附件不属于当前内容。');
       }
       final markdown = _removeAttachmentNode(currentMarkdown, attachmentId);
       if (markdown == currentMarkdown) {
-        throw StateError('Attachment Markdown node does not exist.');
+        throw StateError('正文中不存在对应的附件引用。');
       }
       await _updateOwnerMarkdown(
         owner,
@@ -135,8 +135,7 @@ class DriftAttachmentsRepository implements AttachmentsRepository {
       case AttachmentOwnerType.note:
         final note = await _database.notesDao.findById(owner.id);
         if (note == null || note.deletedAt != null) {
-          throw StateError(
-              'Attachment note owner does not exist or is deleted.');
+          throw StateError('附件所属笔记不存在或已删除。');
         }
         await _database.notesDao.upsertNote(NotesCompanion(
           id: Value(note.id),
@@ -152,8 +151,7 @@ class DriftAttachmentsRepository implements AttachmentsRepository {
       case AttachmentOwnerType.task:
         final task = await _database.tasksV2Dao.findById(owner.id);
         if (task == null || task.deletedAt != null) {
-          throw StateError(
-              'Attachment task owner does not exist or is deleted.');
+          throw StateError('附件所属任务不存在或已删除。');
         }
         await _database.tasksV2Dao.upsertTask(TasksV2Companion(
           id: Value(task.id),

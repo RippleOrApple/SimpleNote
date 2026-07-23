@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/app_shell_embed_scope.dart';
@@ -16,6 +17,9 @@ class SettingsPage extends ConsumerStatefulWidget {
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _themeNameController = TextEditingController();
+  final _scrollController = ScrollController();
+  double _lastScrollOffset = 0;
+  bool _restoreScheduled = false;
 
   static const _backgroundSwatches = [
     Color(0xFFF8F8F6),
@@ -36,18 +40,22 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   void dispose() {
     _themeNameController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final themeState = ref.watch(themeControllerProvider);
+    final previous = themeState.valueOrNull;
 
-    final content = themeState.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Center(child: Text('设置加载失败：$error')),
-      data: _buildContent,
-    );
+    final content = previous != null
+        ? _buildContent(previous)
+        : themeState.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => Center(child: Text('设置加载失败：$error')),
+            data: _buildContent,
+          );
     if (AppShellEmbedScope.maybeOf(context)) return content;
     return Scaffold(
       appBar: AppBar(title: const Text('设置')),
@@ -56,6 +64,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 
   Widget _buildContent(ThemeState state) {
+    _scheduleScrollRestore();
     final controller = ref.read(themeControllerProvider.notifier);
     final activeTheme = state.activeTheme;
 
@@ -63,140 +72,203 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       alignment: Alignment.topCenter,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 840),
-        child: ListView(
-          key: const Key('settings-list'),
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text('同步', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 12),
-            const SyncUpgradeNotice(),
-            const Divider(height: 36),
-            Text('主题', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 12),
-            _ThemePreview(theme: activeTheme),
-            const SizedBox(height: 20),
-            Text('预设主题', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final preset in AppThemeScheme.presets)
-                  ChoiceChip(
-                    label: Text(preset.name),
-                    selected: activeTheme.id == preset.id,
-                    onSelected: (_) => controller.applyTheme(preset),
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _rememberUserScrollOffset,
+          child: ListView(
+            controller: _scrollController,
+            key: const Key('settings-list'),
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text('同步', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              const SyncUpgradeNotice(),
+              const Divider(height: 36),
+              Text('主题', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              _ThemePreview(theme: activeTheme),
+              const SizedBox(height: 20),
+              Text('预设主题', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final preset in AppThemeScheme.presets)
+                    ChoiceChip(
+                      label: Text(preset.name),
+                      selected: activeTheme.id == preset.id,
+                      onSelected: (_) {
+                        _rememberCurrentScrollOffset();
+                        controller.applyTheme(preset);
+                      },
+                    ),
+                ],
+              ),
+              const Divider(height: 36),
+              Text('自定义', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 12),
+              _ColorSwatchRow(
+                keyPrefix: 'background',
+                label: '背景',
+                colors: _backgroundSwatches,
+                selectedColor: activeTheme.backgroundColor,
+                onSelected: (color) {
+                  _rememberCurrentScrollOffset();
+                  controller.updateDraft(backgroundColor: color);
+                },
+              ),
+              _ColorSwatchRow(
+                keyPrefix: 'primary',
+                label: '主按钮',
+                colors: _primarySwatches,
+                selectedColor: activeTheme.primaryColor,
+                onSelected: (color) {
+                  _rememberCurrentScrollOffset();
+                  controller.updateDraft(primaryColor: color);
+                },
+              ),
+              const Text(
+                '文字与面板颜色会根据强调色和背景自动生成，以保证安全对比度。',
+                key: Key('derived-colors-note'),
+              ),
+              const SizedBox(height: 8),
+              SegmentedButton<Brightness>(
+                segments: const [
+                  ButtonSegment(
+                    value: Brightness.light,
+                    icon: Icon(Icons.light_mode_outlined),
+                    label: Text('浅色'),
                   ),
-              ],
-            ),
-            const Divider(height: 36),
-            Text('自定义', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 12),
-            _ColorSwatchRow(
-              keyPrefix: 'background',
-              label: '背景',
-              colors: _backgroundSwatches,
-              selectedColor: activeTheme.backgroundColor,
-              onSelected: (color) =>
-                  controller.updateDraft(backgroundColor: color),
-            ),
-            _ColorSwatchRow(
-              keyPrefix: 'primary',
-              label: '主按钮',
-              colors: _primarySwatches,
-              selectedColor: activeTheme.primaryColor,
-              onSelected: (color) =>
-                  controller.updateDraft(primaryColor: color),
-            ),
-            const Text(
-              '文字与面板颜色会根据强调色和背景自动生成，以保证安全对比度。',
-              key: Key('derived-colors-note'),
-            ),
-            const SizedBox(height: 8),
-            SegmentedButton<Brightness>(
-              segments: const [
-                ButtonSegment(
-                  value: Brightness.light,
-                  icon: Icon(Icons.light_mode_outlined),
-                  label: Text('浅色'),
-                ),
-                ButtonSegment(
-                  value: Brightness.dark,
-                  icon: Icon(Icons.dark_mode_outlined),
-                  label: Text('深色'),
-                ),
-              ],
-              selected: {activeTheme.brightness},
-              onSelectionChanged: (values) =>
-                  controller.updateDraft(brightness: values.first),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    key: const Key('custom-theme-name-field'),
-                    controller: _themeNameController,
-                    decoration: const InputDecoration(
-                      labelText: '主题名称',
-                      border: OutlineInputBorder(),
+                  ButtonSegment(
+                    value: Brightness.dark,
+                    icon: Icon(Icons.dark_mode_outlined),
+                    label: Text('深色'),
+                  ),
+                ],
+                selected: {activeTheme.brightness},
+                onSelectionChanged: (values) {
+                  _rememberCurrentScrollOffset();
+                  controller.updateDraft(brightness: values.first);
+                },
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      key: const Key('custom-theme-name-field'),
+                      controller: _themeNameController,
+                      decoration: const InputDecoration(
+                        labelText: '主题名称',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton.icon(
-                  key: const Key('save-custom-theme-button'),
+                  const SizedBox(width: 8),
+                  FilledButton.icon(
+                    key: const Key('save-custom-theme-button'),
+                    onPressed: () {
+                      controller.saveCustomTheme(
+                        name: _themeNameController.text,
+                      );
+                      _themeNameController.clear();
+                    },
+                    icon: const Icon(Icons.save_outlined),
+                    label: const Text('保存'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: FilledButton.tonalIcon(
                   onPressed: () {
-                    controller.saveCustomTheme(
-                      name: _themeNameController.text,
-                    );
-                    _themeNameController.clear();
+                    _rememberCurrentScrollOffset();
+                    controller.restoreDefaultTheme();
                   },
-                  icon: const Icon(Icons.save_outlined),
-                  label: const Text('保存'),
+                  icon: const Icon(Icons.restart_alt),
+                  label: const Text('恢复默认主题'),
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: FilledButton.tonalIcon(
-                onPressed: controller.restoreDefaultTheme,
-                icon: const Icon(Icons.restart_alt),
-                label: const Text('恢复默认主题'),
               ),
-            ),
-            const Divider(height: 36),
-            Text('已保存主题', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            for (final savedTheme in state.savedThemes)
-              ListTile(
-                key: Key('saved-theme-${savedTheme.id}'),
-                leading: CircleAvatar(backgroundColor: savedTheme.primaryColor),
-                title: Text(savedTheme.name),
-                subtitle: Text(
-                  savedTheme.brightness == Brightness.dark ? '深色' : '浅色',
+              const Divider(height: 36),
+              Text('已保存主题', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              for (final savedTheme in state.savedThemes)
+                ListTile(
+                  key: Key('saved-theme-${savedTheme.id}'),
+                  leading:
+                      CircleAvatar(backgroundColor: savedTheme.primaryColor),
+                  title: Text(savedTheme.name),
+                  subtitle: Text(
+                    savedTheme.brightness == Brightness.dark ? '深色' : '浅色',
+                  ),
+                  selected: activeTheme.id == savedTheme.id,
+                  trailing: activeTheme.id == savedTheme.id
+                      ? const Icon(Icons.check_circle)
+                      : IconButton(
+                          tooltip: '应用 ${savedTheme.name}',
+                          onPressed: () {
+                            _rememberCurrentScrollOffset();
+                            controller.applyTheme(savedTheme);
+                          },
+                          icon: const Icon(Icons.check_circle_outline),
+                        ),
                 ),
-                selected: activeTheme.id == savedTheme.id,
-                trailing: activeTheme.id == savedTheme.id
-                    ? const Icon(Icons.check_circle)
-                    : IconButton(
-                        tooltip: '应用 ${savedTheme.name}',
-                        onPressed: () => controller.applyTheme(savedTheme),
-                        icon: const Icon(Icons.check_circle_outline),
-                      ),
+              const Divider(height: 36),
+              Text(
+                '外观 V2',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            const Divider(height: 36),
-            Text(
-              'Appearance V2',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            const AppearancePage(embedded: true),
-          ],
+              const SizedBox(height: 12),
+              AppearancePage(
+                embedded: true,
+                onBeforeChange: _rememberCurrentScrollOffset,
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  bool _rememberUserScrollOffset(ScrollNotification notification) {
+    if (notification.depth == 0 &&
+        notification is UserScrollNotification &&
+        notification.direction != ScrollDirection.idle) {
+      _lastScrollOffset = notification.metrics.pixels;
+    }
+    return false;
+  }
+
+  void _rememberCurrentScrollOffset() {
+    if (_scrollController.hasClients) {
+      _lastScrollOffset = _scrollController.position.pixels;
+    }
+    _scheduleScrollRestore(attempts: 6);
+  }
+
+  void _scheduleScrollRestore({int attempts = 1}) {
+    if (_restoreScheduled || _lastScrollOffset <= 0) {
+      return;
+    }
+    _restoreScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _restoreScheduled = false;
+      if (!mounted || !_scrollController.hasClients) {
+        return;
+      }
+      final position = _scrollController.position;
+      final target = _lastScrollOffset.clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      );
+      if ((position.pixels - target).abs() > 0.5) {
+        position.jumpTo(target);
+      }
+      if (attempts > 1) {
+        _scheduleScrollRestore(attempts: attempts - 1);
+      }
+    });
   }
 }
 

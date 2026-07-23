@@ -89,7 +89,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
 
       if (!AppearancePresets.accentColors.contains(accent)) {
         await _addCustomColor(
-          name: 'Imported color',
+          name: '导入的颜色',
           color: accent,
           now: Clock.nowMillis(),
           skipIfFull: true,
@@ -150,7 +150,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
     return _database.transaction(() async {
       final row = await _database.appearanceDao.customColorById(id);
       if (row == null || row.deletedAt != null) {
-        throw StateError('Custom color not found: $id');
+        throw StateError('自定义颜色不存在：$id');
       }
       final renamed = _customColorFromRow(row).copyWith(
         name: name.trim(),
@@ -182,7 +182,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
         throw ArgumentError.value(
           orderedIds,
           'orderedIds',
-          'Must contain every active custom color exactly once.',
+          '必须且只能包含每个有效的自定义颜色一次。',
         );
       }
       final byId = {for (final entry in existing) entry.id: entry};
@@ -252,7 +252,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       throw ArgumentError.value(
         rootDirectory.path,
         'rootDirectory',
-        'Must be an absolute application-support directory.',
+        '必须是绝对路径的应用支持目录。',
       );
     }
     final rows = await _database.appearanceDao.activeBackgroundImages();
@@ -408,7 +408,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       if (skipIfFull) {
         return null;
       }
-      throw StateError('My Colors supports at most 24 colors.');
+      throw StateError('我的颜色最多支持 24 个。');
     }
     final custom = CustomColor(
       id: IdGenerator.create(),
@@ -431,7 +431,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
   ) async {
     final normalizedPlatform = platform.trim();
     if (normalizedPlatform.isEmpty) {
-      throw ArgumentError.value(platform, 'platform', 'Must not be blank.');
+      throw ArgumentError.value(platform, 'platform', '不能为空。');
     }
     final id = _profileId(normalizedPlatform);
     final row = await _database.appearanceDao.deviceProfileById(id);
@@ -559,7 +559,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       density: LayoutDensity.values.firstWhere(
         (value) => value.name == row.density,
         orElse: () => throw FormatException(
-          'Unknown LayoutDensity: ${row.density}.',
+          '未知布局密度：${row.density}。',
         ),
       ),
       navOrder: _decodeStringList(row.navOrderJson),
@@ -574,7 +574,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
       hapticsMode: HapticsMode.values.firstWhere(
         (value) => value.name == row.hapticsMode,
         orElse: () => throw FormatException(
-          'Unknown HapticsMode: ${row.hapticsMode}.',
+          '未知触感模式：${row.hapticsMode}。',
         ),
       ),
       updatedAt: row.updatedAt,
@@ -606,7 +606,7 @@ final class DriftAppearanceRepository implements AppearanceRepository {
   static List<String> _decodeStringList(String encoded) {
     final decoded = jsonDecode(encoded);
     if (decoded is! List || decoded.any((value) => value is! String)) {
-      throw const FormatException('Expected a JSON list of strings.');
+      throw const FormatException('预期为字符串 JSON 列表。');
     }
     return decoded.cast<String>();
   }

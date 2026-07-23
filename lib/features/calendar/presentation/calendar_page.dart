@@ -52,7 +52,7 @@ class _CalendarAgenda extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Calendar', style: textTheme.headlineSmall),
+                    Text('日历', style: textTheme.headlineSmall),
                     const SizedBox(height: 4),
                     Text(
                       '${_dateLabel(state.from)} - ${_dateLabel(state.before - 1)}',
@@ -158,8 +158,8 @@ class _CalendarDaySection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${day.taskCount} tasks · ${day.noteCount} notes · '
-                  '${day.habitCount} habits',
+                  '${day.taskCount} 个任务 · ${day.noteCount} 篇笔记 · '
+                  '${day.habitCount} 个习惯',
                   style: textTheme.labelMedium,
                 ),
               ],
@@ -268,6 +268,6 @@ String _dateLabel(int value) {
 
 String _fullDateLabel(int value) {
   final date = DateTime.fromMillisecondsSinceEpoch(value);
-  const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const weekdays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
   return '${date.year}/${date.month}/${date.day} ${weekdays[date.weekday - 1]}';
 }

@@ -110,7 +110,7 @@ final class CustomColor {
     } on FormatException {
       rethrow;
     } on ArgumentError catch (error) {
-      throw FormatException('Invalid custom color: $error');
+      throw FormatException('自定义颜色无效：$error');
     }
   }
 
@@ -144,20 +144,20 @@ final class CustomColor {
 
 void _requireNonBlank(String value, String name) {
   if (value.trim().isEmpty) {
-    throw ArgumentError.value(value, name, 'Must not be blank.');
+    throw ArgumentError.value(value, name, '不能为空。');
   }
 }
 
 void _requireAtLeast(int value, int minimum, String name) {
   if (value < minimum) {
-    throw ArgumentError.value(value, name, 'Must be at least $minimum.');
+    throw ArgumentError.value(value, name, '必须至少为 $minimum。');
   }
 }
 
 String _requiredString(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! String) {
-    throw FormatException('$key must be a string.');
+    throw FormatException('$key 必须是字符串。');
   }
   return value;
 }
@@ -165,7 +165,7 @@ String _requiredString(Map<String, Object?> json, String key) {
 int _requiredInt(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! int) {
-    throw FormatException('$key must be an integer.');
+    throw FormatException('$key 必须是整数。');
   }
   return value;
 }
@@ -173,7 +173,7 @@ int _requiredInt(Map<String, Object?> json, String key) {
 int? _optionalInt(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value != null && value is! int) {
-    throw FormatException('$key must be an integer or null.');
+    throw FormatException('$key 必须是整数或 null。');
   }
   return value as int?;
 }
@@ -181,7 +181,7 @@ int? _optionalInt(Map<String, Object?> json, String key) {
 RgbColor _requiredRgb(Map<String, Object?> json, String key) {
   final value = _requiredInt(json, key);
   if (value < 0 || value > 0xFFFFFF) {
-    throw FormatException('$key must be a 24-bit integer.');
+    throw FormatException('$key 必须是 24 位整数。');
   }
   return RgbColor(value);
 }

@@ -51,8 +51,7 @@ class AppBackground extends StatefulWidget {
     }
     if (unavailableImageIds.contains(imageId) ||
         !imageProviders.containsKey(imageId)) {
-      return 'The selected background image is unavailable. '
-          'The last solid background is being used.';
+      return '所选背景图片不可用，已改用上一次的纯色背景。';
     }
     return null;
   }
@@ -125,8 +124,7 @@ class _AppBackgroundState extends State<AppBackground> {
             fit: BoxFit.cover,
             alignment: _focus,
             errorBuilder: (_, __, ___) => _fallback(
-              'The bundled background could not be decoded. '
-              'The last solid background is being used.',
+              '内置背景图片无法解码，已改用上一次的纯色背景。',
             ),
           ),
         ),
@@ -143,8 +141,7 @@ class _AppBackgroundState extends State<AppBackground> {
         fit: BoxFit.cover,
         alignment: _focus,
         errorBuilder: (_, __, ___) => _fallback(
-          'The selected background file is missing or damaged. '
-          'The last solid background is being used.',
+          '所选背景文件丢失或损坏，已改用上一次的纯色背景。',
         ),
       ),
     );

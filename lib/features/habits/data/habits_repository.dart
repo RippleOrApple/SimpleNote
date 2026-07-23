@@ -140,7 +140,7 @@ class DriftHabitsRepository implements HabitsRepository {
   }) async {
     final habit = await findHabit(habitId);
     if (habit == null) {
-      throw StateError('Cannot check in a missing or deleted habit.');
+      throw StateError('无法为不存在或已删除的习惯打卡。');
     }
     final existing = await _activeCheckin(habitId, checkinDay);
     if (existing != null) return _fromCheckinRow(existing);
@@ -157,7 +157,7 @@ class DriftHabitsRepository implements HabitsRepository {
     await _database.into(_database.habitCheckins).insert(companion);
     final inserted = await _activeCheckin(habitId, checkinDay);
     if (inserted == null) {
-      throw StateError('Habit checkin was not persisted.');
+      throw StateError('习惯打卡未能保存。');
     }
     return _fromCheckinRow(inserted);
   }
@@ -221,7 +221,7 @@ class DriftHabitsRepository implements HabitsRepository {
     }
     final habit = await findHabit(habitId);
     if (habit == null) {
-      throw StateError('Cannot calculate statistics for a missing habit.');
+      throw StateError('无法为不存在的习惯计算统计。');
     }
     final checkins = await listCheckins(habitId);
     final completedDays = checkins.map((checkin) => checkin.checkinDay).toSet();

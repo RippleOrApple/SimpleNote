@@ -67,7 +67,7 @@ class Habit implements Syncable {
     final scheduleJson = json['scheduleJson'];
     final scheduleMap = scheduleJson is Map
         ? scheduleJson.cast<String, Object?>()
-        : throw const FormatException('scheduleJson must be an object.');
+        : throw const FormatException('scheduleJson 必须是对象。');
     return Habit(
       id: _requiredString(json, 'id'),
       name: _requiredString(json, 'name'),
@@ -91,12 +91,12 @@ class Habit implements Syncable {
 
 String _requiredString(Map<String, Object?> json, String key) {
   final value = json[key];
-  if (value is! String) throw FormatException('$key must be a string.');
+  if (value is! String) throw FormatException('$key 必须是字符串。');
   return value;
 }
 
 int _requiredInt(Map<String, Object?> json, String key) {
   final value = json[key];
-  if (value is! int) throw FormatException('$key must be an integer.');
+  if (value is! int) throw FormatException('$key 必须是整数。');
   return value;
 }

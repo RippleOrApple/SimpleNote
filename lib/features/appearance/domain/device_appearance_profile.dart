@@ -21,8 +21,7 @@ final class DeviceAppearanceProfile {
     _requireNonBlank(id, 'id');
     _requireNonBlank(platform, 'platform');
     if (updatedAt < 0) {
-      throw ArgumentError.value(
-          updatedAt, 'updatedAt', 'Must be non-negative.');
+      throw ArgumentError.value(updatedAt, 'updatedAt', '必须是非负数。');
     }
 
     final catalog = AppModuleCatalog.forPlatform(platform);
@@ -234,7 +233,7 @@ final class DeviceAppearanceProfile {
     } on FormatException {
       rethrow;
     } on ArgumentError catch (error) {
-      throw FormatException('Invalid device appearance profile: $error');
+      throw FormatException('设备外观配置无效：$error');
     }
   }
 
@@ -288,13 +287,13 @@ Set<String> _normalizeSet(Iterable<String> values) {
 
 void _requireNonBlank(String value, String name) {
   if (value.trim().isEmpty) {
-    throw ArgumentError.value(value, name, 'Must not be blank.');
+    throw ArgumentError.value(value, name, '不能为空。');
   }
 }
 
 double _clamp(double value, double minimum, double maximum, String name) {
   if (!value.isFinite) {
-    throw ArgumentError.value(value, name, 'Must be finite.');
+    throw ArgumentError.value(value, name, '必须是有限数值。');
   }
   return value.clamp(minimum, maximum).toDouble();
 }
@@ -302,7 +301,7 @@ double _clamp(double value, double minimum, double maximum, String name) {
 String _requiredString(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! String) {
-    throw FormatException('$key must be a string.');
+    throw FormatException('$key 必须是字符串。');
   }
   return value;
 }
@@ -310,7 +309,7 @@ String _requiredString(Map<String, Object?> json, String key) {
 String? _optionalString(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value != null && value is! String) {
-    throw FormatException('$key must be a string or null.');
+    throw FormatException('$key 必须是字符串或 null。');
   }
   return value as String?;
 }
@@ -318,7 +317,7 @@ String? _optionalString(Map<String, Object?> json, String key) {
 int _requiredInt(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! int) {
-    throw FormatException('$key must be an integer.');
+    throw FormatException('$key 必须是整数。');
   }
   return value;
 }
@@ -326,7 +325,7 @@ int _requiredInt(Map<String, Object?> json, String key) {
 double _requiredDouble(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! num || !value.isFinite) {
-    throw FormatException('$key must be a finite number.');
+    throw FormatException('$key 必须是有限数值。');
   }
   return value.toDouble();
 }
@@ -334,7 +333,7 @@ double _requiredDouble(Map<String, Object?> json, String key) {
 List<String> _requiredStringList(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! List || value.any((item) => item is! String)) {
-    throw FormatException('$key must be a list of strings.');
+    throw FormatException('$key 必须是字符串列表。');
   }
   return value.cast<String>();
 }
@@ -347,11 +346,11 @@ T _requiredEnum<T extends Enum>(
 ) {
   final value = json[key];
   if (value is! String) {
-    throw FormatException('$key must be a $typeName name.');
+    throw FormatException('$key 必须是 $typeName 名称。');
   }
   return values.firstWhere(
     (candidate) => candidate.name == value,
-    orElse: () => throw FormatException('Unknown $typeName: $value.'),
+    orElse: () => throw FormatException('未知 $typeName：$value。'),
   );
 }
 

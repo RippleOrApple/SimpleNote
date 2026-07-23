@@ -17,6 +17,7 @@ Thumbs.db
 # Local data
 *.sqlite
 *.db
+devtools_options.yaml
 
 # Local brainstorming artifacts
 .superpowers/

@@ -68,7 +68,7 @@ class DriftCalendarRepository implements CalendarRepository {
         sourceId: note.id,
         source: CalendarEntrySource.note,
         kind: CalendarEntryKind.noteCreated,
-        title: note.title.trim().isEmpty ? 'Untitled note' : note.title,
+        title: note.title.trim().isEmpty ? '未命名笔记' : note.title,
         scheduledAt: note.createdAt,
         dayStart: _dayStart(note.createdAt),
       ));

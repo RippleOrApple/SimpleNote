@@ -20,7 +20,7 @@ class TaskRecurrenceRule {
       if (trimmed.isEmpty) continue;
       final separator = trimmed.indexOf('=');
       if (separator <= 0 || separator == trimmed.length - 1) {
-        throw FormatException('Invalid recurrence field: $part');
+        throw FormatException('重复规则字段无效：$part');
       }
       fields[trimmed.substring(0, separator).trim().toUpperCase()] =
           trimmed.substring(separator + 1).trim().toUpperCase();
@@ -32,11 +32,11 @@ class TaskRecurrenceRule {
       'WEEKLY' => TaskRecurrenceFrequency.weekly,
       'MONTHLY' => TaskRecurrenceFrequency.monthly,
       'YEARLY' => TaskRecurrenceFrequency.yearly,
-      _ => throw const FormatException('Unsupported recurrence frequency.'),
+      _ => throw const FormatException('不支持的重复频率。'),
     };
     final interval = int.tryParse(fields['INTERVAL'] ?? '1');
     if (interval == null || interval < 1) {
-      throw const FormatException('Recurrence interval must be positive.');
+      throw const FormatException('重复间隔必须是正数。');
     }
     final weekdays = fields.containsKey('BYDAY')
         ? fields['BYDAY']!
@@ -46,7 +46,7 @@ class TaskRecurrenceRule {
         : const <int>{};
     if (weekdays.isNotEmpty && frequency != TaskRecurrenceFrequency.weekly) {
       throw const FormatException(
-        'BYDAY is only supported for weekly recurrence.',
+        'BYDAY 仅支持每周重复。',
       );
     }
 
@@ -116,7 +116,7 @@ TaskRecurrenceAdvance? advanceRecurringTask({
 
   final scheduledAt = task.dueAt ?? task.startAt;
   if (scheduledAt == null) {
-    throw const FormatException('A recurring task needs a start or due time.');
+    throw const FormatException('重复任务需要开始时间或截止时间。');
   }
 
   final rule = TaskRecurrenceRule.parse(ruleText);
@@ -162,7 +162,7 @@ int _parseWeekday(String value) {
     'FR' => DateTime.friday,
     'SA' => DateTime.saturday,
     'SU' => DateTime.sunday,
-    _ => throw FormatException('Invalid recurrence weekday: $value'),
+    _ => throw FormatException('重复规则星期无效：$value'),
   };
 }
 

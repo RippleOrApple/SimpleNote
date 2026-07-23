@@ -16,19 +16,19 @@ class NavigationSettingsSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Navigation', style: Theme.of(context).textTheme.titleMedium),
+        Text('导航', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
-        const Text('Choose the order, visibility, and default module.'),
+        const Text('调整顺序、显示状态和默认打开模块。'),
         const SizedBox(height: 12),
         _NavigationGroup(
-          title: 'Visible',
+          title: '显示',
           modules: visible,
           state: state,
           controller: controller,
         ),
         const SizedBox(height: 16),
         _NavigationGroup(
-          title: 'Hidden',
+          title: '隐藏',
           modules: hidden,
           state: state,
           controller: controller,
@@ -82,7 +82,7 @@ class _NavigationGroup extends StatelessWidget {
                 children: [
                   IconButton(
                     key: Key('nav-default-${module.name}'),
-                    tooltip: 'Set as default',
+                    tooltip: '设为默认',
                     onPressed: isHidden
                         ? null
                         : () => controller.setStartModule(module),
@@ -92,7 +92,7 @@ class _NavigationGroup extends StatelessWidget {
                   ),
                   IconButton(
                     key: Key('nav-hide-${module.name}'),
-                    tooltip: isHidden ? 'Show module' : 'Hide module',
+                    tooltip: isHidden ? '显示模块' : '隐藏模块',
                     onPressed: module == AppModuleKey.today
                         ? null
                         : () => controller.setHidden(module, !isHidden),

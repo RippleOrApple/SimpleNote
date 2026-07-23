@@ -14,13 +14,13 @@ final class PaletteExtractor {
     try {
       final image = img.decodeImage(bytes);
       if (image == null) {
-        throw const FormatException('Image data could not be decoded.');
+        throw const FormatException('图片数据无法解码。');
       }
       decoded = image;
     } on FormatException {
       rethrow;
     } catch (error) {
-      throw FormatException('Image data could not be decoded: $error');
+      throw FormatException('图片数据无法解码：$error');
     }
 
     final resized = _resize(decoded).convert(format: img.Format.uint8);

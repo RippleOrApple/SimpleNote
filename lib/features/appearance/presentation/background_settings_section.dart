@@ -79,7 +79,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Background', style: Theme.of(context).textTheme.titleLarge),
+        Text('背景', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
@@ -98,9 +98,9 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
         SwitchListTile(
           key: const Key('appearance-background-sync-switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text('Synchronize imported background'),
+          title: const Text('同步导入的背景'),
           subtitle: const Text(
-            'Off keeps the imported image only on this device.',
+            '关闭后，导入的图片只保存在当前设备。',
           ),
           value: _syncEnabled,
           onChanged: (value) => setState(() => _syncEnabled = value),
@@ -109,7 +109,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
           key: const Key('appearance-background-image-button'),
           onPressed: _importing ? null : _chooseImage,
           icon: const Icon(Icons.image_outlined),
-          label: Text(_importing ? 'Importing…' : 'Import background image'),
+          label: Text(_importing ? '正在导入...' : '导入背景图片'),
         ),
         if (widget.warning != null || _operationError != null)
           Padding(
@@ -122,7 +122,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
           ),
         const SizedBox(height: 16),
         Text(
-          'Crop focus',
+          '裁剪焦点',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
@@ -163,7 +163,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
                           ),
                           onDragEnd: _finishFocusDrag,
                           child: const Tooltip(
-                            message: 'Long-press and drag to set crop focus',
+                            message: '长按并拖动以设置裁剪焦点',
                             child: Icon(
                               Icons.control_camera,
                               size: 30,
@@ -180,7 +180,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
         ),
         _SettingSlider(
           key: const Key('appearance-background-zoom-slider'),
-          label: 'Zoom',
+          label: '缩放',
           value: profile.backgroundZoom,
           min: 0.5,
           max: 3,
@@ -188,7 +188,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
         ),
         _SettingSlider(
           key: const Key('appearance-background-blur-slider'),
-          label: 'Blur',
+          label: '模糊',
           value: profile.backgroundBlur,
           min: 0,
           max: 40,
@@ -196,7 +196,7 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
         ),
         _SettingSlider(
           key: const Key('appearance-background-overlay-slider'),
-          label: 'Overlay',
+          label: '遮罩',
           value: profile.backgroundOverlay,
           min: 0,
           max: 1,
@@ -217,21 +217,21 @@ class _BackgroundSettingsSectionState extends State<BackgroundSettingsSection> {
             children: [
               ListTile(
                 leading: const Icon(Icons.folder_open_outlined),
-                title: const Text('Choose a file'),
+                title: const Text('选择文件'),
                 onTap: () => Navigator.of(context).pop(
                   AppearanceImageSource.files,
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
-                title: const Text('Gallery'),
+                title: const Text('相册'),
                 onTap: () => Navigator.of(context).pop(
                   AppearanceImageSource.gallery,
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.camera_alt_outlined),
-                title: const Text('Camera'),
+                title: const Text('相机'),
                 onTap: () => Navigator.of(context).pop(
                   AppearanceImageSource.camera,
                 ),
@@ -338,8 +338,11 @@ class _SettingSlider extends StatelessWidget {
 }
 
 String _wallpaperLabel(String id) {
-  return id
-      .split('-')
-      .map((part) => '${part[0].toUpperCase()}${part.substring(1)}')
-      .join(' ');
+  return switch (id) {
+    'mist-morning' => '薄雾清晨',
+    'eucalyptus-valley' => '桉树山谷',
+    'berry-dusk' => '莓果黄昏',
+    'lavender-moon' => '薰衣草月夜',
+    _ => id,
+  };
 }

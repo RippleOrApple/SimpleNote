@@ -57,10 +57,10 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Colors', style: Theme.of(context).textTheme.titleLarge),
+        Text('颜色', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 12),
         _PresetRow(
-          title: 'Background',
+          title: '背景',
           keyPrefix: 'background-preset',
           colors: AppearancePresets.backgroundColors,
           selected: widget.background,
@@ -70,7 +70,7 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
           ),
         ),
         _PresetRow(
-          title: 'Accent',
+          title: '强调色',
           keyPrefix: 'accent-preset',
           colors: AppearancePresets.accentColors,
           selected: widget.accent,
@@ -80,7 +80,7 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
           ),
         ),
         _PresetRow(
-          title: 'Note paper',
+          title: '笔记纸张',
           keyPrefix: 'note-paper',
           colors: AppearancePresets.notePaperColors,
           selected: widget.notePaper,
@@ -93,19 +93,19 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
         DropdownButtonFormField<AppearanceColorTarget>(
           key: const Key('appearance-color-target'),
           initialValue: _target,
-          decoration: const InputDecoration(labelText: 'Color target'),
+          decoration: const InputDecoration(labelText: '颜色应用到'),
           items: const [
             DropdownMenuItem(
               value: AppearanceColorTarget.background,
-              child: Text('Background'),
+              child: Text('背景'),
             ),
             DropdownMenuItem(
               value: AppearanceColorTarget.accent,
-              child: Text('Accent'),
+              child: Text('强调色'),
             ),
             DropdownMenuItem(
               value: AppearanceColorTarget.notePaper,
-              child: Text('Note paper'),
+              child: Text('笔记纸张'),
             ),
           ],
           onChanged: (target) {
@@ -119,8 +119,8 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
           key: const Key('appearance-rgb-field'),
           controller: _rgbController,
           decoration: InputDecoration(
-            labelText: 'RGB or HEX',
-            hintText: '#5E9D83 or 94,157,131',
+            labelText: 'RGB 或 HEX',
+            hintText: '#5E9D83 或 94,157,131',
             errorText: _validationError,
           ),
           onSubmitted: (_) => _applyEnteredColor(),
@@ -134,13 +134,13 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
               key: const Key('appearance-save-color-button'),
               onPressed: _applyEnteredColor,
               icon: const Icon(Icons.palette_outlined),
-              label: const Text('Apply and save'),
+              label: const Text('应用并保存'),
             ),
             OutlinedButton.icon(
               key: const Key('appearance-extract-color-button'),
               onPressed: _extracting ? null : _extractColors,
               icon: const Icon(Icons.colorize_outlined),
-              label: const Text('Extract from image'),
+              label: const Text('从图片提取'),
             ),
           ],
         ),
@@ -157,7 +157,7 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
           children: [
             Expanded(
               child: Text(
-                'My Colors',
+                '我的颜色',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
@@ -166,7 +166,7 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
         ),
         const SizedBox(height: 6),
         if (widget.customColors.isEmpty)
-          const Text('Saved colors will appear here.')
+          const Text('保存的颜色会显示在这里。')
         else
           ReorderableListView.builder(
             shrinkWrap: true,
@@ -187,12 +187,12 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
                   spacing: 2,
                   children: [
                     IconButton(
-                      tooltip: 'Rename ${entry.name}',
+                      tooltip: '重命名 ${entry.name}',
                       onPressed: () => _rename(entry),
                       icon: const Icon(Icons.edit_outlined),
                     ),
                     IconButton(
-                      tooltip: 'Delete ${entry.name}',
+                      tooltip: '删除 ${entry.name}',
                       onPressed: () => widget.onDeleteCustomColor(entry.id),
                       icon: const Icon(Icons.delete_outline),
                     ),
@@ -226,7 +226,7 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
     });
     try {
       await widget.onApplyColor(_target, color);
-      await widget.onSaveCustomColor('Custom ${color.toHex()}', color);
+      await widget.onSaveCustomColor('自定义 ${color.toHex()}', color);
     } catch (error) {
       if (mounted) {
         setState(() => _operationError = error.toString());
@@ -283,20 +283,20 @@ class _ColorSettingsSectionState extends State<ColorSettingsSection> {
     final name = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Rename color'),
+        title: const Text('重命名颜色'),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(labelText: 'Name'),
+          decoration: const InputDecoration(labelText: '名称'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: const Text('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text),
-            child: const Text('Save'),
+            child: const Text('保存'),
           ),
         ],
       ),

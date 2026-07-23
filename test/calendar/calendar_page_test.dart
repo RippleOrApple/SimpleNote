@@ -55,11 +55,11 @@ void main() {
     addTearDown(harness.dispose);
 
     expect(find.byKey(const Key('calendar-page')), findsOneWidget);
-    expect(find.textContaining('planned for a later phase'), findsNothing);
+    expect(find.textContaining('将在后续阶段完成'), findsNothing);
     expect(find.text('Write report'), findsOneWidget);
     expect(find.text('Research note'), findsOneWidget);
     expect(find.text('Drink water'), findsOneWidget);
-    expect(find.textContaining('1 habits'), findsOneWidget);
+    expect(find.textContaining('1 个习惯'), findsOneWidget);
     expect(find.byKey(Key('calendar-day-$dayStart')), findsOneWidget);
   });
 

@@ -11,12 +11,11 @@ class PlaceholderModulePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = module.label;
     final message = switch (module) {
-      AppModuleKey.today => 'Task workspace will arrive in Task 10.',
-      AppModuleKey.calendar => 'Calendar module is planned for a later phase.',
-      AppModuleKey.habits => 'Habits module is planned for a later phase.',
-      AppModuleKey.statistics =>
-        'Statistics module is planned for a later phase.',
-      AppModuleKey.more => 'Open Appearance or Settings from this module.',
+      AppModuleKey.today => '任务工作区将在 Task 10 完成。',
+      AppModuleKey.calendar => '日历模块将在后续阶段完成。',
+      AppModuleKey.habits => '习惯模块将在后续阶段完成。',
+      AppModuleKey.statistics => '统计模块将在后续阶段完成。',
+      AppModuleKey.more => '可从这里打开外观或设置。',
       AppModuleKey.notes || AppModuleKey.settings => '',
     };
     return Center(

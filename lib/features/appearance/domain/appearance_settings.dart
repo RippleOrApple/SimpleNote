@@ -92,13 +92,13 @@ final class BackgroundSelection {
     final assetPathValue = json['assetPath'];
     final imageIdValue = json['imageId'];
     if (colorValue != null && colorValue is! int) {
-      throw const FormatException('color must be a 24-bit integer or null.');
+      throw const FormatException('color 必须是 24 位整数或 null。');
     }
     if (assetPathValue != null && assetPathValue is! String) {
-      throw const FormatException('assetPath must be a string or null.');
+      throw const FormatException('assetPath 必须是字符串或 null。');
     }
     if (imageIdValue != null && imageIdValue is! String) {
-      throw const FormatException('imageId must be a string or null.');
+      throw const FormatException('imageId 必须是字符串或 null。');
     }
     try {
       return switch (kind) {
@@ -112,20 +112,20 @@ final class BackgroundSelection {
             when colorValue == null && imageIdValue == null =>
           BackgroundSelection.bundledImage(
             assetPathValue as String? ??
-                (throw const FormatException('assetPath is required.')),
+                (throw const FormatException('assetPath 为必填项。')),
           ),
         BackgroundKind.syncedImage
             when colorValue == null && assetPathValue == null =>
           BackgroundSelection.syncedImage(
             imageIdValue as String? ??
-                (throw const FormatException('imageId is required.')),
+                (throw const FormatException('imageId 为必填项。')),
           ),
         _ => throw const FormatException(
-            'Background fields do not match the selected kind.',
+            '背景字段与所选类型不匹配。',
           ),
       };
     } on ArgumentError catch (error) {
-      throw FormatException('Invalid background selection: $error');
+      throw FormatException('背景选择无效：$error');
     }
   }
 
@@ -157,7 +157,7 @@ final class AppearanceSettings {
     required double darkOverlay,
   }) {
     if (schemaVersion != 1) {
-      throw ArgumentError.value(schemaVersion, 'schemaVersion');
+      throw ArgumentError.value(schemaVersion, 'schemaVersion', '必须是 1。');
     }
     return AppearanceSettings._(
       schemaVersion: schemaVersion,
@@ -264,7 +264,7 @@ final class AppearanceSettings {
     final schemaVersion = _requiredInt(json, 'schemaVersion');
     if (schemaVersion != 1) {
       throw FormatException(
-        'Unsupported appearance schema version: $schemaVersion.',
+        '不支持的外观设置版本：$schemaVersion。',
       );
     }
     try {
@@ -301,7 +301,7 @@ final class AppearanceSettings {
     } on FormatException {
       rethrow;
     } on ArgumentError catch (error) {
-      throw FormatException('Invalid appearance settings: $error');
+      throw FormatException('外观设置无效：$error');
     }
   }
 
@@ -339,13 +339,13 @@ final class AppearanceSettings {
 
 void _requireNonBlank(String value, String name) {
   if (value.trim().isEmpty) {
-    throw ArgumentError.value(value, name, 'Must not be blank.');
+    throw ArgumentError.value(value, name, '不能为空。');
   }
 }
 
 double _clampUnit(double value, String name) {
   if (!value.isFinite) {
-    throw ArgumentError.value(value, name, 'Must be finite.');
+    throw ArgumentError.value(value, name, '必须是有限数值。');
   }
   return value.clamp(0, 1).toDouble();
 }
@@ -353,7 +353,7 @@ double _clampUnit(double value, String name) {
 int _requiredInt(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! int) {
-    throw FormatException('$key must be an integer.');
+    throw FormatException('$key 必须是整数。');
   }
   return value;
 }
@@ -361,7 +361,7 @@ int _requiredInt(Map<String, Object?> json, String key) {
 double _requiredDouble(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! num || !value.isFinite) {
-    throw FormatException('$key must be a finite number.');
+    throw FormatException('$key 必须是有限数值。');
   }
   return value.toDouble();
 }
@@ -372,12 +372,12 @@ Map<String, Object?> _requiredMap(
 ) {
   final value = json[key];
   if (value is! Map) {
-    throw FormatException('$key must be an object.');
+    throw FormatException('$key 必须是对象。');
   }
   try {
     return Map<String, Object?>.from(value);
   } on TypeError {
-    throw FormatException('$key must contain string keys.');
+    throw FormatException('$key 必须使用字符串键。');
   }
 }
 
@@ -389,17 +389,17 @@ T _requiredEnum<T extends Enum>(
 ) {
   final value = json[key];
   if (value is! String) {
-    throw FormatException('$key must be a $typeName name.');
+    throw FormatException('$key 必须是 $typeName 名称。');
   }
   return values.firstWhere(
     (candidate) => candidate.name == value,
-    orElse: () => throw FormatException('Unknown $typeName: $value.'),
+    orElse: () => throw FormatException('未知 $typeName：$value。'),
   );
 }
 
 RgbColor _rgbFromValue(Object? value, String key) {
   if (value is! int || value < 0 || value > 0xFFFFFF) {
-    throw FormatException('$key must be a 24-bit integer.');
+    throw FormatException('$key 必须是 24 位整数。');
   }
   return RgbColor(value);
 }

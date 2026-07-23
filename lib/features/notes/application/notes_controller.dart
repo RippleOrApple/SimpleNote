@@ -164,7 +164,7 @@ class NotesController extends AsyncNotifier<NotesState> {
     final now = Clock.nowMillis();
     final note = Note(
       id: IdGenerator.create(),
-      title: 'Untitled note',
+      title: '未命名笔记',
       content: '',
       createdAt: now,
       updatedAt: now,
@@ -475,7 +475,7 @@ class NotesController extends AsyncNotifier<NotesState> {
 
 String _recoveredImageAlt(XFile file) {
   final name = file.name.trim();
-  return name.isEmpty ? 'recovered image' : name;
+  return name.isEmpty ? '恢复的图片' : name;
 }
 
 T? _firstOrNull<T>(Iterable<T>? values) {

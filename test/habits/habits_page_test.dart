@@ -23,16 +23,15 @@ void main() {
     );
     addTearDown(harness.dispose);
 
-    await tester.tap(find.text('Habits').first);
+    await tester.tap(find.text('习惯').first);
     await tester.pumpAndSettle();
 
     expect(find.byType(HabitsPage), findsOneWidget);
-    expect(
-        find.text('Habits module is planned for a later phase.'), findsNothing);
+    expect(find.text('习惯模块将在后续阶段完成。'), findsNothing);
     expect(find.byKey(const Key('habit-list-pane')), findsOneWidget);
     expect(find.byKey(const Key('habit-detail-pane')), findsOneWidget);
     expect(find.text('Read'), findsWidgets);
-    expect(find.text('Current streak'), findsOneWidget);
+    expect(find.text('当前连续'), findsOneWidget);
   });
 
   testWidgets('compact habits list opens detail and can check in',
@@ -58,7 +57,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('habit-checkin-button')));
     await tester.pumpAndSettle();
-    expect(find.text('Checked in today'), findsOneWidget);
+    expect(find.text('今天已打卡'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('habit-detail-back')));
     await tester.pumpAndSettle();

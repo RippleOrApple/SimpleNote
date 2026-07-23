@@ -9,10 +9,10 @@ final class TypographyPreferences {
     required double noteLineHeight,
   }) {
     if (uiFontFamily.trim().isEmpty) {
-      throw ArgumentError.value(uiFontFamily, 'uiFontFamily');
+      throw ArgumentError.value(uiFontFamily, 'uiFontFamily', '不能为空。');
     }
     if (noteFontFamily.trim().isEmpty) {
-      throw ArgumentError.value(noteFontFamily, 'noteFontFamily');
+      throw ArgumentError.value(noteFontFamily, 'noteFontFamily', '不能为空。');
     }
     return TypographyPreferences._(
       uiFontFamily: uiFontFamily,
@@ -93,7 +93,7 @@ final class TypographyPreferences {
     } on FormatException {
       rethrow;
     } on ArgumentError catch (error) {
-      throw FormatException('Invalid typography preferences: $error');
+      throw FormatException('字体偏好无效：$error');
     }
   }
 
@@ -119,7 +119,7 @@ final class TypographyPreferences {
 
 double _clampFinite(double value, double minimum, double maximum, String name) {
   if (!value.isFinite) {
-    throw ArgumentError.value(value, name, 'Must be finite.');
+    throw ArgumentError.value(value, name, '必须是有限数值。');
   }
   return value.clamp(minimum, maximum).toDouble();
 }
@@ -127,7 +127,7 @@ double _clampFinite(double value, double minimum, double maximum, String name) {
 String _requiredString(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! String) {
-    throw FormatException('$key must be a string.');
+    throw FormatException('$key 必须是字符串。');
   }
   return value;
 }
@@ -135,7 +135,7 @@ String _requiredString(Map<String, Object?> json, String key) {
 double _requiredDouble(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! num || !value.isFinite) {
-    throw FormatException('$key must be a finite number.');
+    throw FormatException('$key 必须是有限数值。');
   }
   return value.toDouble();
 }
@@ -143,10 +143,10 @@ double _requiredDouble(Map<String, Object?> json, String key) {
 UiScale _requiredUiScale(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! String) {
-    throw FormatException('$key must be a UiScale name.');
+    throw FormatException('$key 必须是界面缩放名称。');
   }
   return UiScale.values.firstWhere(
     (candidate) => candidate.name == value,
-    orElse: () => throw FormatException('Unknown UiScale: $value.'),
+    orElse: () => throw FormatException('未知界面缩放：$value。'),
   );
 }

@@ -14,7 +14,7 @@ class TaskReminder implements Syncable {
     this.version = 1,
   }) : assert(
           (triggerAt == null) != (offsetMinutes == null),
-          'A reminder must use exactly one trigger type.',
+          '提醒必须且只能使用一种触发类型。',
         );
 
   @override
@@ -102,12 +102,12 @@ class TaskReminder implements Syncable {
 
 String _requiredString(Map<String, Object?> json, String key) {
   final value = json[key];
-  if (value is! String) throw FormatException('$key must be a string.');
+  if (value is! String) throw FormatException('$key 必须是字符串。');
   return value;
 }
 
 int _requiredInt(Map<String, Object?> json, String key) {
   final value = json[key];
-  if (value is! int) throw FormatException('$key must be an integer.');
+  if (value is! int) throw FormatException('$key 必须是整数。');
   return value;
 }

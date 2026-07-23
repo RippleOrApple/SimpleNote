@@ -45,7 +45,7 @@ final class BackgroundImageService {
       throw ArgumentError.value(
         rootDirectory.path,
         'rootDirectory',
-        'Must be an absolute application-support directory.',
+        '必须是绝对路径的应用支持目录。',
       );
     }
   }
@@ -184,7 +184,7 @@ final class BackgroundImageService {
     final reportedLength = await source.length();
     if (reportedLength > maxByteSize) {
       throw FileSystemException(
-        'Background image exceeds the 20 MB limit.',
+        '背景图片超过 20 MB 限制。',
         source.path,
       );
     }
@@ -192,7 +192,7 @@ final class BackgroundImageService {
     final bytes = await source.readAsBytes();
     if (bytes.length > maxByteSize) {
       throw FileSystemException(
-        'Background image exceeds the 20 MB limit.',
+        '背景图片超过 20 MB 限制。',
         source.path,
       );
     }
@@ -201,7 +201,7 @@ final class BackgroundImageService {
     try {
       decoder = img.findDecoderForData(bytes);
     } catch (error) {
-      throw FormatException('Image data could not be decoded: $error');
+      throw FormatException('图片数据无法解码：$error');
     }
     final format = switch (decoder?.format) {
       img.ImageFormat.jpg => const _ImageFormat(
@@ -220,14 +220,14 @@ final class BackgroundImageService {
     };
     if (format == null || decoder == null) {
       throw const FormatException(
-        'Only decodable JPEG, PNG, and WebP images are supported.',
+        '仅支持可解码的 JPEG、PNG 和 WebP 图片。',
       );
     }
 
     try {
       final image = decoder.decode(bytes);
       if (image == null) {
-        throw const FormatException('Image data could not be decoded.');
+        throw const FormatException('图片数据无法解码。');
       }
       return _DecodedImage(
         bytes: bytes,
@@ -238,7 +238,7 @@ final class BackgroundImageService {
     } on FormatException {
       rethrow;
     } catch (error) {
-      throw FormatException('Image data could not be decoded: $error');
+      throw FormatException('图片数据无法解码：$error');
     }
   }
 }
